@@ -21,9 +21,13 @@ import {
   Collapse,
   Switch,
   FormControlLabel,
+  Button,
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import DownloadIcon from '@mui/icons-material/Download';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import ReportPDF from './ReportPDF';
 
 const ReportTab = ({ employees, tasks }) => {
   const [selectedEmployee, setSelectedEmployee] = useState('');
@@ -210,9 +214,34 @@ const ReportTab = ({ employees, tasks }) => {
 
       {selectedEmployee && statistics && (
         <Box>
-          <Typography variant="h5" gutterBottom>
-            Informe de {selectedEmployeeName}
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h5">
+              Informe de {selectedEmployeeName}
+            </Typography>
+            <PDFDownloadLink 
+              document={
+                <ReportPDF 
+                  employeeName={selectedEmployeeName} 
+                  dateRange={dateRange} 
+                  statistics={statistics} 
+                  tasks={filteredTasks} 
+                />
+              } 
+              fileName={`informe_${selectedEmployeeName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`}
+              style={{ textDecoration: 'none' }}
+            >
+              {({ blob, url, loading, error }) => (
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  startIcon={<DownloadIcon />}
+                  disabled={loading}
+                >
+                  {loading ? 'Generando PDF...' : 'Descargar PDF'}
+                </Button>
+              )}
+            </PDFDownloadLink>
+          </Box>
 
           <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid item xs={12} md={4}>
