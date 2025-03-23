@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Box,
   FormControl,
@@ -33,6 +33,7 @@ const ReportTab = ({ employees, tasks }) => {
   });
   
   const [showDetails, setShowDetails] = useState(false);
+  const [employeeStats, setEmployeeStats] = useState([]);
 
   const filteredTasks = useMemo(() => {
     if (!selectedEmployee) return [];
@@ -71,6 +72,37 @@ const ReportTab = ({ employees, tasks }) => {
       tasksByType,
     };
   }, [filteredTasks]);
+  
+  // Calcular estadísticas para todos los empleados
+  useEffect(() => {
+    if (employees.length > 0 && tasks.length > 0) {
+      const stats = employees.map(employee => {
+        const employeeTasks = tasks.filter(task => task.employeeId === employee.id);
+        
+        if (employeeTasks.length === 0) {
+          return {
+            employee,
+            totalTasks: 0,
+            averageScore: 0,
+            bonusPercentage: '0.00'
+          };
+        }
+        
+        const totalScore = employeeTasks.reduce((sum, task) => sum + task.totalScore, 0);
+        const averageScore = totalScore / employeeTasks.length;
+        const bonusPercentage = ((averageScore / 100) * 30).toFixed(2);
+        
+        return {
+          employee,
+          totalTasks: employeeTasks.length,
+          averageScore,
+          bonusPercentage
+        };
+      });
+      
+      setEmployeeStats(stats);
+    }
+  }, [employees, tasks]);
 
   const handleEmployeeChange = (event) => {
     setSelectedEmployee(event.target.value);
@@ -130,6 +162,51 @@ const ReportTab = ({ employees, tasks }) => {
           />
         </Grid>
       </Grid>
+      
+      {!selectedEmployee && (
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="h5" gutterBottom>
+            Resumen de Todos los Empleados
+          </Typography>
+          <Grid container spacing={2}>
+            {employeeStats.map((stat) => (
+              <Grid item xs={12} sm={6} md={4} key={stat.employee.id}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      {stat.employee.name}
+                    </Typography>
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        Tareas Completadas
+                      </Typography>
+                      <Typography variant="h5" color="primary">
+                        {stat.totalTasks}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        Promedio General
+                      </Typography>
+                      <Typography variant="h5" color="primary">
+                        {stat.averageScore.toFixed(2)}%
+                      </Typography>
+                    </Box>
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        Bono Obtenido
+                      </Typography>
+                      <Typography variant="h5" color="primary">
+                        {stat.bonusPercentage}%
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      )}
 
       {selectedEmployee && statistics && (
         <Box>
@@ -241,9 +318,20 @@ const ReportTab = ({ employees, tasks }) => {
                                     (criterio === 'Calidad' ? 60 : 40) :
                                     (criterio === 'Calidad' ? 60 : 20);
                                   const ponderado = (puntuacion * peso / 100).toFixed(2);
-                                  const descripcion = criterio === 'Calidad' ?
-                                    'Evalúa la precisión, completitud y profesionalismo del trabajo realizado' :
-                                    'Evalúa el cumplimiento de plazos y la gestión eficiente del tiempo';
+                                  let descripcion;
+                                  if (task.type === 'PRA') {
+                                    descripcion = criterio === 'Calidad' ?
+                                      'Se revisa una muestra del 5% al 15% de los casos realizados, dependiendo de la población del estudio.' :
+                                      'Se siguen las instrucciones del ingeniero a cargo de la prueba para la realización de la misma. Retroalimentación recibida por el ingeniero a cargo de la prueba.';
+                                  } else {
+                                    if (criterio === 'Calidad') {
+                                      descripcion = 'Se revisa una muestra del 15% de los casos realizados en la asignación.';
+                                    } else if (criterio === 'Tiempo') {
+                                      descripcion = 'La validación se realiza dentro del periodo establecido.';
+                                    } else {
+                                      descripcion = 'Se realiza la validación correctamente para asegurar que la nueva versión de Treat no tenga errores en GA.';
+                                    }
+                                  }
                                   return (
                                     <React.Fragment key={criterio}>
                                       <TableRow>
