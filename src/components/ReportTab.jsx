@@ -379,6 +379,12 @@ const ReportTab = ({ employees, tasks }) => {
                                 })}
                               </TableBody>
                             </Table>
+                            {task.comments && (
+                              <Box sx={{ mt: 2, p: 2, bgcolor: '#f8f9fa', borderLeft: '4px solid #1976d2', borderRadius: 1 }}>
+                                <Typography variant="subtitle2" color="primary" gutterBottom>Comentarios de la tarea:</Typography>
+                                <Typography variant="body2">{task.comments}</Typography>
+                              </Box>
+                            )}
                           </Box>
                         </Collapse>
                       </TableCell>

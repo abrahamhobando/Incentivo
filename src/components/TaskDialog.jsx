@@ -75,6 +75,21 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave }) => {
           ))}
 
           <Grid item xs={12}>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label="Comentarios"
+              name="comments"
+              value={editedTask.comments || ''}
+              onChange={(e) => setEditedTask(prev => ({ ...prev, comments: e.target.value }))}
+              size="small"
+              placeholder="Ingrese comentarios adicionales sobre la tarea"
+              sx={{ mt: 2 }}
+            />
+          </Grid>
+          
+          <Grid item xs={12}>
             <Box sx={{ mt: 2 }}>
               <Typography variant="h6" color="primary">
                 Puntuación Total: {calculateTotalScore().toFixed(2)}%

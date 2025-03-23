@@ -22,6 +22,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
     type: '',
     date: '',
     evaluations: {},
+    comments: '',
   });
 
   const taskTypes = {
@@ -112,6 +113,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
       type: '',
       date: '',
       evaluations: {},
+      comments: '',
     });
     if (onTaskAdded) onTaskAdded();
   };
@@ -196,6 +198,20 @@ const TaskForm = ({ employees, onTaskAdded }) => {
                 />
               </Grid>
             ))}
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                multiline
+                rows={3}
+                label="Comentarios"
+                name="comments"
+                value={taskData.comments || ''}
+                onChange={handleChange}
+                size="small"
+                placeholder="Ingrese comentarios adicionales sobre la tarea"
+              />
+            </Grid>
 
             {taskData.type && (
               <Grid item xs={12}>

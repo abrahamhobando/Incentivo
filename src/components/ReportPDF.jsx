@@ -290,6 +290,12 @@ const ReportPDF = ({ employeeName, dateRange, statistics, tasks }) => {
                   );
                 })}
               </View>
+              {task.comments && (
+                <View style={{ marginTop: 8, padding: 6, backgroundColor: '#f5f5f5', borderRadius: 3, borderLeftWidth: 3, borderLeftColor: '#1976d2', borderLeftStyle: 'solid' }}>
+                  <Text style={{ fontSize: 9, fontWeight: 'bold', marginBottom: 3, color: '#1976d2' }}>Comentarios de la tarea:</Text>
+                  <Text style={{ fontSize: 8 }}>{task.comments}</Text>
+                </View>
+              )}
             </View>
           ))}
         </View>
