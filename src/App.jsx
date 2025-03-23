@@ -1,0 +1,79 @@
+import React, { useState, useEffect } from 'react';
+import { getEmployees, getTasks } from './utils/storage';
+import { Box, Container, CssBaseline, Typography, Tabs, Tab } from '@mui/material';
+import TaskList from './components/TaskList';
+import TaskForm from './components/TaskForm';
+import EmployeeList from './components/EmployeeList';
+import EmployeeForm from './components/EmployeeForm';
+import ReportTab from './components/ReportTab';
+
+function App() {
+  const [employees, setEmployees] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [currentTab, setCurrentTab] = useState(0);
+  const [reportTasks, setReportTasks] = useState([]);
+
+  useEffect(() => {
+    loadEmployees();
+    loadTasks();
+  }, []);
+
+  const loadEmployees = () => {
+    setEmployees(getEmployees());
+  };
+
+  const loadTasks = () => {
+    const allTasks = getTasks();
+    setTasks(allTasks);
+    setReportTasks(allTasks);
+  };
+
+  const handleTabChange = (event, newValue) => {
+    setCurrentTab(newValue);
+  };
+
+  return (
+    <Box sx={{ flexGrow: 1, minHeight: '100vh', bgcolor: '#f5f5f5' }}>
+      <CssBaseline />
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Typography variant="h2" component="h1" gutterBottom sx={{ mb: 4, color: 'primary.main' }}>
+          Sistema de Gestión de Empleados y Tareas
+        </Typography>
+
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+          <Tabs value={currentTab} onChange={handleTabChange} aria-label="Pestañas de gestión">
+            <Tab label="Gestión de Empleados" />
+            <Tab label="Gestión de Tareas" />
+            <Tab label="Informes" />
+          </Tabs>
+        </Box>
+
+        {currentTab === 0 && (
+          <Box>
+            <EmployeeForm onEmployeeAdded={loadEmployees} />
+            <Box sx={{ mt: 3 }}>
+              <EmployeeList employees={employees} onEmployeeDeleted={loadEmployees} />
+            </Box>
+          </Box>
+        )}
+
+        {currentTab === 1 && (
+          <Box>
+            <TaskForm onTaskAdded={loadTasks} employees={employees} />
+            <Box sx={{ mt: 3 }}>
+              <TaskList tasks={tasks} employees={employees} onTaskDeleted={loadTasks} />
+            </Box>
+          </Box>
+        )}
+
+        {currentTab === 2 && (
+          <Box>
+            <ReportTab employees={employees} tasks={reportTasks} />
+          </Box>
+        )}
+      </Container>
+    </Box>
+  );
+}
+
+export default App;
