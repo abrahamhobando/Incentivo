@@ -89,11 +89,11 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
     "Entrenamientos (Brinda)": {
       color: '#f8bbd0',
       criteria: [
-        { name: 'Manejo del grupo', weight: 25 },
-        { name: 'Transmisión de conocimientos', weight: 0 },
-        { name: 'Entregables', weight: 25 },
-        { name: 'Resultados obtenidos', weight: 25 },
-        { name: 'Calidad del servicio', weight: 25 },
+        { name: 'Manejo del grupo', weight: 20 },
+        { name: 'Transmisión de conocimientos', weight: 20 },
+        { name: 'Entregables', weight: 20 },
+        { name: 'Resultados obtenidos', weight: 20 },
+        { name: 'Calidad del servicio', weight: 20 },
       ],
     },
     "Refrescamientos (Brinda)": {
@@ -314,9 +314,16 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                     color={filters.onlyUnevaluated ? "primary" : "inherit"}
                     variant={filters.onlyUnevaluated ? "contained" : "outlined"}
                     size="small"
-                    sx={{ minWidth: '100px', textTransform: 'none' }}
+                    fullWidth
+                    sx={{ 
+                      minHeight: '40px',
+                      textTransform: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
                   >
-                    {filters.onlyUnevaluated ? "Activado" : "Desactivado"}
+                    {filters.onlyUnevaluated ? "Mostrar solo tareas sin evaluar" : "Mostrar todas las tareas"}
                   </Button>
                 </Box>
               </FormControl>
@@ -327,7 +334,11 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                 color="primary"
                 variant="outlined"
                 size="small"
-                sx={{ minWidth: '120px', textTransform: 'none' }}
+                fullWidth
+                sx={{ 
+                  minHeight: '40px',
+                  textTransform: 'none'
+                }}
               >
                 Limpiar Filtros
               </Button>
@@ -346,7 +357,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                   <TableCell><Typography variant="subtitle1" fontWeight="bold">Asignado</Typography></TableCell>
                   <TableCell><Typography variant="subtitle1" fontWeight="bold">Tipo</Typography></TableCell>
                   <TableCell><Typography variant="subtitle1" fontWeight="bold">Fecha</Typography></TableCell>
-                  <TableCell align="right"><Typography variant="subtitle1" fontWeight="bold">Puntuación</Typography></TableCell>
+                  <TableCell align="center"><Typography variant="subtitle1" fontWeight="bold">Puntuación</Typography></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
