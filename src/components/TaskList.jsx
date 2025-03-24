@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Box,
   Button,
@@ -20,6 +20,7 @@ import {
   MenuItem,
   TextField,
   Grid,
+  useTheme,
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -27,6 +28,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { deleteTask, getTasks, saveTasks } from '../utils/storage';
 import TaskDialog from './TaskDialog';
+import { ColorModeContext } from '../main';
 
 const TaskList = ({ tasks, employees, onTaskDeleted }) => {
   const [selectedTask, setSelectedTask] = useState(null);
@@ -36,6 +38,8 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
     employeeId: '',
     type: '',
     date: '',
+    searchQuery: '',
+    onlyUnevaluated: false,
   });
 
   const taskTypes = {
@@ -79,12 +83,20 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
     if (onTaskDeleted) onTaskDeleted();
   };
 
+  const theme = useTheme();
+  const { mode } = useContext(ColorModeContext);
+  
   const getTaskTypeColor = (type) => {
-    const colors = {
-      PRA: '#e3f2fd',
-      Validacion: '#f3e5f5',
-    };
-    return colors[type] || '#ffffff';
+    // Usar los colores del tema según el modo actual
+    if (mode === 'dark') {
+      return theme.palette.taskTypes[type === 'PRA' ? 'PRA' : 'Validation'] || '#333333';
+    } else {
+      const colors = {
+        PRA: '#e3f2fd',
+        Validacion: '#f3e5f5',
+      };
+      return colors[type] || '#ffffff';
+    }
   };
 
   const getScoreColor = (score) => {
@@ -113,6 +125,20 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
         return taskDate === filterDate;
       });
     }
+
+    // Filtrar tareas sin evaluar
+    if (filters.onlyUnevaluated) {
+      result = result.filter(task => task.totalScore === undefined || task.totalScore === null);
+    }
+    
+    // Filtrar por búsqueda
+    if (filters.searchQuery) {
+      const query = filters.searchQuery.toLowerCase();
+      result = result.filter(task => 
+        task.title.toLowerCase().includes(query) || 
+        (task.comments && task.comments.toLowerCase().includes(query))
+      );
+    }
     
     setFilteredTasks(result);
   }, [tasks, filters]);
@@ -132,6 +158,8 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
       employeeId: '',
       type: '',
       date: '',
+      searchQuery: '',
+      onlyUnevaluated: false,
     });
   };
 
@@ -188,6 +216,33 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                 InputLabelProps={{ shrink: true }}
                 size="small"
               />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <TextField
+                fullWidth
+                label="Buscar"
+                name="searchQuery"
+                value={filters.searchQuery}
+                onChange={handleFilterChange}
+                size="small"
+                placeholder="Buscar por título o comentarios"
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <FormControl fullWidth size="small">
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Typography variant="body2">Solo tareas sin evaluar</Typography>
+                  <Button
+                    onClick={() => setFilters(prev => ({ ...prev, onlyUnevaluated: !prev.onlyUnevaluated }))}
+                    color={filters.onlyUnevaluated ? "primary" : "inherit"}
+                    variant={filters.onlyUnevaluated ? "contained" : "outlined"}
+                    size="small"
+                    sx={{ minWidth: '100px', textTransform: 'none' }}
+                  >
+                    {filters.onlyUnevaluated ? "Activado" : "Desactivado"}
+                  </Button>
+                </Box>
+              </FormControl>
             </Grid>
             <Grid item xs={12} md={3} sx={{ display: 'flex', alignItems: 'center' }}>
               <Button
