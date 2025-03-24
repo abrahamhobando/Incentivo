@@ -89,6 +89,36 @@ const TaskForm = ({ employees, onTaskAdded }) => {
         },
       ],
     },
+    "STD Times": {
+      color: mode === 'dark' ? theme.palette.taskTypes["STD Times"] : '#fff8e1',
+      criteria: [
+        { 
+          name: 'Seguimiento de instrucciones', 
+          weight: 60,
+          description: 'Cumplir indicaciones del ingeniero.'
+        },
+        { 
+          name: 'Calidad del servicio', 
+          weight: 40,
+          description: 'Retroalimentación del ingeniero. Retroalimentación de producción: Evaluación aleatoria del equipo de producción.'
+        },
+      ],
+    },
+    "Entrenamientos (Recibe)": {
+      color: mode === 'dark' ? theme.palette.taskTypes["Entrenamientos (Recibe)"] : '#e1f5fe',
+      criteria: [
+        { 
+          name: 'Pruebas teóricas', 
+          weight: 40,
+          description: 'Aprueba las pruebas teóricas asignadas al entrenamiento.'
+        },
+        { 
+          name: 'Pruebas prácticas', 
+          weight: 60,
+          description: 'Aprueba las pruebas prácticas asignadas al entrenamiento.'
+        },
+      ],
+    },
   };
 
   const handleChange = (e) => {
@@ -148,7 +178,27 @@ const TaskForm = ({ employees, onTaskAdded }) => {
     if (!hasEvaluations) return null;
     
     return taskTypes[taskData.type].criteria.reduce((total, criterion) => {
-      const score = taskData.evaluations[criterion.name] || 0;
+      let score = taskData.evaluations[criterion.name] || 0;
+      
+      // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
+      if ((taskData.type === 'PRA' || taskData.type === 'Validacion') && 
+          criterion.name === 'Calidad' && score < 70) {
+        // Si calidad es menor a 70%, se pierde todo el porcentaje
+        return total;
+      }
+      
+      // Aplicar regla especial para Entrenamientos (Recibe)
+      if (taskData.type === 'Entrenamientos (Recibe)') {
+        if (criterion.name === 'Pruebas teóricas' && score < 75) {
+          // Si pruebas teóricas es menor a 75%, se pierde todo el porcentaje
+          return total;
+        }
+        if (criterion.name === 'Pruebas prácticas' && score < 75) {
+          // Si pruebas prácticas es menor a 75%, se pierde todo el porcentaje
+          return total;
+        }
+      }
+      
       return total + (score * criterion.weight) / 100;
     }, 0);
   };
@@ -366,8 +416,13 @@ const TaskForm = ({ employees, onTaskAdded }) => {
                 {taskTypes[taskData.type].criteria.map((criterion) => (
                   <Grid item xs={12} md={6} key={criterion.name}>
                     <Stack spacing={1}>
-                      <Typography variant="body2" color="text.secondary">
-                        {criterion.name} <Chip label={`${criterion.weight}%`} size="small" color="primary" variant="outlined" />
+                      <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                        {criterion.name} <Chip label={`${criterion.weight}%`} size="small" color="primary" variant="outlined" sx={{ mx: 1 }} />
+                        {(taskData.type === 'PRA' || taskData.type === 'Validacion') && criterion.name === 'Calidad' && (
+                          <Tooltip title="Si la calificación es menor al 70%, se pierde todo el porcentaje de este rubro" arrow placement="top">
+                            <InfoOutlinedIcon fontSize="small" color="warning" />
+                          </Tooltip>
+                        )}
                       </Typography>
                       <TextField
                         fullWidth

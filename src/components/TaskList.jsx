@@ -65,6 +65,20 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
         { name: '0 errores encontrados en GA', weight: 20 },
       ],
     },
+    "STD Times": {
+      color: '#fff8e1',
+      criteria: [
+        { name: 'Seguimiento de instrucciones', weight: 60 },
+        { name: 'Calidad del servicio', weight: 40 },
+      ],
+    },
+    "Entrenamientos (Recibe)": {
+      color: '#e1f5fe',
+      criteria: [
+        { name: 'Pruebas teóricas', weight: 40 },
+        { name: 'Pruebas prácticas', weight: 60 },
+      ],
+    },
   };
 
   const handleEdit = (task) => {
@@ -114,11 +128,12 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
   const getTaskTypeColor = (type) => {
     // Usar los colores del tema según el modo actual
     if (mode === 'dark') {
-      return theme.palette.taskTypes[type === 'PRA' ? 'PRA' : 'Validation'] || '#333333';
+      return theme.palette.taskTypes[type] || '#333333';
     } else {
       const colors = {
         PRA: '#e3f2fd',
         Validacion: '#f3e5f5',
+        "STD Times": '#fff8e1'
       };
       return colors[type] || '#ffffff';
     }

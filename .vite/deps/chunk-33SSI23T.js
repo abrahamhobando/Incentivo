@@ -1,7 +1,7 @@
 import {
   init_utils,
   utils_exports
-} from "./chunk-VGCWRW73.js";
+} from "./chunk-PKR5FSA5.js";
 import {
   __commonJS,
   __toCommonJS
@@ -28,4 +28,4 @@ var require_createSvgIcon = __commonJS({
 export {
   require_createSvgIcon
 };
-//# sourceMappingURL=chunk-XBT4HRFI.js.map
+//# sourceMappingURL=chunk-33SSI23T.js.map

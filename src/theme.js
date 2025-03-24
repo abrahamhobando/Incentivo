@@ -16,6 +16,8 @@ const lightTheme = createTheme({
     taskTypes: {
       PRA: '#e0f2f1',
       Validation: '#e8f5e9',
+      "STD Times": '#fff8e1',
+      "Entrenamientos (Recibe)": '#e1f5fe',
     },
     success: {
       main: '#4caf50',
@@ -121,6 +123,8 @@ const darkTheme = createTheme({
     taskTypes: {
       PRA: '#1e3a5f',
       Validation: '#4a1e5f',
+      "STD Times": '#5d4037',
+      "Entrenamientos (Recibe)": '#01579b',
     },
     success: {
       main: '#66bb6a',

@@ -344,7 +344,12 @@ const ReportTab = ({ employees, tasks }) => {
                         key={type}
                         label={`${type}: ${count}`}
                         sx={{
-                          bgcolor: (theme) => type === 'PRA' ? theme.palette.taskTypes.PRA : theme.palette.taskTypes.Validation,
+                          bgcolor: (theme) => {
+                            if (type === 'PRA') return theme.palette.taskTypes.PRA;
+                            if (type === 'STD Times') return theme.palette.taskTypes["STD Times"];
+                            if (type === 'Entrenamientos (Recibe)') return theme.palette.taskTypes["Entrenamientos (Recibe)"];
+                            return theme.palette.taskTypes.Validation;
+                          },
                           color: 'text.primary',
                           fontWeight: 'medium',
                           fontSize: '0.9rem',
@@ -376,7 +381,13 @@ const ReportTab = ({ employees, tasks }) => {
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
-                <TableRow sx={{ bgcolor: 'background.paper', '& th': { fontWeight: 'bold' } }}>
+                <TableRow sx={{ 
+                  '& th': { 
+                    fontWeight: 'bold',
+                    color: mode === 'dark' ? 'text.primary' : 'text.primary',
+                    bgcolor: 'background.paper'
+                  } 
+                }}>
                   <TableCell>Fecha</TableCell>
                   <TableCell>Título</TableCell>
                   <TableCell>Tipo</TableCell>
@@ -387,7 +398,11 @@ const ReportTab = ({ employees, tasks }) => {
                 {filteredTasks.map((task) => (
                   <React.Fragment key={task.id}>
                     <TableRow sx={{
-                      bgcolor: (theme) => task.type === 'PRA' ? theme.palette.taskTypes.PRA : theme.palette.taskTypes.Validation,
+                      bgcolor: (theme) => {
+                        if (task.type === 'PRA') return theme.palette.taskTypes.PRA;
+                        if (task.type === 'STD Times') return theme.palette.taskTypes["STD Times"];
+                        return theme.palette.taskTypes.Validation;
+                      },
                       '& > td': { borderBottom: '1px solid rgba(224, 224, 224, 0.2)' }
                     }}>
                       <TableCell>{task.date}</TableCell>
@@ -413,23 +428,73 @@ const ReportTab = ({ employees, tasks }) => {
                               </TableHead>
                               <TableBody>
                                 {Object.entries(task.evaluations || {}).map(([criterio, puntuacion]) => {
-                                  const peso = task.type === 'PRA' ?
-                                    (criterio === 'Calidad' ? 60 : 40) :
-                                    (criterio === 'Calidad' ? 60 : 20);
-                                  const ponderado = (puntuacion * peso / 100).toFixed(2);
+                                  let peso;
                                   let descripcion;
+                                  
+                                  // Asignar pesos y descripciones según el tipo de tarea
                                   if (task.type === 'PRA') {
-                                    descripcion = criterio === 'Calidad' ?
-                                      'Se revisa una muestra del 5% al 15% de los casos realizados, dependiendo de la población del estudio.' :
-                                      'Se siguen las instrucciones del ingeniero a cargo de la prueba para la realización de la misma. Retroalimentación recibida por el ingeniero a cargo de la prueba.';
-                                  } else {
                                     if (criterio === 'Calidad') {
+                                      peso = 60;
+                                      descripcion = 'Se revisa una muestra del 5% al 15% de los casos realizados, dependiendo de la población del estudio.';
+                                    } else if (criterio === 'Seguimiento de instrucciones') {
+                                      peso = 40;
+                                      descripcion = 'Se siguen las instrucciones del ingeniero a cargo de la prueba para la realización de la misma. Retroalimentación recibida por el ingeniero a cargo de la prueba.';
+                                    } else {
+                                      peso = 40; // Valor por defecto
+                                      descripcion = 'Criterio adicional para PRA.';
+                                    }
+                                  } else if (task.type === 'STD Times') {
+                                    if (criterio === 'Seguimiento de instrucciones') {
+                                      peso = 60;
+                                      descripcion = 'Cumplir indicaciones del ingeniero.';
+                                    } else if (criterio === 'Calidad') {
+                                      peso = 40;
+                                      descripcion = 'Retroalimentación del ingeniero. Retroalimentación de producción: Evaluación aleatoria del equipo de producción.';
+                                    } else {
+                                      peso = 40; // Valor por defecto
+                                      descripcion = 'Criterio adicional para STD Times.';
+                                    }
+                                  } else if (task.type === 'Validacion') {
+                                    if (criterio === 'Calidad') {
+                                      peso = 60;
                                       descripcion = 'Se revisa una muestra del 15% de los casos realizados en la asignación.';
                                     } else if (criterio === 'Tiempo') {
+                                      peso = 20;
                                       descripcion = 'La validación se realiza dentro del periodo establecido.';
-                                    } else {
+                                    } else if (criterio === 'Funcionalidad') {
+                                      peso = 20;
                                       descripcion = 'Se realiza la validación correctamente para asegurar que la nueva versión de Treat no tenga errores en GA.';
+                                    } else {
+                                      peso = 20; // Valor por defecto
+                                      descripcion = 'Criterio adicional para Validación.';
                                     }
+                                  } else if (task.type === 'Entrenamientos (Recibe)') {
+                                    if (criterio === 'Asistencia') {
+                                      peso = 50;
+                                      descripcion = 'Asistencia puntual a todas las sesiones de entrenamiento programadas.';
+                                    } else if (criterio === 'Participación') {
+                                      peso = 30;
+                                      descripcion = 'Participación activa durante las sesiones de entrenamiento.';
+                                    } else if (criterio === 'Evaluación final') {
+                                      peso = 20;
+                                      descripcion = 'Resultado de la evaluación final del entrenamiento recibido.';
+                                    } else {
+                                      peso = 20; // Valor por defecto
+                                      descripcion = 'Criterio adicional para Entrenamientos.';
+                                    }
+                                  } else { // Otros tipos de tareas
+                                    peso = 100 / Object.keys(task.evaluations || {}).length; // Distribución equitativa
+                                    descripcion = `Criterio de evaluación para ${task.type}.`;
+                                  }
+                                  
+                                  // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
+                                  let ponderado = 0;
+                                  if ((task.type === 'PRA' || task.type === 'Validacion') && 
+                                      criterio === 'Calidad' && puntuacion < 70) {
+                                    // Si calidad es menor a 70%, se pierde todo el porcentaje
+                                    ponderado = 0;
+                                  } else {
+                                    ponderado = (puntuacion * peso / 100).toFixed(2);
                                   }
                                   return (
                                     <React.Fragment key={criterio}>

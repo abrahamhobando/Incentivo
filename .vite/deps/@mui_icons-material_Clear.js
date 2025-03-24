@@ -17,9 +17,9 @@ import {
   __commonJS
 } from "./chunk-WDOU5HIJ.js";
 
-// node_modules/@mui/icons-material/PersonAdd.js
-var require_PersonAdd = __commonJS({
-  "node_modules/@mui/icons-material/PersonAdd.js"(exports) {
+// node_modules/@mui/icons-material/Clear.js
+var require_Clear = __commonJS({
+  "node_modules/@mui/icons-material/Clear.js"(exports) {
     var _interopRequireDefault = require_interopRequireDefault();
     Object.defineProperty(exports, "__esModule", {
       value: true
@@ -28,9 +28,9 @@ var require_PersonAdd = __commonJS({
     var _createSvgIcon = _interopRequireDefault(require_createSvgIcon());
     var _jsxRuntime = require_jsx_runtime();
     var _default = exports.default = (0, _createSvgIcon.default)((0, _jsxRuntime.jsx)("path", {
-      d: "M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4m-9-2V7H4v3H1v2h3v3h2v-3h3v-2zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4"
-    }), "PersonAdd");
+      d: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+    }), "Clear");
   }
 });
-export default require_PersonAdd();
-//# sourceMappingURL=@mui_icons-material_PersonAdd.js.map
+export default require_Clear();
+//# sourceMappingURL=@mui_icons-material_Clear.js.map

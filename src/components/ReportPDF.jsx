@@ -274,7 +274,15 @@ const ReportPDF = ({ employeeName, dateRange, statistics, tasks }) => {
                   const peso = task.type === 'PRA' ?
                     (criterio === 'Calidad' ? 60 : 40) :
                     (criterio === 'Calidad' ? 60 : 20);
-                  const ponderado = (puntuacion * peso / 100).toFixed(2);
+                  // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
+                  let ponderado = 0;
+                  if ((task.type === 'PRA' || task.type === 'Validacion') && 
+                      criterio === 'Calidad' && puntuacion < 70) {
+                    // Si calidad es menor a 70%, se pierde todo el porcentaje
+                    ponderado = 0;
+                  } else {
+                    ponderado = (puntuacion * peso / 100).toFixed(2);
+                  }
                   
                   return (
                     <View style={styles.evaluationRow} key={criterio}>
