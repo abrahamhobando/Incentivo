@@ -350,7 +350,7 @@ const ReportTab = ({ employees, tasks }) => {
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
-                <TableRow sx={{ bgcolor: '#f5f5f5' }}>
+                <TableRow sx={{ bgcolor: 'background.paper', '& th': { fontWeight: 'bold' } }}>
                   <TableCell>Fecha</TableCell>
                   <TableCell>Título</TableCell>
                   <TableCell>Tipo</TableCell>
@@ -361,8 +361,8 @@ const ReportTab = ({ employees, tasks }) => {
                 {filteredTasks.map((task) => (
                   <React.Fragment key={task.id}>
                     <TableRow sx={{
-                      bgcolor: task.type === 'PRA' ? '#e3f2fd' : '#f3e5f5',
-                      '& > td': { borderBottom: '1px solid rgba(224, 224, 224, 1)' }
+                      bgcolor: (theme) => task.type === 'PRA' ? theme.palette.taskTypes.PRA : theme.palette.taskTypes.Validation,
+                      '& > td': { borderBottom: '1px solid rgba(224, 224, 224, 0.2)' }
                     }}>
                       <TableCell>{task.date}</TableCell>
                       <TableCell>{task.title}</TableCell>
@@ -378,7 +378,7 @@ const ReportTab = ({ employees, tasks }) => {
                             </Typography>
                             <Table size="small">
                               <TableHead>
-                                <TableRow>
+                                <TableRow sx={{ bgcolor: 'background.paper', '& th': { fontWeight: 'bold' } }}>
                                   <TableCell>Criterio</TableCell>
                                   <TableCell align="right">Peso</TableCell>
                                   <TableCell align="right">Puntuación</TableCell>
