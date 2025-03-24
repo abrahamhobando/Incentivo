@@ -61,9 +61,10 @@ export const saveTasks = (tasks) => {
 
 export const addTask = (task) => {
   const tasks = getTasks();
+  // Asegurar que cada tarea tenga un ID único incluso si se crean en el mismo milisegundo
   const newTask = {
     ...task,
-    id: Date.now(),
+    id: Date.now() + Math.floor(Math.random() * 1000),
   };
   tasks.push(newTask);
   saveTasks(tasks);

@@ -17,6 +17,11 @@ import {
   Stack,
   Tooltip,
   IconButton,
+  Switch,
+  FormControlLabel,
+  Checkbox,
+  OutlinedInput,
+  ListItemText,
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -32,6 +37,8 @@ import { useTheme } from '@mui/material/styles';
 const TaskForm = ({ employees, onTaskAdded }) => {
   const theme = useTheme();
   const { mode } = useContext(ColorModeContext);
+  const [multipleAssignment, setMultipleAssignment] = useState(false);
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [taskData, setTaskData] = useState({
     title: '',
     employeeId: '',
@@ -94,6 +101,24 @@ const TaskForm = ({ employees, onTaskAdded }) => {
       }));
     }
   };
+  
+  const handleMultipleAssignmentChange = (event) => {
+    setMultipleAssignment(event.target.checked);
+    // Limpiar la selección de empleados cuando se cambia el modo
+    if (!event.target.checked) {
+      setTaskData(prev => ({
+        ...prev,
+        employeeId: '',
+      }));
+    } else {
+      setSelectedEmployees([]);
+    }
+  };
+  
+  const handleEmployeeSelectionChange = (event) => {
+    const { value } = event.target;
+    setSelectedEmployees(value);
+  };
 
   const handleEvaluationChange = (criteriaName, value) => {
     setTaskData(prev => ({
@@ -126,12 +151,27 @@ const TaskForm = ({ employees, onTaskAdded }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const totalScore = calculateTotalScore();
-    const newTask = {
+    const baseTask = {
       ...taskData,
       totalScore,
       date: taskData.date || new Date().toISOString().split('T')[0],
     };
-    addTask(newTask);
+    
+    if (multipleAssignment && selectedEmployees.length > 0) {
+      // Crear una tarea para cada empleado seleccionado
+      selectedEmployees.forEach(employeeId => {
+        const employeeTask = {
+          ...baseTask,
+          employeeId
+        };
+        addTask(employeeTask);
+      });
+    } else {
+      // Modo normal: crear una sola tarea
+      addTask(baseTask);
+    }
+    
+    // Resetear el formulario
     setTaskData({
       title: '',
       employeeId: '',
@@ -140,6 +180,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
       evaluations: {},
       comments: '',
     });
+    setSelectedEmployees([]);
     if (onTaskAdded) onTaskAdded();
   };
 
@@ -174,23 +215,58 @@ const TaskForm = ({ employees, onTaskAdded }) => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
-                  <InputLabel>Empleado</InputLabel>
-                  <Select
-                    name="employeeId"
-                    value={taskData.employeeId}
-                    onChange={handleChange}
-                    label="Empleado"
-                    required
-                    startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
-                  >
-                    {employees.map((employee) => (
-                      <MenuItem key={employee.id} value={employee.id}>
-                        {employee.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                {!multipleAssignment ? (
+                  <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
+                    <InputLabel>Empleado</InputLabel>
+                    <Select
+                      name="employeeId"
+                      value={taskData.employeeId}
+                      onChange={handleChange}
+                      label="Empleado"
+                      required
+                      startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
+                    >
+                      {employees.map((employee) => (
+                        <MenuItem key={employee.id} value={employee.id}>
+                          {employee.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
+                    <InputLabel>Seleccionar Empleados</InputLabel>
+                    <Select
+                      multiple
+                      value={selectedEmployees}
+                      onChange={handleEmployeeSelectionChange}
+                      input={<OutlinedInput label="Seleccionar Empleados" />}
+                      renderValue={(selected) => (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {selected.map((value) => {
+                            const employee = employees.find(emp => emp.id === value);
+                            return (
+                              <Chip 
+                                key={value} 
+                                label={employee ? employee.name : value} 
+                                size="small" 
+                                sx={{ borderRadius: '4px' }}
+                              />
+                            );
+                          })}
+                        </Box>
+                      )}
+                      startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
+                    >
+                      {employees.map((employee) => (
+                        <MenuItem key={employee.id} value={employee.id}>
+                          <Checkbox checked={selectedEmployees.indexOf(employee.id) > -1} />
+                          <ListItemText primary={employee.name} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
@@ -375,6 +451,27 @@ const TaskForm = ({ employees, onTaskAdded }) => {
             />
           </Paper>
           
+          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
+              Opciones de Asignación
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={multipleAssignment}
+                  onChange={handleMultipleAssignmentChange}
+                  color="primary"
+                />
+              }
+              label="Asignación múltiple"
+            />
+            {multipleAssignment && (
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                La tarea se creará para cada empleado seleccionado con los mismos detalles y evaluaciones.
+              </Typography>
+            )}
+          </Paper>
+          
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button
               type="submit"
@@ -389,8 +486,9 @@ const TaskForm = ({ employees, onTaskAdded }) => {
                 fontWeight: 'bold',
                 boxShadow: 2
               }}
+              disabled={multipleAssignment && selectedEmployees.length === 0}
             >
-              Agregar Tarea
+              Agregar Tarea{multipleAssignment && selectedEmployees.length > 0 ? `s (${selectedEmployees.length})` : ''}
             </Button>
           </Box>
         </Box>
