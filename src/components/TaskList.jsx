@@ -464,7 +464,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body1">
-                        {new Date(task.date).toLocaleDateString()}
+                        {new Date(task.date + 'T00:00:00').toLocaleDateString()}
                       </Typography>
                     </TableCell>
                     <TableCell align="right">
