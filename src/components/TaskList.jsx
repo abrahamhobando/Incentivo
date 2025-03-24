@@ -43,7 +43,8 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
   const [filters, setFilters] = useState({
     employeeId: '',
     type: '',
-    date: '',
+    startDate: '',
+    endDate: '',
     searchQuery: '',
     onlyUnevaluated: false,
   });
@@ -142,11 +143,14 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
       result = result.filter(task => task.type === filters.type);
     }
     
-    if (filters.date) {
-      const filterDate = new Date(filters.date).toISOString().split('T')[0];
+    if (filters.startDate || filters.endDate) {
       result = result.filter(task => {
-        const taskDate = new Date(task.date).toISOString().split('T')[0];
-        return taskDate === filterDate;
+        const taskDate = new Date(task.date);
+        const startDate = filters.startDate ? new Date(filters.startDate) : null;
+        const endDate = filters.endDate ? new Date(filters.endDate) : null;
+        
+        return (!startDate || taskDate >= startDate) && 
+               (!endDate || taskDate <= endDate);
       });
     }
 
@@ -181,7 +185,8 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
     setFilters({
       employeeId: '',
       type: '',
-      date: '',
+      startDate: '',
+      endDate: '',
       searchQuery: '',
       onlyUnevaluated: false,
     });
@@ -233,9 +238,21 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
               <TextField
                 fullWidth
                 type="date"
-                label="Filtrar por Fecha"
-                name="date"
-                value={filters.date}
+                label="Fecha Inicio"
+                name="startDate"
+                value={filters.startDate}
+                onChange={handleFilterChange}
+                InputLabelProps={{ shrink: true }}
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <TextField
+                fullWidth
+                type="date"
+                label="Fecha Fin"
+                name="endDate"
+                value={filters.endDate}
                 onChange={handleFilterChange}
                 InputLabelProps={{ shrink: true }}
                 size="small"
