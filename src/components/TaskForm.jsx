@@ -22,6 +22,8 @@ import {
   Checkbox,
   OutlinedInput,
   ListItemText,
+  Collapse,
+  Fade,
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -30,6 +32,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import CategoryIcon from '@mui/icons-material/Category';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import CommentIcon from '@mui/icons-material/Comment';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { getEmployees, addTask } from '../utils/storage';
 import { ColorModeContext } from '../main';
 import { useTheme } from '@mui/material/styles';
@@ -37,6 +41,7 @@ import { useTheme } from '@mui/material/styles';
 const TaskForm = ({ employees, onTaskAdded }) => {
   const theme = useTheme();
   const { mode } = useContext(ColorModeContext);
+  const [formVisible, setFormVisible] = useState(false);
   const [multipleAssignment, setMultipleAssignment] = useState(false);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [taskData, setTaskData] = useState({
@@ -184,15 +189,40 @@ const TaskForm = ({ employees, onTaskAdded }) => {
     if (onTaskAdded) onTaskAdded();
   };
 
+  const toggleFormVisibility = () => {
+    setFormVisible(prev => !prev);
+  };
+
   return (
     <Card elevation={3} sx={{ borderRadius: '12px', overflow: 'visible' }}>
       <CardContent sx={{ p: 3 }}>
-        <Typography variant="h5" component="h2" gutterBottom sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          <AddTaskIcon sx={{ mr: 1 }} /> Nueva Tarea
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ display: 'flex', alignItems: 'center', mb: 0 }}>
+            <AddTaskIcon sx={{ mr: 1 }} /> Nueva Tarea
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={toggleFormVisibility}
+            startIcon={formVisible ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            sx={{ 
+              borderRadius: '8px',
+              fontWeight: 'medium',
+              transition: 'all 0.2s ease-in-out',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: 3
+              }
+            }}
+          >
+            {formVisible ? 'Ocultar Formulario' : 'Mostrar Formulario'}
+          </Button>
+        </Box>
         <Divider sx={{ mb: 3 }} />
         
-        <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+        <Collapse in={formVisible} timeout="auto">
+          <Fade in={formVisible} timeout={600}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
           <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
             <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
               Información Básica
@@ -491,7 +521,9 @@ const TaskForm = ({ employees, onTaskAdded }) => {
               Agregar Tarea{multipleAssignment && selectedEmployees.length > 0 ? `s (${selectedEmployees.length})` : ''}
             </Button>
           </Box>
-        </Box>
+          </Box>
+          </Fade>
+        </Collapse>
       </CardContent>
     </Card>
   );
