@@ -10,9 +10,13 @@ import {
   Grid,
   Box,
   Chip,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 
-const TaskDialog = ({ open, onClose, task, taskTypes, onSave }) => {
+const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
   const [editedTask, setEditedTask] = React.useState(task);
 
   React.useEffect(() => {
@@ -30,8 +34,17 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave }) => {
   };
 
   const calculateTotalScore = () => {
-    if (!editedTask?.type || !taskTypes[editedTask.type]) return 0;
-
+    if (!editedTask?.type || !taskTypes[editedTask.type]) return null;
+    
+    // Verificar si hay al menos un criterio evaluado
+    const hasEvaluations = taskTypes[editedTask.type].criteria.some(
+      criterion => editedTask.evaluations[criterion.name] !== undefined && 
+                 editedTask.evaluations[criterion.name] !== null && 
+                 editedTask.evaluations[criterion.name] !== ''
+    );
+    
+    if (!hasEvaluations) return null;
+    
     return taskTypes[editedTask.type].criteria.reduce((total, criterion) => {
       const score = editedTask.evaluations[criterion.name] || 0;
       return total + (score * criterion.weight) / 100;
@@ -53,7 +66,45 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave }) => {
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid item xs={12}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Título de la Tarea"
+              value={editedTask.title || ''}
+              onChange={(e) => setEditedTask(prev => ({ ...prev, title: e.target.value }))}
+              size="small"
+              required
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth size="small">
+              <InputLabel>Empleado</InputLabel>
+              <Select
+                value={editedTask.employeeId || ''}
+                onChange={(e) => setEditedTask(prev => ({ ...prev, employeeId: e.target.value }))}
+                label="Empleado"
+                required
+              >
+                {employees?.map((employee) => (
+                  <MenuItem key={employee.id} value={employee.id}>
+                    {employee.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              type="date"
+              label="Fecha"
+              value={editedTask.date || ''}
+              onChange={(e) => setEditedTask(prev => ({ ...prev, date: e.target.value }))}
+              InputLabelProps={{ shrink: true }}
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
             <Typography variant="subtitle1" gutterBottom>
               Tipo de Tarea: <Chip label={task.type} size="small" />
             </Typography>
@@ -92,7 +143,7 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave }) => {
           <Grid item xs={12}>
             <Box sx={{ mt: 2 }}>
               <Typography variant="h6" color="primary">
-                Puntuación Total: {calculateTotalScore().toFixed(2)}%
+                Puntuación Total: {calculateTotalScore() !== null ? `${calculateTotalScore().toFixed(2)}%` : 'Sin evaluar'}
               </Typography>
             </Box>
           </Grid>

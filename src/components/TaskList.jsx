@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Table,
@@ -13,6 +14,12 @@ import {
   Paper,
   Chip,
   IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Grid,
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -24,6 +31,12 @@ import TaskDialog from './TaskDialog';
 const TaskList = ({ tasks, employees, onTaskDeleted }) => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [filters, setFilters] = useState({
+    employeeId: '',
+    type: '',
+    date: '',
+  });
 
   const taskTypes = {
     PRA: {
@@ -81,8 +94,116 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
     return 'error';
   };
 
+  // Aplicar filtros a las tareas
+  useEffect(() => {
+    let result = [...tasks];
+    
+    if (filters.employeeId) {
+      result = result.filter(task => task.employeeId === filters.employeeId);
+    }
+    
+    if (filters.type) {
+      result = result.filter(task => task.type === filters.type);
+    }
+    
+    if (filters.date) {
+      const filterDate = new Date(filters.date).toISOString().split('T')[0];
+      result = result.filter(task => {
+        const taskDate = new Date(task.date).toISOString().split('T')[0];
+        return taskDate === filterDate;
+      });
+    }
+    
+    setFilteredTasks(result);
+  }, [tasks, filters]);
+
+  // Manejar cambios en los filtros
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Limpiar todos los filtros
+  const clearFilters = () => {
+    setFilters({
+      employeeId: '',
+      type: '',
+      date: '',
+    });
+  };
+
   return (
     <>
+      <Card sx={{ mb: 2 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>Filtros</Typography>
+          <Grid container spacing={2} sx={{ mb: 2 }}>
+            <Grid item xs={12} md={3}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Filtrar por Empleado</InputLabel>
+                <Select
+                  name="employeeId"
+                  value={filters.employeeId}
+                  onChange={handleFilterChange}
+                  label="Filtrar por Empleado"
+                >
+                  <MenuItem value="">Todos</MenuItem>
+                  {employees.map((employee) => (
+                    <MenuItem key={employee.id} value={employee.id}>
+                      {employee.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Filtrar por Tipo</InputLabel>
+                <Select
+                  name="type"
+                  value={filters.type}
+                  onChange={handleFilterChange}
+                  label="Filtrar por Tipo"
+                >
+                  <MenuItem value="">Todos</MenuItem>
+                  {Object.keys(taskTypes).map((type) => (
+                    <MenuItem key={type} value={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <TextField
+                fullWidth
+                type="date"
+                label="Filtrar por Fecha"
+                name="date"
+                value={filters.date}
+                onChange={handleFilterChange}
+                InputLabelProps={{ shrink: true }}
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} md={3} sx={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                onClick={clearFilters}
+                color="primary"
+                variant="outlined"
+                size="small"
+                sx={{ minWidth: '120px', textTransform: 'none' }}
+              >
+                Limpiar Filtros
+              </Button>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+      
       <Card>
         <CardContent>
           <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
@@ -97,7 +218,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tasks.map((task) => (
+                {filteredTasks.map((task) => (
                   <TableRow
                     key={task.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -132,8 +253,8 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                     <TableCell align="right">
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
                         <Chip
-                          label={`${task.totalScore}%`}
-                          color={getScoreColor(task.totalScore)}
+                          label={task.totalScore !== undefined && task.totalScore !== null ? `${task.totalScore}%` : 'Sin evaluar'}
+                          color={task.totalScore !== undefined && task.totalScore !== null ? getScoreColor(task.totalScore) : 'default'}
                           size="small"
                         />
                         <Box>
@@ -168,6 +289,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
         task={selectedTask}
         taskTypes={taskTypes}
         onSave={handleSaveTask}
+        employees={employees}
       />
     </>
   );

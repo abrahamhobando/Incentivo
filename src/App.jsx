@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getEmployees, getTasks } from './utils/storage';
-import { Box, Container, CssBaseline, Typography, Tabs, Tab } from '@mui/material';
+import { Box, Container, CssBaseline, Typography, Tabs, Tab, AppBar, Toolbar } from '@mui/material';
 import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
 import EmployeeList from './components/EmployeeList';
 import EmployeeForm from './components/EmployeeForm';
 import ReportTab from './components/ReportTab';
+import ThemeToggle from './components/ThemeToggle';
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -33,8 +34,16 @@ function App() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, minHeight: '100vh', bgcolor: '#f5f5f5' }}>
+    <Box sx={{ flexGrow: 1, minHeight: '100vh' }}>
       <CssBaseline />
+      <AppBar position="static" color="primary" elevation={0}>
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Sistema de Incentivo
+          </Typography>
+          <ThemeToggle />
+        </Toolbar>
+      </AppBar>
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Typography variant="h2" component="h1" gutterBottom sx={{ mb: 4, color: 'primary.main' }}>
           Sistema de Gestión de Empleados y Tareas

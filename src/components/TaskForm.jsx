@@ -90,8 +90,17 @@ const TaskForm = ({ employees, onTaskAdded }) => {
   };
 
   const calculateTotalScore = () => {
-    if (!taskData.type || !taskTypes[taskData.type]) return 0;
-
+    if (!taskData.type || !taskTypes[taskData.type]) return null;
+    
+    // Verificar si hay al menos un criterio evaluado
+    const hasEvaluations = taskTypes[taskData.type].criteria.some(
+      criterion => taskData.evaluations[criterion.name] !== undefined && 
+                 taskData.evaluations[criterion.name] !== null && 
+                 taskData.evaluations[criterion.name] !== ''
+    );
+    
+    if (!hasEvaluations) return null;
+    
     return taskTypes[taskData.type].criteria.reduce((total, criterion) => {
       const score = taskData.evaluations[criterion.name] || 0;
       return total + (score * criterion.weight) / 100;
@@ -194,7 +203,6 @@ const TaskForm = ({ employees, onTaskAdded }) => {
                   onChange={(e) => handleEvaluationChange(criterion.name, e.target.value)}
                   InputProps={{ inputProps: { min: 0, max: 100 } }}
                   size="small"
-                  required
                 />
               </Grid>
             ))}
@@ -216,7 +224,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
             {taskData.type && (
               <Grid item xs={12}>
                 <Typography variant="h6" color="primary">
-                  Puntuación Total: {calculateTotalScore().toFixed(2)}%
+                  Puntuación Total: {calculateTotalScore() !== null ? `${calculateTotalScore().toFixed(2)}%` : 'Sin evaluar'}
                 </Typography>
               </Grid>
             )}

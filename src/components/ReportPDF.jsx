@@ -160,6 +160,10 @@ const styles = StyleSheet.create({
 });
 
 const ReportPDF = ({ employeeName, dateRange, statistics, tasks }) => {
+  // Filtrar solo tareas evaluadas
+  const evaluatedTasks = tasks.filter(task => 
+    task.totalScore !== undefined && task.totalScore !== null
+  );
   return (
     <Document>
       <Page size="A4" style={styles.page}>

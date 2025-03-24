@@ -43,6 +43,8 @@ const ReportTab = ({ employees, tasks }) => {
     if (!selectedEmployee) return [];
 
     return tasks.filter(task => {
+      // Verificar si la tarea está evaluada (tiene totalScore definido y no es null)
+      const isEvaluated = task.totalScore !== undefined && task.totalScore !== null;
       const matchesEmployee = task.employeeId === selectedEmployee;
       const taskDate = new Date(task.date);
       const startDate = dateRange.startDate ? new Date(dateRange.startDate) : null;
@@ -52,7 +54,8 @@ const ReportTab = ({ employees, tasks }) => {
         (!startDate || taskDate >= startDate) &&
         (!endDate || taskDate <= endDate);
 
-      return matchesEmployee && withinDateRange;
+      // Solo incluir tareas evaluadas que coincidan con el empleado y el rango de fechas
+      return isEvaluated && matchesEmployee && withinDateRange;
     });
   }, [tasks, selectedEmployee, dateRange]);
 
@@ -81,7 +84,12 @@ const ReportTab = ({ employees, tasks }) => {
   useEffect(() => {
     if (employees.length > 0 && tasks.length > 0) {
       const stats = employees.map(employee => {
-        const employeeTasks = tasks.filter(task => task.employeeId === employee.id);
+        // Filtrar solo tareas evaluadas para este empleado
+        const employeeTasks = tasks.filter(task => 
+          task.employeeId === employee.id && 
+          task.totalScore !== undefined && 
+          task.totalScore !== null
+        );
         
         if (employeeTasks.length === 0) {
           return {
@@ -175,35 +183,71 @@ const ReportTab = ({ employees, tasks }) => {
           <Grid container spacing={2}>
             {employeeStats.map((stat) => (
               <Grid item xs={12} sm={6} md={4} key={stat.employee.id}>
-                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {stat.employee.name}
-                    </Typography>
-                    <Box sx={{ mt: 2 }}>
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
-                        Tareas Completadas
-                      </Typography>
-                      <Typography variant="h5" color="primary">
-                        {stat.totalTasks}
+                <Card 
+                  sx={{ 
+                    height: '100%', 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+                    }
+                  }}
+                >
+                  <CardContent sx={{ p: 2, pb: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <Box 
+                        sx={{ 
+                          width: 40, 
+                          height: 40, 
+                          borderRadius: '50%', 
+                          bgcolor: 'primary.main', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          mr: 1.5
+                        }}
+                      >
+                        <Typography variant="h6" color="white">
+                          {stat.employee.name.charAt(0)}
+                        </Typography>
+                      </Box>
+                      <Typography variant="h6" sx={{ fontWeight: 'medium' }}>
+                        {stat.employee.name}
                       </Typography>
                     </Box>
-                    <Box sx={{ mt: 2 }}>
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
-                        Promedio General
-                      </Typography>
-                      <Typography variant="h5" color="primary">
-                        {stat.averageScore.toFixed(2)}%
-                      </Typography>
+                    
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                      <Box sx={{ width: '30%' }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                          Tareas
+                        </Typography>
+                        <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold', mt: 0.5 }}>
+                          {stat.totalTasks}
+                        </Typography>
+                      </Box>
+                      
+                      <Box sx={{ width: '30%' }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                          Promedio
+                        </Typography>
+                        <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold', mt: 0.5 }}>
+                          {stat.averageScore.toFixed(1)}%
+                        </Typography>
+                      </Box>
+                      
+                      <Box sx={{ width: '30%' }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                          Bono
+                        </Typography>
+                        <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold', mt: 0.5 }}>
+                          {stat.bonusPercentage}%
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box sx={{ mt: 2 }}>
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
-                        Bono Obtenido
-                      </Typography>
-                      <Typography variant="h5" color="primary">
-                        {stat.bonusPercentage}%
-                      </Typography>
-                    </Box>
+                    
+
                   </CardContent>
                 </Card>
               </Grid>
@@ -284,7 +328,7 @@ const ReportTab = ({ employees, tasks }) => {
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Tareas por Tipo
+                    Tareas Evaluadas por Tipo
                   </Typography>
                   {Object.entries(statistics.tasksByType).map(([type, count]) => (
                     <Typography key={type}>
