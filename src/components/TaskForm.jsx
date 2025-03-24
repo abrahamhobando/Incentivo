@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Box,
   Button,
@@ -26,8 +26,12 @@ import CategoryIcon from '@mui/icons-material/Category';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import CommentIcon from '@mui/icons-material/Comment';
 import { getEmployees, addTask } from '../utils/storage';
+import { ColorModeContext } from '../main';
+import { useTheme } from '@mui/material/styles';
 
 const TaskForm = ({ employees, onTaskAdded }) => {
+  const theme = useTheme();
+  const { mode } = useContext(ColorModeContext);
   const [taskData, setTaskData] = useState({
     title: '',
     employeeId: '',
@@ -39,7 +43,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
 
   const taskTypes = {
     PRA: {
-      color: '#e3f2fd',
+      color: mode === 'dark' ? theme.palette.taskTypes.PRA : '#e3f2fd',
       criteria: [
         { 
           name: 'Calidad', 
@@ -54,7 +58,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
       ],
     },
     Validacion: {
-      color: '#f3e5f5',
+      color: mode === 'dark' ? theme.palette.taskTypes.Validation : '#f3e5f5',
       criteria: [
         { 
           name: 'Calidad', 
@@ -206,8 +210,15 @@ const TaskForm = ({ employees, onTaskAdded }) => {
                           size="small" 
                           sx={{ 
                             bgcolor: taskTypes[type].color,
+                            color: mode === 'dark' ? 'white' : 'rgba(0, 0, 0, 0.87)',
                             fontWeight: 'medium',
-                            '& .MuiChip-label': { px: 1 }
+                            border: mode === 'dark' ? `1px solid ${theme.palette.divider}` : 'none',
+                            '& .MuiChip-label': { px: 1 },
+                            transition: 'all 0.2s ease-in-out',
+                            '&:hover': {
+                              opacity: 0.9,
+                              transform: 'translateY(-1px)'
+                            }
                           }} 
                         />
                       </MenuItem>
@@ -273,10 +284,72 @@ const TaskForm = ({ employees, onTaskAdded }) => {
               </Grid>
               
               {calculateTotalScore() !== null && (
-                <Box sx={{ mt: 2, p: 1.5, bgcolor: 'primary.light', borderRadius: '8px', display: 'flex', justifyContent: 'center' }}>
-                  <Typography variant="h6" color="primary.dark">
-                    Puntuación Total: <strong>{calculateTotalScore().toFixed(2)}%</strong>
+                <Box sx={{ 
+                  mt: 2, 
+                  p: 2, 
+                  borderRadius: '12px', 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  background: theme => {
+                    const score = calculateTotalScore();
+                    let color;
+                    if (score >= 90) color = theme.palette.success.main;
+                    else if (score >= 70) color = theme.palette.primary.main;
+                    else if (score >= 50) color = theme.palette.warning.main;
+                    else color = theme.palette.error.main;
+                    
+                    return `linear-gradient(135deg, ${color}22 0%, ${color}44 100%)`;
+                  },
+                  boxShadow: theme => {
+                    const score = calculateTotalScore();
+                    let color;
+                    if (score >= 90) color = theme.palette.success.main;
+                    else if (score >= 70) color = theme.palette.primary.main;
+                    else if (score >= 50) color = theme.palette.warning.main;
+                    else color = theme.palette.error.main;
+                    
+                    return `0 4px 12px ${color}33`;
+                  },
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: theme => {
+                      const score = calculateTotalScore();
+                      let color;
+                      if (score >= 90) color = theme.palette.success.main;
+                      else if (score >= 70) color = theme.palette.primary.main;
+                      else if (score >= 50) color = theme.palette.warning.main;
+                      else color = theme.palette.error.main;
+                      
+                      return `0 6px 16px ${color}55`;
+                    },
+                  }
+                }}>
+                  <Typography variant="subtitle2" sx={{ mb: 0.5, opacity: 0.8 }}>
+                    Puntuación Total
                   </Typography>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                  }}>
+                    <Typography 
+                      variant="h4" 
+                      sx={{ 
+                        fontWeight: 'bold',
+                        color: theme => {
+                          const score = calculateTotalScore();
+                          if (score >= 90) return theme.palette.success.main;
+                          if (score >= 70) return theme.palette.primary.main;
+                          if (score >= 50) return theme.palette.warning.main;
+                          return theme.palette.error.main;
+                        }
+                      }}
+                    >
+                      {calculateTotalScore().toFixed(2)}%
+                    </Typography>
+                  </Box>
                 </Box>
               )}
             </Paper>
