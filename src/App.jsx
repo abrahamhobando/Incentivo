@@ -9,6 +9,7 @@ import EmployeeForm from './components/EmployeeForm';
 import ReportTab from './components/ReportTab';
 import DashboardTab from './components/DashboardTab';
 import ThemeToggle from './components/ThemeToggle';
+import DataTransfer from './components/DataTransfer';
 import { ColorModeContext } from './main';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -84,7 +85,13 @@ function App() {
             </motion.div>
             Sistema de Asignaciones
           </Typography>
-          <ThemeToggle />
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <DataTransfer onDataImported={() => {
+              loadEmployees();
+              loadTasks();
+            }} />
+            <ThemeToggle />
+          </Box>
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg" sx={{ py: 4 }}>
