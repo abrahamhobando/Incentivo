@@ -156,12 +156,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
     if (mode === 'dark') {
       return theme.palette.taskTypes[type] || '#333333';
     } else {
-      const colors = {
-        PRA: '#e3f2fd',
-        Validacion: '#f3e5f5',
-        "STD Times": '#fff8e1'
-      };
-      return colors[type] || '#ffffff';
+      return taskTypes[type]?.color || '#ffffff';
     }
   };
 
@@ -395,6 +390,16 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                           label={task.totalScore !== undefined && task.totalScore !== null ? `${task.totalScore}%` : 'Sin evaluar'}
                           color={task.totalScore !== undefined && task.totalScore !== null ? getScoreColor(task.totalScore) : 'default'}
                           size="small"
+                          sx={{
+                            ...(task.totalScore === undefined || task.totalScore === null ? {
+                              bgcolor: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+                              color: mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+                              fontStyle: 'italic',
+                              '&:hover': {
+                                bgcolor: mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)'
+                              }
+                            } : {})
+                          }}
                         />
                         <Box sx={{ visibility: hoveredTaskId === task.id ? 'visible' : 'hidden' }}>
                           <IconButton

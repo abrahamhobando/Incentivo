@@ -23,23 +23,23 @@ const lightTheme = createTheme({
       "Refrescamientos (Brinda)": '#ffccbc'
     },
     success: {
-      main: '#4caf50',
-      light: '#81c784',
-      dark: '#388e3c',
+      main: '#a5d6a7',  // Verde pastel
+      light: '#c8e6c9',
+      dark: '#75a478',
     },
     error: {
-      main: '#f44336',
-      light: '#e57373',
-      dark: '#d32f2f',
+      main: '#ef9a9a',  // Rojo pastel
+      light: '#ffcdd2',
+      dark: '#b71c1c',
     },
     info: {
-      main: '#03a9f4',
-      light: '#4fc3f7',
-      dark: '#0288d1',
+      main: '#90caf9',  // Azul pastel
+      light: '#bbdefb',
+      dark: '#1976d2',
     },
     warning: {
-      main: '#ff9800',
-      light: '#ffb74d',
+      main: '#ffcc80',  // Naranja pastel
+      light: '#ffe0b2',
       dark: '#f57c00',
     },
   },
@@ -124,33 +124,33 @@ const darkTheme = createTheme({
       dark: '#7c4dff',
     },
     taskTypes: {
-      PRA: '#1e3a5f',
-      Validation: '#4a1e5f',
-      "STD Times": '#5d4037',
-      "Entrenamientos (Recibe)": '#01579b',
-      "Entrenamientos (Brinda)": '#880e4f',
-      "Práctica de procesos": '#1b5e20',
-      "Refrescamientos (Brinda)": '#bf360c',
+      PRA: '#2c4356',
+      Validation: '#4a3f6b',
+      "STD Times": '#4e4238',
+      "Entrenamientos (Recibe)": '#1e4d6b',
+      "Entrenamientos (Brinda)": '#614b5e',
+      "Práctica de procesos": '#2d4a3e',
+      "Refrescamientos (Brinda)": '#5c4037',
     },
     success: {
-      main: '#66bb6a',
-      light: '#81c784',
+      main: '#81c784',  // Verde pastel oscuro
+      light: '#a5d6a7',
       dark: '#388e3c',
     },
     error: {
-      main: '#f44336',
-      light: '#e57373',
-      dark: '#d32f2f',
+      main: '#e57373',  // Rojo pastel oscuro
+      light: '#ef9a9a',
+      dark: '#c62828',
     },
     info: {
-      main: '#29b6f6',
-      light: '#4fc3f7',
-      dark: '#0288d1',
+      main: '#64b5f6',  // Azul pastel oscuro
+      light: '#90caf9',
+      dark: '#1565c0',
     },
     warning: {
-      main: '#ffa726',
-      light: '#ffb74d',
-      dark: '#f57c00',
+      main: '#ffb74d',  // Naranja pastel oscuro
+      light: '#ffcc80',
+      dark: '#ef6c00',
     },
     background: {
       default: '#121212',
