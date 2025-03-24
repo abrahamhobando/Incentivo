@@ -143,11 +143,11 @@ const ReportTab = ({ employees, tasks }) => {
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={12} md={4}>
           <FormControl fullWidth size="small">
-            <InputLabel>Seleccionar Empleado</InputLabel>
+            <InputLabel>Seleccionar Asignado</InputLabel>
             <Select
               value={selectedEmployee}
               onChange={handleEmployeeChange}
-              label="Seleccionar Empleado"
+              label="Seleccionar Asignado"
             >
               {employees.map((employee) => (
                 <MenuItem key={employee.id} value={employee.id}>
@@ -184,7 +184,7 @@ const ReportTab = ({ employees, tasks }) => {
       {!selectedEmployee && (
         <Box sx={{ mt: 3 }}>
           <Typography variant="h5" gutterBottom>
-            Resumen de Todos los Empleados
+            Informes
           </Typography>
           <Grid container spacing={2}>
             {employeeStats.map((stat) => (

@@ -135,7 +135,7 @@ function App() {
                 }
               }}
             >
-              <Tab label="Gestión de Empleados" />
+              <Tab label="Gestión de CADS" />
               <Tab label="Gestión de Tareas" />
               <Tab label="Informes" />
             </Tabs>

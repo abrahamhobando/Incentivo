@@ -30,7 +30,7 @@ const EmployeeForm = ({ onEmployeeAdded }) => {
         >
           <TextField
             fullWidth
-            label="Nombre del Empleado"
+            label="Nombre"
             value={name}
             onChange={(e) => setName(e.target.value)}
             variant="outlined"

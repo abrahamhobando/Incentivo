@@ -217,12 +217,12 @@ const TaskForm = ({ employees, onTaskAdded }) => {
               <Grid item xs={12} md={6}>
                 {!multipleAssignment ? (
                   <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
-                    <InputLabel>Empleado</InputLabel>
+                    <InputLabel>Asignado</InputLabel>
                     <Select
                       name="employeeId"
                       value={taskData.employeeId}
                       onChange={handleChange}
-                      label="Empleado"
+                      label="Asignado"
                       required
                       startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
                     >
@@ -235,12 +235,12 @@ const TaskForm = ({ employees, onTaskAdded }) => {
                   </FormControl>
                 ) : (
                   <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
-                    <InputLabel>Seleccionar Empleados</InputLabel>
+                    <InputLabel>Asignada a</InputLabel>
                     <Select
                       multiple
                       value={selectedEmployees}
                       onChange={handleEmployeeSelectionChange}
-                      input={<OutlinedInput label="Seleccionar Empleados" />}
+                      input={<OutlinedInput label="Seleccionar Asignados" />}
                       renderValue={(selected) => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                           {selected.map((value) => {
@@ -467,7 +467,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
             />
             {multipleAssignment && (
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                La tarea se creará para cada empleado seleccionado con los mismos detalles y evaluaciones.
+                La tarea se creará para cada CAD seleccionado con los mismos detalles y evaluaciones.
               </Typography>
             )}
           </Paper>

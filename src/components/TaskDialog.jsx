@@ -106,11 +106,11 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
-                  <InputLabel>Empleado</InputLabel>
+                  <InputLabel>Asignada a</InputLabel>
                   <Select
                     value={editedTask.employeeId || ''}
                     onChange={(e) => setEditedTask(prev => ({ ...prev, employeeId: e.target.value }))}
-                    label="Empleado"
+                    label="Asignada a"
                     required
                     startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
                   >

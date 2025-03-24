@@ -200,12 +200,12 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
           <Grid container spacing={2} sx={{ mb: 2 }}>
             <Grid item xs={12} md={3}>
               <FormControl fullWidth size="small">
-                <InputLabel>Filtrar por Empleado</InputLabel>
+                <InputLabel>Filtrar por Asignado</InputLabel>
                 <Select
                   name="employeeId"
                   value={filters.employeeId}
                   onChange={handleFilterChange}
-                  label="Filtrar por Empleado"
+                  label="Filtrar por Asignado"
                 >
                   <MenuItem value="">Todos</MenuItem>
                   {employees.map((employee) => (
@@ -307,7 +307,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
               <TableHead>
                 <TableRow>
                   <TableCell><Typography variant="subtitle1" fontWeight="bold">Tarea</Typography></TableCell>
-                  <TableCell><Typography variant="subtitle1" fontWeight="bold">Empleado</Typography></TableCell>
+                  <TableCell><Typography variant="subtitle1" fontWeight="bold">Asignado</Typography></TableCell>
                   <TableCell><Typography variant="subtitle1" fontWeight="bold">Tipo</Typography></TableCell>
                   <TableCell><Typography variant="subtitle1" fontWeight="bold">Fecha</Typography></TableCell>
                   <TableCell align="right"><Typography variant="subtitle1" fontWeight="bold">Puntuación</Typography></TableCell>
