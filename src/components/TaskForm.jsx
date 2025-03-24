@@ -54,6 +54,21 @@ const TaskForm = ({ employees, onTaskAdded }) => {
   });
 
   const taskTypes = {
+    "Práctica de procesos": {
+      color: mode === 'dark' ? theme.palette.taskTypes["Práctica de procesos"] : '#e8f5e9',
+      criteria: [
+        { 
+          name: 'Calidad', 
+          weight: 60,
+          description: 'Se revisa una muestra del 5% al 15% de los casos realizados. Si la calidad es menor al 70%, se pierde todo el porcentaje.'
+        },
+        { 
+          name: 'Seguimiento de instrucciones', 
+          weight: 40,
+          description: 'Cumplir indicaciones del responsable del proceso.'
+        },
+      ],
+    },
     PRA: {
       color: mode === 'dark' ? theme.palette.taskTypes.PRA : '#e3f2fd',
       criteria: [
@@ -116,6 +131,36 @@ const TaskForm = ({ employees, onTaskAdded }) => {
           name: 'Pruebas prácticas', 
           weight: 60,
           description: 'Aprueba las pruebas prácticas asignadas al entrenamiento.'
+        },
+      ],
+    },
+    "Entrenamientos (Brinda)": {
+      color: mode === 'dark' ? theme.palette.taskTypes["Entrenamientos (Brinda)"] : '#f8bbd0',
+      criteria: [
+        { 
+          name: 'Manejo del grupo', 
+          weight: 20,
+          description: 'Material y ambiente adecuados.'
+        },
+        { 
+          name: 'Transmisión de conocimientos', 
+          weight: 20,
+          description: 'Claridad en la enseñanza.'
+        },
+        { 
+          name: 'Entregables', 
+          weight: 20,
+          description: 'Documentación entregada a tiempo.'
+        },
+        { 
+          name: 'Resultados obtenidos', 
+          weight: 20,
+          description: 'Responsabilidad y feedback individual.'
+        },
+        { 
+          name: 'Calidad del servicio', 
+          weight: 20,
+          description: 'Retroalimentación de los participantes.'
         },
       ],
     },

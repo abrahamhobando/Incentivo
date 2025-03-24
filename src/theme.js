@@ -18,6 +18,8 @@ const lightTheme = createTheme({
       Validation: '#e8f5e9',
       "STD Times": '#fff8e1',
       "Entrenamientos (Recibe)": '#e1f5fe',
+      "Entrenamientos (Brinda)": '#f8bbd0',
+      "Práctica de procesos": '#c8e6c9'
     },
     success: {
       main: '#4caf50',
@@ -125,6 +127,7 @@ const darkTheme = createTheme({
       Validation: '#4a1e5f',
       "STD Times": '#5d4037',
       "Entrenamientos (Recibe)": '#01579b',
+      "Entrenamientos (Brinda)": '#880e4f',
     },
     success: {
       main: '#66bb6a',

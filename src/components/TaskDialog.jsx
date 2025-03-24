@@ -63,8 +63,8 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
     return taskTypes[editedTask.type].criteria.reduce((total, criterion) => {
       const score = editedTask.evaluations[criterion.name] || 0;
       
-      // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
-      if ((editedTask.type === 'PRA' || editedTask.type === 'Validacion') && 
+      // Aplicar regla especial para criterio de Calidad en tareas PRA, Validacion y Práctica de procesos
+      if ((editedTask.type === 'PRA' || editedTask.type === 'Validacion' || editedTask.type === 'Práctica de procesos') && 
           criterion.name === 'Calidad' && score < 70) {
         // Si calidad es menor a 70%, se pierde todo el porcentaje
         return total;

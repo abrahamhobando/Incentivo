@@ -79,6 +79,16 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
         { name: 'Pruebas prácticas', weight: 60 },
       ],
     },
+    "Entrenamientos (Brinda)": {
+      color: '#f8bbd0',
+      criteria: [
+        { name: 'Manejo del grupo', weight: 25 },
+        { name: 'Transmisión de conocimientos', weight: 0 },
+        { name: 'Entregables', weight: 25 },
+        { name: 'Resultados obtenidos', weight: 25 },
+        { name: 'Calidad del servicio', weight: 25 },
+      ],
+    },
   };
 
   const handleEdit = (task) => {
