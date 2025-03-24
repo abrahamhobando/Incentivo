@@ -279,7 +279,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
     const baseTask = {
       ...taskData,
       totalScore,
-      date: taskData.date || new Date().toISOString().split('T')[0],
+      date: taskData.date,
     };
     
     if (multipleAssignment && selectedEmployees.length > 0) {
