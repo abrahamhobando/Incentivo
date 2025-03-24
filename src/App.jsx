@@ -51,8 +51,12 @@ function App() {
         sx={{
           borderRadius: { xs: 0, sm: '0 0 12px 12px' },
           backdropFilter: 'blur(8px)',
-          backgroundColor: alpha(theme.palette.primary.main, mode === 'light' ? 0.95 : 0.8),
-          boxShadow: `0 2px 12px ${alpha(theme.palette.primary.main, 0.2)}`,
+          backgroundColor: mode === 'light' 
+            ? alpha(theme.palette.primary.main, 0.95)
+            : alpha(theme.palette.background.paper, 0.8),
+          boxShadow: mode === 'light'
+            ? `0 2px 12px ${alpha(theme.palette.primary.main, 0.2)}`
+            : `0 2px 12px ${alpha(theme.palette.common.black, 0.3)}`,
         }}
       >
         <Toolbar sx={{ py: 1 }}>
