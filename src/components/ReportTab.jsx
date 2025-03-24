@@ -349,6 +349,8 @@ const ReportTab = ({ employees, tasks }) => {
                             if (type === 'STD Times') return theme.palette.taskTypes["STD Times"];
                             if (type === 'Entrenamientos (Recibe)') return theme.palette.taskTypes["Entrenamientos (Recibe)"];
                             if (type === 'Entrenamientos (Brinda)') return theme.palette.taskTypes["Entrenamientos (Brinda)"];
+                            if (type === 'Refrescamientos (Brinda)') return theme.palette.taskTypes["Refrescamientos (Brinda)"];
+                            if (type === 'Práctica de procesos') return theme.palette.taskTypes["Práctica de procesos"];
                             return theme.palette.taskTypes.Validation;
                           },
                           color: 'text.primary',
@@ -404,6 +406,8 @@ const ReportTab = ({ employees, tasks }) => {
                         if (task.type === 'STD Times') return theme.palette.taskTypes["STD Times"];
                         if (task.type === 'Entrenamientos (Recibe)') return theme.palette.taskTypes["Entrenamientos (Recibe)"];
                         if (task.type === 'Entrenamientos (Brinda)') return theme.palette.taskTypes["Entrenamientos (Brinda)"];
+                        if (task.type === 'Refrescamientos (Brinda)') return theme.palette.taskTypes["Refrescamientos (Brinda)"];
+                        if (task.type === 'Práctica de procesos') return theme.palette.taskTypes["Práctica de procesos"];
                         return theme.palette.taskTypes.Validation;
                       },
                       '& > td': { borderBottom: '1px solid rgba(224, 224, 224, 0.2)' }

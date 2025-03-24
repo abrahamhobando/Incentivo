@@ -164,6 +164,31 @@ const TaskForm = ({ employees, onTaskAdded }) => {
         },
       ],
     },
+    "Refrescamientos (Brinda)": {
+      color: mode === 'dark' ? theme.palette.taskTypes["Refrescamientos (Brinda)"] : '#ffccbc',
+      criteria: [
+        { 
+          name: 'Contenido adecuado', 
+          weight: 20,
+          description: 'El contenido es apropiado para el tema y audiencia.'
+        },
+        { 
+          name: 'Materiales didácticos', 
+          weight: 20,
+          description: 'Calidad y efectividad de los materiales utilizados.'
+        },
+        { 
+          name: 'Explicación clara', 
+          weight: 20,
+          description: 'Claridad en la comunicación y explicación de conceptos.'
+        },
+        { 
+          name: 'Entregables', 
+          weight: 40,
+          description: 'Información entregada a tiempo y en formato correcto.'
+        },
+      ],
+    },
   };
 
   const handleChange = (e) => {

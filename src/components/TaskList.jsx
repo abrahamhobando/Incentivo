@@ -50,6 +50,13 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
   });
 
   const taskTypes = {
+    "Práctica de procesos": {
+      color: '#e8f5e9',
+      criteria: [
+        { name: 'Calidad', weight: 60 },
+        { name: 'Seguimiento de instrucciones', weight: 40 },
+      ],
+    },
     PRA: {
       color: '#e3f2fd',
       criteria: [
@@ -87,6 +94,15 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
         { name: 'Entregables', weight: 25 },
         { name: 'Resultados obtenidos', weight: 25 },
         { name: 'Calidad del servicio', weight: 25 },
+      ],
+    },
+    "Refrescamientos (Brinda)": {
+      color: '#ffccbc',
+      criteria: [
+        { name: 'Contenido adecuado', weight: 20 },
+        { name: 'Materiales didácticos', weight: 20 },
+        { name: 'Explicación clara', weight: 20 },
+        { name: 'Entregables', weight: 40 },
       ],
     },
   };
