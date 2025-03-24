@@ -27,6 +27,17 @@ export const addEmployee = (employee) => {
   return newEmployee;
 };
 
+export const updateEmployee = (employeeId, updatedData) => {
+  const employees = getEmployees();
+  const index = employees.findIndex(emp => emp.id === employeeId);
+  if (index !== -1) {
+    employees[index] = { ...employees[index], ...updatedData };
+    saveEmployees(employees);
+    return employees[index];
+  }
+  return null;
+};
+
 export const deleteEmployee = (employeeId) => {
   const employees = getEmployees();
   const filteredEmployees = employees.filter(emp => emp.id !== employeeId);

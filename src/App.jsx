@@ -39,16 +39,12 @@ function App() {
       <AppBar position="static" color="primary" elevation={0}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Sistema de Incentivo
+            Sistema de Asignaciones
           </Typography>
           <ThemeToggle />
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography variant="h2" component="h1" gutterBottom sx={{ mb: 4, color: 'primary.main' }}>
-          Sistema de Gestión de Empleados y Tareas
-        </Typography>
-
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
           <Tabs value={currentTab} onChange={handleTabChange} aria-label="Pestañas de gestión">
             <Tab label="Gestión de Empleados" />

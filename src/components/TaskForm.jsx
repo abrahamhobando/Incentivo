@@ -11,8 +11,20 @@ import {
   MenuItem,
   Typography,
   Grid,
+  Paper,
+  Divider,
+  Chip,
+  Stack,
+  Tooltip,
+  IconButton,
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import AddTaskIcon from '@mui/icons-material/AddTask';
+import PersonIcon from '@mui/icons-material/Person';
+import CategoryIcon from '@mui/icons-material/Category';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import CommentIcon from '@mui/icons-material/Comment';
 import { getEmployees, addTask } from '../utils/storage';
 
 const TaskForm = ({ employees, onTaskAdded }) => {
@@ -128,119 +140,186 @@ const TaskForm = ({ employees, onTaskAdded }) => {
   };
 
   return (
-    <Card>
-      <CardContent>
+    <Card elevation={3} sx={{ borderRadius: '12px', overflow: 'visible' }}>
+      <CardContent sx={{ p: 3 }}>
+        <Typography variant="h5" component="h2" gutterBottom sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+          <AddTaskIcon sx={{ mr: 1 }} /> Nueva Tarea
+        </Typography>
+        <Divider sx={{ mb: 3 }} />
+        
         <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Título de la Tarea"
-                name="title"
-                value={taskData.title}
-                onChange={handleChange}
-                required
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Empleado</InputLabel>
-                <Select
-                  name="employeeId"
-                  value={taskData.employeeId}
-                  onChange={handleChange}
-                  label="Empleado"
-                  required
-                >
-                  {employees.map((employee) => (
-                    <MenuItem key={employee.id} value={employee.id}>
-                      {employee.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Tipo de Tarea</InputLabel>
-                <Select
-                  name="type"
-                  value={taskData.type}
-                  onChange={handleChange}
-                  label="Tipo de Tarea"
-                  required
-                >
-                  {Object.keys(taskTypes).map((type) => (
-                    <MenuItem key={type} value={type}>
-                      {type}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="date"
-                label="Fecha"
-                name="date"
-                value={taskData.date}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                size="small"
-              />
-            </Grid>
-
-            {taskData.type && taskTypes[taskData.type].criteria.map((criterion) => (
-              <Grid item xs={12} md={6} key={criterion.name}>
+          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
+              Información Básica
+            </Typography>
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
-                  type="number"
-                  label={`${criterion.name} (${criterion.weight}%)`}
-                  helperText={criterion.description}
-                  value={taskData.evaluations[criterion.name] || ''}
-                  onChange={(e) => handleEvaluationChange(criterion.name, e.target.value)}
-                  InputProps={{ inputProps: { min: 0, max: 100 } }}
+                  label="Título de la Tarea"
+                  name="title"
+                  value={taskData.title}
+                  onChange={handleChange}
+                  required
                   size="small"
+                  InputProps={{
+                    startAdornment: <AssignmentIcon color="action" sx={{ mr: 1 }} />,
+                  }}
+                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
                 />
               </Grid>
-            ))}
-
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                multiline
-                rows={3}
-                label="Comentarios"
-                name="comments"
-                value={taskData.comments || ''}
-                onChange={handleChange}
-                size="small"
-                placeholder="Ingrese comentarios adicionales sobre la tarea"
-              />
-            </Grid>
-
-            {taskData.type && (
-              <Grid item xs={12}>
-                <Typography variant="h6" color="primary">
-                  Puntuación Total: {calculateTotalScore() !== null ? `${calculateTotalScore().toFixed(2)}%` : 'Sin evaluar'}
-                </Typography>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
+                  <InputLabel>Empleado</InputLabel>
+                  <Select
+                    name="employeeId"
+                    value={taskData.employeeId}
+                    onChange={handleChange}
+                    label="Empleado"
+                    required
+                    startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
+                  >
+                    {employees.map((employee) => (
+                      <MenuItem key={employee.id} value={employee.id}>
+                        {employee.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
-            )}
-
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                startIcon={<AssignmentIcon />}
-                sx={{ mt: 2 }}
-              >
-                Agregar Tarea
-              </Button>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
+                  <InputLabel>Tipo de Tarea</InputLabel>
+                  <Select
+                    name="type"
+                    value={taskData.type}
+                    onChange={handleChange}
+                    label="Tipo de Tarea"
+                    required
+                    startAdornment={<CategoryIcon color="action" sx={{ ml: 1, mr: 1 }} />}
+                  >
+                    {Object.keys(taskTypes).map((type) => (
+                      <MenuItem key={type} value={type}>
+                        <Chip 
+                          label={type} 
+                          size="small" 
+                          sx={{ 
+                            bgcolor: taskTypes[type].color,
+                            fontWeight: 'medium',
+                            '& .MuiChip-label': { px: 1 }
+                          }} 
+                        />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  type="date"
+                  label="Fecha"
+                  name="date"
+                  value={taskData.date}
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                  size="small"
+                  InputProps={{
+                    startAdornment: <DateRangeIcon color="action" sx={{ mr: 1 }} />,
+                  }}
+                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                />
+              </Grid>
             </Grid>
-          </Grid>
+          </Paper>
+          
+          {taskData.type && (
+            <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
+              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2, display: 'flex', alignItems: 'center' }}>
+                Criterios de Evaluación
+                <Tooltip title="Los criterios varían según el tipo de tarea seleccionado">
+                  <IconButton size="small" sx={{ ml: 1 }}>
+                    <InfoOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Typography>
+              
+              <Grid container spacing={3}>
+                {taskTypes[taskData.type].criteria.map((criterion) => (
+                  <Grid item xs={12} md={6} key={criterion.name}>
+                    <Stack spacing={1}>
+                      <Typography variant="body2" color="text.secondary">
+                        {criterion.name} <Chip label={`${criterion.weight}%`} size="small" color="primary" variant="outlined" />
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        type="number"
+                        placeholder="Ingrese calificación (0-100)"
+                        value={taskData.evaluations[criterion.name] || ''}
+                        onChange={(e) => handleEvaluationChange(criterion.name, e.target.value)}
+                        InputProps={{ 
+                          inputProps: { min: 0, max: 100 },
+                        }}
+                        size="small"
+                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                      />
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
+                        {criterion.description}
+                      </Typography>
+                    </Stack>
+                  </Grid>
+                ))}
+              </Grid>
+              
+              {calculateTotalScore() !== null && (
+                <Box sx={{ mt: 2, p: 1.5, bgcolor: 'primary.light', borderRadius: '8px', display: 'flex', justifyContent: 'center' }}>
+                  <Typography variant="h6" color="primary.dark">
+                    Puntuación Total: <strong>{calculateTotalScore().toFixed(2)}%</strong>
+                  </Typography>
+                </Box>
+              )}
+            </Paper>
+          )}
+          
+          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
+              Comentarios Adicionales
+            </Typography>
+            
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              name="comments"
+              value={taskData.comments || ''}
+              onChange={handleChange}
+              placeholder="Ingrese comentarios adicionales sobre la tarea"
+              InputProps={{
+                startAdornment: <CommentIcon color="action" sx={{ mt: 1.5, mr: 1 }} />,
+              }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+            />
+          </Paper>
+          
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="large"
+              startIcon={<AddTaskIcon />}
+              sx={{ 
+                borderRadius: '8px', 
+                px: 3,
+                py: 1,
+                fontWeight: 'bold',
+                boxShadow: 2
+              }}
+            >
+              Agregar Tarea
+            </Button>
+          </Box>
         </Box>
       </CardContent>
     </Card>

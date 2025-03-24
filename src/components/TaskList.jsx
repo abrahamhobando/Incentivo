@@ -28,6 +28,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { deleteTask, getTasks, saveTasks } from '../utils/storage';
 import TaskDialog from './TaskDialog';
+import ConfirmDialog from './ConfirmDialog';
 import { ColorModeContext } from '../main';
 
 const TaskList = ({ tasks, employees, onTaskDeleted }) => {
@@ -35,6 +36,10 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [hoveredTaskId, setHoveredTaskId] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    taskId: null,
+  });
   const [filters, setFilters] = useState({
     employeeId: '',
     type: '',
@@ -79,9 +84,27 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
     return employees.find(emp => emp.id === employeeId)?.name || 'Empleado no encontrado';
   };
 
-  const handleDelete = (taskId) => {
-    deleteTask(taskId);
+  const handleDeleteClick = (taskId) => {
+    setConfirmDialog({
+      open: true,
+      taskId,
+    });
+  };
+
+  const handleConfirmDelete = () => {
+    deleteTask(confirmDialog.taskId);
+    setConfirmDialog({
+      open: false,
+      taskId: null,
+    });
     if (onTaskDeleted) onTaskDeleted();
+  };
+
+  const handleCancelDelete = () => {
+    setConfirmDialog({
+      open: false,
+      taskId: null,
+    });
   };
 
   const theme = useTheme();
@@ -326,7 +349,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                           </IconButton>
                           <IconButton
                             size="small"
-                            onClick={() => handleDelete(task.id)}
+                            onClick={() => handleDeleteClick(task.id)}
                             color="error"
                           >
                             <DeleteIcon fontSize="small" />
@@ -348,6 +371,13 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
         taskTypes={taskTypes}
         onSave={handleSaveTask}
         employees={employees}
+      />
+      <ConfirmDialog
+        open={confirmDialog.open}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Confirmar eliminación"
+        message="¿Estás seguro de que deseas eliminar esta tarea? Esta acción no se puede deshacer."
       />
     </>
   );

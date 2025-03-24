@@ -2,91 +2,121 @@
   "hash": "154d802d",
   "configHash": "44c5c2e8",
   "lockfileHash": "5bac7038",
-  "browserHash": "83192187",
+  "browserHash": "025b901e",
   "optimized": {
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "5975a791",
+      "fileHash": "b9625665",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "6d7c8de5",
+      "fileHash": "a651e63a",
       "needsInterop": true
     },
     "@mui/material/styles": {
       "src": "../../node_modules/@mui/material/styles/index.js",
       "file": "@mui_material_styles.js",
-      "fileHash": "e716f505",
+      "fileHash": "ea7f18e0",
       "needsInterop": false
     },
     "@mui/material/CssBaseline": {
       "src": "../../node_modules/@mui/material/CssBaseline/index.js",
       "file": "@mui_material_CssBaseline.js",
-      "fileHash": "bff5908d",
+      "fileHash": "d0070dbe",
       "needsInterop": false
     },
     "@mui/material": {
       "src": "../../node_modules/@mui/material/index.js",
       "file": "@mui_material.js",
-      "fileHash": "8c152c3e",
+      "fileHash": "b26a5327",
       "needsInterop": false
-    },
-    "@mui/icons-material/PersonAdd": {
-      "src": "../../node_modules/@mui/icons-material/PersonAdd.js",
-      "file": "@mui_icons-material_PersonAdd.js",
-      "fileHash": "faef950c",
-      "needsInterop": true
     },
     "@mui/icons-material/Person": {
       "src": "../../node_modules/@mui/icons-material/Person.js",
       "file": "@mui_icons-material_Person.js",
-      "fileHash": "70050347",
-      "needsInterop": true
-    },
-    "@mui/icons-material/Assignment": {
-      "src": "../../node_modules/@mui/icons-material/Assignment.js",
-      "file": "@mui_icons-material_Assignment.js",
-      "fileHash": "44857290",
+      "fileHash": "d84d0a59",
       "needsInterop": true
     },
     "@mui/icons-material/Delete": {
       "src": "../../node_modules/@mui/icons-material/Delete.js",
       "file": "@mui_icons-material_Delete.js",
-      "fileHash": "52b55632",
+      "fileHash": "fc59a114",
       "needsInterop": true
     },
     "@mui/icons-material/Edit": {
       "src": "../../node_modules/@mui/icons-material/Edit.js",
       "file": "@mui_icons-material_Edit.js",
-      "fileHash": "82fb17ac",
+      "fileHash": "d943e9ef",
+      "needsInterop": true
+    },
+    "@mui/icons-material/PersonAdd": {
+      "src": "../../node_modules/@mui/icons-material/PersonAdd.js",
+      "file": "@mui_icons-material_PersonAdd.js",
+      "fileHash": "2cb882d8",
+      "needsInterop": true
+    },
+    "@mui/icons-material/Assignment": {
+      "src": "../../node_modules/@mui/icons-material/Assignment.js",
+      "file": "@mui_icons-material_Assignment.js",
+      "fileHash": "377e3187",
       "needsInterop": true
     },
     "@mui/icons-material/KeyboardArrowDown": {
       "src": "../../node_modules/@mui/icons-material/KeyboardArrowDown.js",
       "file": "@mui_icons-material_KeyboardArrowDown.js",
-      "fileHash": "e4275b14",
+      "fileHash": "30ea8631",
       "needsInterop": true
     },
     "@mui/icons-material/KeyboardArrowUp": {
       "src": "../../node_modules/@mui/icons-material/KeyboardArrowUp.js",
       "file": "@mui_icons-material_KeyboardArrowUp.js",
-      "fileHash": "cd9f6245",
+      "fileHash": "5df25346",
       "needsInterop": true
     },
     "@mui/icons-material/Download": {
       "src": "../../node_modules/@mui/icons-material/Download.js",
       "file": "@mui_icons-material_Download.js",
-      "fileHash": "15c13fe5",
+      "fileHash": "c9fef8ab",
       "needsInterop": true
     },
     "@react-pdf/renderer": {
       "src": "../../node_modules/@react-pdf/renderer/lib/react-pdf.browser.js",
       "file": "@react-pdf_renderer.js",
-      "fileHash": "05ed5820",
+      "fileHash": "7b854885",
       "needsInterop": false
+    },
+    "@mui/icons-material/InfoOutlined": {
+      "src": "../../node_modules/@mui/icons-material/InfoOutlined.js",
+      "file": "@mui_icons-material_InfoOutlined.js",
+      "fileHash": "dd382bf8",
+      "needsInterop": true
+    },
+    "@mui/icons-material/AddTask": {
+      "src": "../../node_modules/@mui/icons-material/AddTask.js",
+      "file": "@mui_icons-material_AddTask.js",
+      "fileHash": "00a07ab0",
+      "needsInterop": true
+    },
+    "@mui/icons-material/Category": {
+      "src": "../../node_modules/@mui/icons-material/Category.js",
+      "file": "@mui_icons-material_Category.js",
+      "fileHash": "8262dd75",
+      "needsInterop": true
+    },
+    "@mui/icons-material/DateRange": {
+      "src": "../../node_modules/@mui/icons-material/DateRange.js",
+      "file": "@mui_icons-material_DateRange.js",
+      "fileHash": "9f93a7e9",
+      "needsInterop": true
+    },
+    "@mui/icons-material/Comment": {
+      "src": "../../node_modules/@mui/icons-material/Comment.js",
+      "file": "@mui_icons-material_Comment.js",
+      "fileHash": "605e8760",
+      "needsInterop": true
     }
   },
   "chunks": {

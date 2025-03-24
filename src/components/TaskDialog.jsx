@@ -14,7 +14,18 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Paper,
+  Divider,
+  Stack,
+  Tooltip,
+  IconButton,
 } from '@mui/material';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import PersonIcon from '@mui/icons-material/Person';
+import CategoryIcon from '@mui/icons-material/Category';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import CommentIcon from '@mui/icons-material/Comment';
 
 const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
   const [editedTask, setEditedTask] = React.useState(task);
@@ -61,97 +72,172 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>
-        Detalles de la Tarea: {task.title}
+      <DialogTitle sx={{ pb: 1 }}>
+        <Typography variant="h5" component="h2" sx={{ display: 'flex', alignItems: 'center' }}>
+          <AssignmentIcon sx={{ mr: 1 }} /> Detalles de la Tarea: {task.title}
+        </Typography>
       </DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Título de la Tarea"
-              value={editedTask.title || ''}
-              onChange={(e) => setEditedTask(prev => ({ ...prev, title: e.target.value }))}
-              size="small"
-              required
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Empleado</InputLabel>
-              <Select
-                value={editedTask.employeeId || ''}
-                onChange={(e) => setEditedTask(prev => ({ ...prev, employeeId: e.target.value }))}
-                label="Empleado"
-                required
-              >
-                {employees?.map((employee) => (
-                  <MenuItem key={employee.id} value={employee.id}>
-                    {employee.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              type="date"
-              label="Fecha"
-              value={editedTask.date || ''}
-              onChange={(e) => setEditedTask(prev => ({ ...prev, date: e.target.value }))}
-              InputLabelProps={{ shrink: true }}
-              size="small"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="subtitle1" gutterBottom>
-              Tipo de Tarea: <Chip label={task.type} size="small" />
+      <Divider />
+      <DialogContent sx={{ p: 3 }}>
+        <Box sx={{ width: '100%' }}>
+          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
+              Información Básica
             </Typography>
-          </Grid>
-
-          {taskTypes[task.type]?.criteria.map((criterion) => (
-            <Grid item xs={12} md={6} key={criterion.name}>
-              <TextField
-                fullWidth
-                type="number"
-                label={`${criterion.name} (${criterion.weight}%)`}
-                value={editedTask.evaluations[criterion.name] || ''}
-                onChange={(e) => handleEvaluationChange(criterion.name, e.target.value)}
-                InputProps={{ inputProps: { min: 0, max: 100 } }}
-                size="small"
-                helperText={criterion.description}
-              />
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Título de la Tarea"
+                  value={editedTask.title || ''}
+                  onChange={(e) => setEditedTask(prev => ({ ...prev, title: e.target.value }))}
+                  size="small"
+                  required
+                  InputProps={{
+                    startAdornment: <AssignmentIcon color="action" sx={{ mr: 1 }} />,
+                  }}
+                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
+                  <InputLabel>Empleado</InputLabel>
+                  <Select
+                    value={editedTask.employeeId || ''}
+                    onChange={(e) => setEditedTask(prev => ({ ...prev, employeeId: e.target.value }))}
+                    label="Empleado"
+                    required
+                    startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
+                  >
+                    {employees?.map((employee) => (
+                      <MenuItem key={employee.id} value={employee.id}>
+                        {employee.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  type="date"
+                  label="Fecha"
+                  value={editedTask.date || ''}
+                  onChange={(e) => setEditedTask(prev => ({ ...prev, date: e.target.value }))}
+                  InputLabelProps={{ shrink: true }}
+                  size="small"
+                  InputProps={{
+                    startAdornment: <DateRangeIcon color="action" sx={{ mr: 1 }} />,
+                  }}
+                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CategoryIcon color="action" />
+                  <Typography variant="subtitle1">
+                    Tipo de Tarea: <Chip 
+                      label={task.type} 
+                      size="small" 
+                      sx={{ 
+                        bgcolor: taskTypes[task.type]?.color || 'grey.200',
+                        fontWeight: 'medium',
+                        '& .MuiChip-label': { px: 1 }
+                      }} 
+                    />
+                  </Typography>
+                </Box>
+              </Grid>
             </Grid>
-          ))}
-
-          <Grid item xs={12}>
+          </Paper>
+          
+          {taskTypes[task.type] && (
+            <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
+              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2, display: 'flex', alignItems: 'center' }}>
+                Criterios de Evaluación
+                <Tooltip title="Los criterios varían según el tipo de tarea seleccionado">
+                  <IconButton size="small" sx={{ ml: 1 }}>
+                    <InfoOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Typography>
+              
+              <Grid container spacing={3}>
+                {taskTypes[task.type].criteria.map((criterion) => (
+                  <Grid item xs={12} md={6} key={criterion.name}>
+                    <Stack spacing={1}>
+                      <Typography variant="body2" color="text.secondary">
+                        {criterion.name} <Chip label={`${criterion.weight}%`} size="small" color="primary" variant="outlined" />
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        type="number"
+                        placeholder="Ingrese calificación (0-100)"
+                        value={editedTask.evaluations[criterion.name] || ''}
+                        onChange={(e) => handleEvaluationChange(criterion.name, e.target.value)}
+                        InputProps={{ 
+                          inputProps: { min: 0, max: 100 },
+                        }}
+                        size="small"
+                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                      />
+                      {criterion.description && (
+                        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
+                          {criterion.description}
+                        </Typography>
+                      )}
+                    </Stack>
+                  </Grid>
+                ))}
+              </Grid>
+              
+              {calculateTotalScore() !== null && (
+                <Box sx={{ mt: 2, p: 1.5, bgcolor: 'primary.light', borderRadius: '8px', display: 'flex', justifyContent: 'center' }}>
+                  <Typography variant="h6" color="primary.dark">
+                    Puntuación Total: <strong>{calculateTotalScore().toFixed(2)}%</strong>
+                  </Typography>
+                </Box>
+              )}
+            </Paper>
+          )}
+          
+          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
+              Comentarios Adicionales
+            </Typography>
+            
             <TextField
               fullWidth
               multiline
               rows={3}
-              label="Comentarios"
               name="comments"
               value={editedTask.comments || ''}
               onChange={(e) => setEditedTask(prev => ({ ...prev, comments: e.target.value }))}
-              size="small"
               placeholder="Ingrese comentarios adicionales sobre la tarea"
-              sx={{ mt: 2 }}
+              InputProps={{
+                startAdornment: <CommentIcon color="action" sx={{ mt: 1.5, mr: 1 }} />,
+              }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
             />
-          </Grid>
-          
-          <Grid item xs={12}>
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="h6" color="primary">
-                Puntuación Total: {calculateTotalScore() !== null ? `${calculateTotalScore().toFixed(2)}%` : 'Sin evaluar'}
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
+          </Paper>
+        </Box>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
-        <Button onClick={handleSave} variant="contained" color="primary">
+      <DialogActions sx={{ px: 3, pb: 3 }}>
+        <Button onClick={onClose} variant="outlined" sx={{ borderRadius: '8px', px: 3 }}>
+          Cancelar
+        </Button>
+        <Button 
+          onClick={handleSave} 
+          variant="contained" 
+          color="primary"
+          sx={{ 
+            borderRadius: '8px', 
+            px: 3,
+            fontWeight: 'bold',
+            boxShadow: 2
+          }}
+        >
           Guardar Cambios
         </Button>
       </DialogActions>
