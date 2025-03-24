@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getEmployees, getTasks } from './utils/storage';
 import { Box, Container, CssBaseline, Typography, Tabs, Tab, AppBar, Toolbar } from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
 import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
 import EmployeeList from './components/EmployeeList';
@@ -69,29 +70,70 @@ function App() {
           </Tabs>
         </Box>
 
-        {currentTab === 0 && (
-          <Box>
-            <EmployeeForm onEmployeeAdded={loadEmployees} />
-            <Box sx={{ mt: 3 }}>
-              <EmployeeList employees={employees} onEmployeeDeleted={loadEmployees} />
-            </Box>
-          </Box>
-        )}
+        <AnimatePresence mode="wait">
+          {currentTab === 0 && (
+            <motion.div
+              key="employees"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 30,
+                duration: 0.3
+              }}
+            >
+              <Box>
+                <EmployeeForm onEmployeeAdded={loadEmployees} />
+                <Box sx={{ mt: 3 }}>
+                  <EmployeeList employees={employees} onEmployeeDeleted={loadEmployees} />
+                </Box>
+              </Box>
+            </motion.div>
+          )}
 
-        {currentTab === 1 && (
-          <Box>
-            <TaskForm onTaskAdded={loadTasks} employees={employees} />
-            <Box sx={{ mt: 3 }}>
-              <TaskList tasks={tasks} employees={employees} onTaskDeleted={loadTasks} />
-            </Box>
-          </Box>
-        )}
+          {currentTab === 1 && (
+            <motion.div
+              key="tasks"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 30,
+                duration: 0.3
+              }}
+            >
+              <Box>
+                <TaskForm onTaskAdded={loadTasks} employees={employees} />
+                <Box sx={{ mt: 3 }}>
+                  <TaskList tasks={tasks} employees={employees} onTaskDeleted={loadTasks} />
+                </Box>
+              </Box>
+            </motion.div>
+          )}
 
-        {currentTab === 2 && (
-          <Box>
-            <ReportTab employees={employees} tasks={reportTasks} />
-          </Box>
-        )}
+          {currentTab === 2 && (
+            <motion.div
+              key="reports"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 30,
+                duration: 0.3
+              }}
+            >
+              <Box>
+                <ReportTab employees={employees} tasks={reportTasks} />
+              </Box>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Container>
     </Box>
   );
