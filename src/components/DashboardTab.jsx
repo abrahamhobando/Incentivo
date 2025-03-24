@@ -50,8 +50,8 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
     });
   }, [employees, tasks]);
 
-  // Obtener los últimos 5 empleados
-  const recentEmployees = [...employees].sort((a, b) => b.id - a.id).slice(0, 5);
+  // Obtener los últimos 7 empleados
+  const recentEmployees = [...employees].sort((a, b) => b.id - a.id).slice(0, 7);
 
   // Obtener las últimas 5 tareas
   const recentTasks = [...tasks].sort((a, b) => b.id - a.id).slice(0, 5);

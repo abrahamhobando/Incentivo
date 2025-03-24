@@ -323,19 +323,15 @@ const TaskForm = ({ employees, onTaskAdded }) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={toggleFormVisibility}
+            onClick={() => setFormVisible(!formVisible)}
             startIcon={formVisible ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            sx={{ 
+            sx={{
+              mb: formVisible ? 2 : 0,
+              transition: 'margin-bottom 0.3s',
               borderRadius: '8px',
-              fontWeight: 'medium',
-              transition: 'all 0.2s ease-in-out',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                boxShadow: 3
-              }
             }}
           >
-            {formVisible ? 'Ocultar Formulario' : 'Mostrar Formulario'}
+            Crear
           </Button>
         </Box>
         <Divider sx={{ mb: 3 }} />
