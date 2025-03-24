@@ -128,8 +128,13 @@ const DataTransfer = ({ onDataImported }) => {
       );
       newTasks = [...nonDuplicateTasks, ...data.tasks];
     } else {
-      // Mantener ambas versiones
-      newTasks = [...currentTasks, ...data.tasks];
+      // Mantener ambas versiones pero asignar nuevos IDs a las tareas importadas
+      // para que sean completamente independientes
+      const tasksWithNewIds = data.tasks.map(task => ({
+        ...task,
+        id: Date.now() + Math.floor(Math.random() * 1000) + Math.floor(Math.random() * 1000)
+      }));
+      newTasks = [...currentTasks, ...tasksWithNewIds];
     }
     
     // Guardar los datos
