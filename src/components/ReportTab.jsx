@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useContext } from 'react';
 import {
   Box,
   FormControl,
@@ -22,14 +22,20 @@ import {
   Switch,
   FormControlLabel,
   Button,
+  Chip,
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DownloadIcon from '@mui/icons-material/Download';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ReportPDF from './ReportPDF';
+import { ColorModeContext } from '../main';
+import { useTheme } from '@mui/material/styles';
 
 const ReportTab = ({ employees, tasks }) => {
+  const theme = useTheme();
+  const { mode } = useContext(ColorModeContext);
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [dateRange, setDateRange] = useState({
     startDate: '',
@@ -332,11 +338,29 @@ const ReportTab = ({ employees, tasks }) => {
                   <Typography variant="h6" gutterBottom>
                     Tareas Evaluadas por Tipo
                   </Typography>
-                  {Object.entries(statistics.tasksByType).map(([type, count]) => (
-                    <Typography key={type}>
-                      {type}: {count}
-                    </Typography>
-                  ))}
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+                    {Object.entries(statistics.tasksByType).map(([type, count]) => (
+                      <Chip
+                        key={type}
+                        label={`${type}: ${count}`}
+                        sx={{
+                          bgcolor: (theme) => type === 'PRA' ? theme.palette.taskTypes.PRA : theme.palette.taskTypes.Validation,
+                          color: 'text.primary',
+                          fontWeight: 'medium',
+                          fontSize: '0.9rem',
+                          py: 2.5,
+                          border: (theme) => mode === 'dark' ? `1px solid ${theme.palette.divider}` : 'none',
+                          '& .MuiChip-label': { px: 1.5 },
+                          transition: 'all 0.2s ease-in-out',
+                          '&:hover': {
+                            transform: 'translateY(-2px)',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                          }
+                        }}
+                        icon={<AssignmentIcon />}
+                      />
+                    ))}
+                  </Box>
                 </CardContent>
               </Card>
             </Grid>
