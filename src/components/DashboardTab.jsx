@@ -217,17 +217,9 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                 </Typography>
                 <AssessmentIcon color="warning" />
               </Box>
-              <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>
-                {stats.pendingTasks}
-              </Typography>
-              <Button 
-                size="small" 
-                endIcon={<ArrowForwardIcon />} 
-                onClick={() => navigateToTab(3)}
-                sx={{ mt: 1 }}
-              >
-                Ver Informes
-              </Button>
+              <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>                {stats.pendingTasks}
+            </Typography>
+              {/* Se eliminó el botón "Ver Informes" */}
             </CardContent>
           </Card>
         </Grid>
