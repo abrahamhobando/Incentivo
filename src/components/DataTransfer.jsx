@@ -1,5 +1,26 @@
 import React, { useState, useContext } from 'react';
-import { Box, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
+import { 
+  Box, 
+  IconButton, 
+  Tooltip, 
+  Dialog, 
+  DialogTitle, 
+  DialogContent, 
+  DialogContentText, 
+  DialogActions, 
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Checkbox,
+  Typography,
+  Tabs,
+  Tab
+} from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import UploadIcon from '@mui/icons-material/Upload';
 import { motion } from 'framer-motion';
@@ -10,10 +31,14 @@ const DataTransfer = ({ onDataImported }) => {
   const { mode } = useContext(ColorModeContext);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
   const [importData, setImportData] = useState(null);
   const [importError, setImportError] = useState('');
   const [duplicateTasks, setDuplicateTasks] = useState([]);
   const [importAction, setImportAction] = useState(''); // 'replace' o 'keep'
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [selectedTasks, setSelectedTasks] = useState([]);
+  const [previewTab, setPreviewTab] = useState(0);
 
   // Función para exportar datos
   const handleExport = () => {
@@ -86,35 +111,84 @@ const DataTransfer = ({ onDataImported }) => {
       return;
     }
     
-    // Verificar duplicados
+    // Inicializar todos los elementos como seleccionados por defecto
+    setSelectedEmployees(data.employees.map(emp => emp.id));
+    setSelectedTasks(data.tasks.map(task => task.id));
+    
+    // Guardar los datos para la previsualización
+    setImportData(data);
+    
+    // Abrir el diálogo de previsualización
+    setPreviewDialogOpen(true);
+  };
+
+  // Procesar la importación de datos con selección
+  const processImportWithSelection = () => {
+    if (!importData) return;
+    
     const currentEmployees = getEmployees();
     const currentTasks = getTasks();
     
+    // Filtrar empleados seleccionados
+    const selectedEmployeesToImport = importData.employees.filter(emp => 
+      selectedEmployees.includes(emp.id)
+    );
+    
+    // Filtrar tareas seleccionadas
+    const selectedTasksToImport = importData.tasks.filter(task => 
+      selectedTasks.includes(task.id)
+    );
+    
+    // Importar empleados seleccionados (evitar duplicados por ID)
+    const newEmployees = [
+      ...currentEmployees,
+      ...selectedEmployeesToImport.filter(importEmp => 
+        !currentEmployees.some(currentEmp => currentEmp.id === importEmp.id)
+      )
+    ];
+    
     // Verificar tareas duplicadas (mismo título)
-    const duplicates = data.tasks.filter(importTask => 
+    const duplicateTasks = selectedTasksToImport.filter(importTask => 
       currentTasks.some(currentTask => currentTask.title === importTask.title)
     );
     
-    if (duplicates.length > 0) {
-      setDuplicateTasks(duplicates);
+    if (duplicateTasks.length > 0) {
+      setDuplicateTasks(duplicateTasks);
+      setPreviewDialogOpen(false);
       setConfirmDialogOpen(true);
     } else {
       // No hay duplicados, proceder con la importación
-      processImport(data, 'keep');
+      finalizeImport(selectedEmployeesToImport, selectedTasksToImport, 'keep');
     }
-    
-    setImportData(data);
   };
-
-  // Procesar la importación de datos
+  
+  // Procesar la importación de datos con acción para duplicados
   const processImport = (data, action) => {
+    const currentEmployees = getEmployees();
+    const currentTasks = getTasks();
+    
+    // Filtrar empleados seleccionados si venimos de la previsualización
+    const employeesToImport = previewDialogOpen 
+      ? data.employees.filter(emp => selectedEmployees.includes(emp.id))
+      : data.employees;
+      
+    // Filtrar tareas seleccionadas si venimos de la previsualización
+    const tasksToImport = previewDialogOpen
+      ? data.tasks.filter(task => selectedTasks.includes(task.id))
+      : data.tasks;
+    
+    finalizeImport(employeesToImport, tasksToImport, action);
+  };
+  
+  // Finalizar la importación con los datos filtrados
+  const finalizeImport = (employeesToImport, tasksToImport, action) => {
     const currentEmployees = getEmployees();
     const currentTasks = getTasks();
     
     // Importar empleados (evitar duplicados por ID)
     const newEmployees = [
       ...currentEmployees,
-      ...data.employees.filter(importEmp => 
+      ...employeesToImport.filter(importEmp => 
         !currentEmployees.some(currentEmp => currentEmp.id === importEmp.id)
       )
     ];
@@ -124,13 +198,13 @@ const DataTransfer = ({ onDataImported }) => {
     if (action === 'replace') {
       // Reemplazar tareas duplicadas
       const nonDuplicateTasks = currentTasks.filter(currentTask => 
-        !data.tasks.some(importTask => importTask.title === currentTask.title)
+        !tasksToImport.some(importTask => importTask.title === currentTask.title)
       );
-      newTasks = [...nonDuplicateTasks, ...data.tasks];
+      newTasks = [...nonDuplicateTasks, ...tasksToImport];
     } else {
       // Mantener ambas versiones pero asignar nuevos IDs a las tareas importadas
       // para que sean completamente independientes
-      const tasksWithNewIds = data.tasks.map(task => ({
+      const tasksWithNewIds = tasksToImport.map(task => ({
         ...task,
         id: Date.now() + Math.floor(Math.random() * 1000) + Math.floor(Math.random() * 1000)
       }));
@@ -144,6 +218,7 @@ const DataTransfer = ({ onDataImported }) => {
     // Cerrar diálogos
     setImportDialogOpen(false);
     setConfirmDialogOpen(false);
+    setPreviewDialogOpen(false);
     
     // Notificar que se han importado datos
     if (onDataImported) {
@@ -155,6 +230,57 @@ const DataTransfer = ({ onDataImported }) => {
   const handleDuplicateAction = (action) => {
     setImportAction(action);
     processImport(importData, action);
+  };
+  
+  // Manejar el cambio de pestaña en la previsualización
+  const handlePreviewTabChange = (event, newValue) => {
+    setPreviewTab(newValue);
+  };
+  
+  // Manejar la selección/deselección de todos los empleados
+  const handleSelectAllEmployees = (event) => {
+    if (event.target.checked) {
+      setSelectedEmployees(importData.employees.map(emp => emp.id));
+    } else {
+      setSelectedEmployees([]);
+    }
+  };
+  
+  // Manejar la selección/deselección de todos las tareas
+  const handleSelectAllTasks = (event) => {
+    if (event.target.checked) {
+      setSelectedTasks(importData.tasks.map(task => task.id));
+    } else {
+      setSelectedTasks([]);
+    }
+  };
+  
+  // Manejar la selección/deselección de un empleado
+  const handleEmployeeSelect = (employeeId) => {
+    const currentIndex = selectedEmployees.indexOf(employeeId);
+    const newSelected = [...selectedEmployees];
+
+    if (currentIndex === -1) {
+      newSelected.push(employeeId);
+    } else {
+      newSelected.splice(currentIndex, 1);
+    }
+
+    setSelectedEmployees(newSelected);
+  };
+  
+  // Manejar la selección/deselección de una tarea
+  const handleTaskSelect = (taskId) => {
+    const currentIndex = selectedTasks.indexOf(taskId);
+    const newSelected = [...selectedTasks];
+
+    if (currentIndex === -1) {
+      newSelected.push(taskId);
+    } else {
+      newSelected.splice(currentIndex, 1);
+    }
+
+    setSelectedTasks(newSelected);
   };
 
   return (
@@ -228,6 +354,110 @@ const DataTransfer = ({ onDataImported }) => {
         <DialogActions>
           <Button onClick={() => setImportDialogOpen(false)} color="primary" autoFocus>
             Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      {/* Diálogo de previsualización de datos */}
+      <Dialog
+        open={previewDialogOpen}
+        onClose={() => setPreviewDialogOpen(false)}
+        aria-labelledby="preview-dialog-title"
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle id="preview-dialog-title">Previsualización de datos a importar</DialogTitle>
+        <DialogContent>
+          <Tabs value={previewTab} onChange={handlePreviewTabChange} aria-label="Pestañas de previsualización">
+            <Tab label={`Empleados (${importData?.employees?.length || 0})`} />
+            <Tab label={`Tareas (${importData?.tasks?.length || 0})`} />
+          </Tabs>
+          
+          {previewTab === 0 && importData?.employees && (
+            <TableContainer component={Paper} sx={{ mt: 2, maxHeight: 300 }}>
+              <Table stickyHeader size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        indeterminate={selectedEmployees.length > 0 && selectedEmployees.length < importData.employees.length}
+                        checked={importData.employees.length > 0 && selectedEmployees.length === importData.employees.length}
+                        onChange={handleSelectAllEmployees}
+                      />
+                    </TableCell>
+                    <TableCell>ID</TableCell>
+                    <TableCell>Nombre</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {importData.employees.map((employee) => (
+                    <TableRow key={employee.id}>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={selectedEmployees.indexOf(employee.id) !== -1}
+                          onChange={() => handleEmployeeSelect(employee.id)}
+                        />
+                      </TableCell>
+                      <TableCell>{employee.id}</TableCell>
+                      <TableCell>{employee.name}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+          
+          {previewTab === 1 && importData?.tasks && (
+            <TableContainer component={Paper} sx={{ mt: 2, maxHeight: 300 }}>
+              <Table stickyHeader size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        indeterminate={selectedTasks.length > 0 && selectedTasks.length < importData.tasks.length}
+                        checked={importData.tasks.length > 0 && selectedTasks.length === importData.tasks.length}
+                        onChange={handleSelectAllTasks}
+                      />
+                    </TableCell>
+                    <TableCell>Título</TableCell>
+                    <TableCell>Tipo</TableCell>
+                    <TableCell>Fecha</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {importData.tasks.map((task) => (
+                    <TableRow key={task.id}>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={selectedTasks.indexOf(task.id) !== -1}
+                          onChange={() => handleTaskSelect(task.id)}
+                        />
+                      </TableCell>
+                      <TableCell>{task.title}</TableCell>
+                      <TableCell>{task.type}</TableCell>
+                      <TableCell>{task.date}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+          
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            Seleccione los elementos que desea importar. Los elementos no seleccionados serán ignorados.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPreviewDialogOpen(false)} color="error">
+            Cancelar
+          </Button>
+          <Button 
+            onClick={processImportWithSelection} 
+            color="primary" 
+            variant="contained"
+            disabled={selectedEmployees.length === 0 && selectedTasks.length === 0}
+          >
+            Importar seleccionados
           </Button>
         </DialogActions>
       </Dialog>
