@@ -184,11 +184,13 @@ const ReportTab = ({ employees, tasks }) => {
             {employeeStats.map((stat) => (
               <Grid item xs={12} sm={6} md={4} key={stat.employee.id}>
                 <Card 
+                  onClick={() => setSelectedEmployee(stat.employee.id)}
                   sx={{ 
                     height: '100%', 
                     display: 'flex', 
                     flexDirection: 'column',
                     transition: 'transform 0.2s, box-shadow 0.2s',
+                    cursor: 'pointer',
                     '&:hover': {
                       transform: 'translateY(-4px)',
                       boxShadow: '0 8px 16px rgba(0,0,0,0.1)'

@@ -34,6 +34,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState([]);
+  const [hoveredTaskId, setHoveredTaskId] = useState(null);
   const [filters, setFilters] = useState({
     employeeId: '',
     type: '',
@@ -277,6 +278,8 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                   <TableRow
                     key={task.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    onMouseEnter={() => setHoveredTaskId(task.id)}
+                    onMouseLeave={() => setHoveredTaskId(null)}
                   >
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -312,7 +315,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                           color={task.totalScore !== undefined && task.totalScore !== null ? getScoreColor(task.totalScore) : 'default'}
                           size="small"
                         />
-                        <Box>
+                        <Box sx={{ visibility: hoveredTaskId === task.id ? 'visible' : 'hidden' }}>
                           <IconButton
                             size="small"
                             onClick={() => handleEdit(task)}
