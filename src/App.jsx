@@ -45,8 +45,24 @@ function App() {
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-          <Tabs value={currentTab} onChange={handleTabChange} aria-label="Pestañas de gestión">
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3, width: '100%', overflowX: 'auto' }}>
+          <Tabs 
+            value={currentTab} 
+            onChange={handleTabChange} 
+            aria-label="Pestañas de gestión"
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+            sx={{
+              '& .MuiTabs-flexContainer': {
+                justifyContent: { xs: 'flex-start', md: 'center' }
+              },
+              '& .MuiTab-root': {
+                minWidth: { xs: 'auto', sm: 120 },
+                px: { xs: 2, sm: 3 }
+              }
+            }}
+          >
             <Tab label="Gestión de Empleados" />
             <Tab label="Gestión de Tareas" />
             <Tab label="Informes" />
