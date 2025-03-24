@@ -4,6 +4,7 @@
 const STORAGE_KEYS = {
   EMPLOYEES: 'incentivo_employees',
   TASKS: 'incentivo_tasks',
+  SORT_PREFERENCES: 'incentivo_sort_preferences',
 };
 
 // Funciones para empleados
@@ -75,4 +76,17 @@ export const deleteTask = (taskId) => {
   const tasks = getTasks();
   const filteredTasks = tasks.filter(task => task.id !== taskId);
   saveTasks(filteredTasks);
+};
+
+// Funciones para preferencias de ordenamiento
+export const getSortPreferences = () => {
+  const preferences = localStorage.getItem(STORAGE_KEYS.SORT_PREFERENCES);
+  return preferences ? JSON.parse(preferences) : {
+    field: 'date',  // Valor predeterminado: ordenar por fecha
+    direction: 'desc' // Valor predeterminado: descendente (más reciente primero)
+  };
+};
+
+export const saveSortPreferences = (preferences) => {
+  localStorage.setItem(STORAGE_KEYS.SORT_PREFERENCES, JSON.stringify(preferences));
 };

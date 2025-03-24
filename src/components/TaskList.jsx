@@ -26,7 +26,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { deleteTask, getTasks, saveTasks } from '../utils/storage';
+import { deleteTask, getTasks, saveTasks, getSortPreferences, saveSortPreferences } from '../utils/storage';
 import TaskDialog from './TaskDialog';
 import ConfirmDialog from './ConfirmDialog';
 import { ColorModeContext } from '../main';
@@ -48,6 +48,8 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
     searchQuery: '',
     onlyUnevaluated: false,
   });
+  
+  const [sortConfig, setSortConfig] = useState(getSortPreferences());
 
   const taskTypes = {
     "Práctica de procesos": {
@@ -167,10 +169,11 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
     return 'error';
   };
 
-  // Aplicar filtros a las tareas
+  // Aplicar filtros y ordenamiento a las tareas
   useEffect(() => {
     let result = [...tasks];
     
+    // Aplicar filtros
     if (filters.employeeId) {
       result = result.filter(task => task.employeeId === filters.employeeId);
     }
@@ -204,8 +207,43 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
       );
     }
     
+    // Aplicar ordenamiento
+    if (sortConfig.field && sortConfig.direction) {
+      result.sort((a, b) => {
+        if (sortConfig.field === 'title') {
+          // Ordenar alfabéticamente por título
+          const titleA = a.title.toLowerCase();
+          const titleB = b.title.toLowerCase();
+          if (sortConfig.direction === 'asc') {
+            return titleA.localeCompare(titleB);
+          } else {
+            return titleB.localeCompare(titleA);
+          }
+        } else if (sortConfig.field === 'date') {
+          // Ordenar por fecha
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          if (sortConfig.direction === 'asc') {
+            return dateA - dateB; // Más antiguo primero
+          } else {
+            return dateB - dateA; // Más reciente primero
+          }
+        } else if (sortConfig.field === 'score') {
+          // Ordenar por puntuación
+          const scoreA = a.totalScore !== undefined && a.totalScore !== null ? a.totalScore : -1;
+          const scoreB = b.totalScore !== undefined && b.totalScore !== null ? b.totalScore : -1;
+          if (sortConfig.direction === 'asc') {
+            return scoreA - scoreB;
+          } else {
+            return scoreB - scoreA;
+          }
+        }
+        return 0;
+      });
+    }
+    
     setFilteredTasks(result);
-  }, [tasks, filters]);
+  }, [tasks, filters, sortConfig]);
 
   // Manejar cambios en los filtros
   const handleFilterChange = (e) => {
@@ -226,6 +264,13 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
       searchQuery: '',
       onlyUnevaluated: false,
     });
+  };
+  
+  // Manejar cambios en la configuración de ordenamiento
+  const handleSortChange = (field, direction) => {
+    const newSortConfig = { field, direction };
+    setSortConfig(newSortConfig);
+    saveSortPreferences(newSortConfig);
   };
 
   return (
@@ -326,6 +371,33 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                     {filters.onlyUnevaluated ? "Mostrar solo tareas sin evaluar" : "Mostrar todas las tareas"}
                   </Button>
                 </Box>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Ordenar por</InputLabel>
+                <Select
+                  value={sortConfig.field}
+                  onChange={(e) => handleSortChange(e.target.value, sortConfig.direction)}
+                  label="Ordenar por"
+                >
+                  <MenuItem value="title">Nombre de tarea</MenuItem>
+                  <MenuItem value="date">Fecha</MenuItem>
+                  <MenuItem value="score">Puntuación</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Dirección</InputLabel>
+                <Select
+                  value={sortConfig.direction}
+                  onChange={(e) => handleSortChange(sortConfig.field, e.target.value)}
+                  label="Dirección"
+                >
+                  <MenuItem value="asc">{sortConfig.field === 'date' ? 'Más antiguo primero' : 'Ascendente (A-Z)'}</MenuItem>
+                  <MenuItem value="desc">{sortConfig.field === 'date' ? 'Más reciente primero' : 'Descendente (Z-A)'}</MenuItem>
+                </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12} md={3} sx={{ display: 'flex', alignItems: 'center' }}>

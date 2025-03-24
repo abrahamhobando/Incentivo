@@ -7,9 +7,11 @@ import TaskForm from './components/TaskForm';
 import EmployeeList from './components/EmployeeList';
 import EmployeeForm from './components/EmployeeForm';
 import ReportTab from './components/ReportTab';
+import DashboardTab from './components/DashboardTab';
 import ThemeToggle from './components/ThemeToggle';
 import { ColorModeContext } from './main';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -135,6 +137,7 @@ function App() {
                 }
               }}
             >
+              <Tab icon={<DashboardIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Inicio" />
               <Tab label="Gestión de CADS" />
               <Tab label="Gestión de Tareas" />
               <Tab label="Informes" />
@@ -144,6 +147,29 @@ function App() {
 
         <AnimatePresence mode="wait">
           {currentTab === 0 && (
+            <motion.div
+              key="dashboard"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 30,
+                duration: 0.3
+              }}
+            >
+              <Box>
+                <DashboardTab 
+                  employees={employees} 
+                  tasks={tasks} 
+                  onTabChange={handleTabChange} 
+                />
+              </Box>
+            </motion.div>
+          )}
+
+          {currentTab === 1 && (
             <motion.div
               key="employees"
               initial={{ opacity: 0, x: 20 }}
@@ -165,7 +191,7 @@ function App() {
             </motion.div>
           )}
 
-          {currentTab === 1 && (
+          {currentTab === 2 && (
             <motion.div
               key="tasks"
               initial={{ opacity: 0, x: 20 }}
@@ -187,7 +213,7 @@ function App() {
             </motion.div>
           )}
 
-          {currentTab === 2 && (
+          {currentTab === 3 && (
             <motion.div
               key="reports"
               initial={{ opacity: 0, x: 20 }}
