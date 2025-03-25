@@ -492,12 +492,12 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                 <BarChartIcon color="success" />
               </Box>
               <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>
-                {filteredTasks.filter(task => task.totalScore !== undefined && task.totalScore !== null).length}
+                {filteredTasks.length > 0 && filteredTasks.filter(task => task.totalScore !== undefined && task.totalScore !== null).length > 0 ? 
+                  `${(filteredTasks.filter(task => task.totalScore !== undefined && task.totalScore !== null).reduce((sum, task) => sum + task.totalScore, 0) / filteredTasks.filter(task => task.totalScore !== undefined && task.totalScore !== null).length || 0).toFixed(1)}%` : 
+                  '0%'}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {filteredTasks.length > 0 ? 
-                  `Promedio: ${(filteredTasks.filter(task => task.totalScore !== undefined && task.totalScore !== null).reduce((sum, task) => sum + task.totalScore, 0) / filteredTasks.filter(task => task.totalScore !== undefined && task.totalScore !== null).length || 0).toFixed(1)}%` : 
-                  'Sin evaluaciones'}
+                Calificación promedio
               </Typography>
             </CardContent>
           </Card>
