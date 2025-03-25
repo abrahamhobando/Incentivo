@@ -21,6 +21,8 @@ import {
   TableRow,
   useTheme,
   alpha,
+  Button,
+  Tooltip as MuiTooltip,
 } from '@mui/material';
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
 import AssessmentIcon from '@mui/icons-material/Assessment';
@@ -28,6 +30,9 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import DownloadIcon from '@mui/icons-material/Download';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import StatsPDF from './StatsPDF';
 import { ColorModeContext } from '../main';
 
 const StatsSection = ({ tasks, taskTypes }) => {
@@ -217,15 +222,49 @@ const StatsSection = ({ tasks, taskTypes }) => {
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography variant="h5" component="h2" gutterBottom sx={{ 
+      <Box sx={{ 
         display: 'flex', 
         alignItems: 'center',
-        fontWeight: 500,
-        color: 'primary.main',
+        justifyContent: 'space-between',
         mb: 3
       }}>
-        <AssessmentIcon sx={{ mr: 1 }} /> Estadísticas de Evaluaciones
-      </Typography>
+        <Typography variant="h5" component="h2" gutterBottom sx={{ 
+          display: 'flex', 
+          alignItems: 'center',
+          fontWeight: 500,
+          color: 'primary.main',
+          mb: 0
+        }}>
+          <AssessmentIcon sx={{ mr: 1 }} /> Estadísticas de Evaluaciones
+        </Typography>
+        <PDFDownloadLink 
+          document={
+            <StatsPDF 
+              dateRange={dateRange} 
+              filteredTasks={filteredTasks} 
+              taskTypeStats={taskTypeStats} 
+              criteriaStats={criteriaStats} 
+              lowPerformanceTasks={lowPerformanceTasks} 
+            />
+          } 
+          fileName={`estadisticas_${dateRange.startDate || 'completo'}_${dateRange.endDate || ''}.pdf`}
+          style={{ textDecoration: 'none' }}
+        >
+          {({ blob, url, loading, error }) => (
+            <MuiTooltip title="Descargar PDF">
+              <Button 
+                variant="outlined" 
+                color="primary" 
+                size="small" 
+                startIcon={<DownloadIcon />}
+                disabled={loading || filteredTasks.length === 0}
+              >
+                {loading ? 'Generando...' : 'Descargar PDF'}
+              </Button>
+            </MuiTooltip>
+          )}
+        </PDFDownloadLink>
+      </Box>
       
       {/* Filtros */}
       <Paper 
