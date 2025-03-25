@@ -16,6 +16,7 @@ import {
   useTheme,
   alpha,
 } from '@mui/material';
+import StatsSection from './StatsSection';
 import { motion } from 'framer-motion';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -28,6 +29,64 @@ import PersonIcon from '@mui/icons-material/Person';
 import { ColorModeContext } from '../main';
 
 const DashboardTab = ({ employees, tasks, onTabChange }) => {
+  // Definir los tipos de tareas y sus criterios para pasarlos a StatsSection
+  const taskTypes = {
+    "Práctica de procesos": {
+      color: '#e8f5e9',
+      criteria: [
+        { name: 'Calidad', weight: 60 },
+        { name: 'Seguimiento de instrucciones', weight: 40 },
+      ],
+    },
+    PRA: {
+      color: '#e3f2fd',
+      criteria: [
+        { name: 'Calidad', weight: 60 },
+        { name: 'Seguimiento de instrucciones', weight: 40 },
+      ],
+    },
+    Validacion: {
+      color: '#f3e5f5',
+      criteria: [
+        { name: 'Calidad', weight: 60 },
+        { name: 'Cumplimiento de tiempo', weight: 20 },
+        { name: '0 errores encontrados en GA', weight: 20 },
+      ],
+    },
+    "STD Times": {
+      color: '#fff8e1',
+      criteria: [
+        { name: 'Seguimiento de instrucciones', weight: 60 },
+        { name: 'Calidad del servicio', weight: 40 },
+      ],
+    },
+    "Entrenamientos (Recibe)": {
+      color: '#e1f5fe',
+      criteria: [
+        { name: 'Pruebas teóricas', weight: 40 },
+        { name: 'Pruebas prácticas', weight: 60 },
+      ],
+    },
+    "Entrenamientos (Brinda)": {
+      color: '#f8bbd0',
+      criteria: [
+        { name: 'Manejo del grupo', weight: 20 },
+        { name: 'Transmisión de conocimientos', weight: 20 },
+        { name: 'Entregables', weight: 20 },
+        { name: 'Resultados obtenidos', weight: 20 },
+        { name: 'Calidad del servicio', weight: 20 },
+      ],
+    },
+    "Refrescamientos (Brinda)": {
+      color: '#ffccbc',
+      criteria: [
+        { name: 'Contenido adecuado', weight: 20 },
+        { name: 'Materiales didácticos', weight: 20 },
+        { name: 'Explicación clara', weight: 20 },
+        { name: 'Entregables', weight: 40 },
+      ],
+    },
+  };
   const theme = useTheme();
   const { mode } = useContext(ColorModeContext);
   const [stats, setStats] = useState({
@@ -413,6 +472,9 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
           </Paper>
         </Grid>
       </Grid>
+      
+      {/* Sección de estadísticas */}
+      <StatsSection tasks={tasks} taskTypes={taskTypes} />
     </Box>
   );
 };
