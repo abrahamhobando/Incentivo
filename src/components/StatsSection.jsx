@@ -24,7 +24,8 @@ import {
   Button,
   Tooltip as MuiTooltip,
 } from '@mui/material';
-import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
+import CustomTooltip from './CustomTooltip';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
@@ -421,7 +422,7 @@ const StatsSection = ({ tasks, taskTypes }) => {
                   >
                     <XAxis dataKey="name" />
                     <YAxis />
-                    <Tooltip />
+                    <RechartsTooltip content={<CustomTooltip />} />
                     <Legend />
                     <Bar dataKey="impact" name="Impacto">
                       {paretoData.map((entry, index) => (
@@ -465,7 +466,7 @@ const StatsSection = ({ tasks, taskTypes }) => {
                   >
                     <XAxis dataKey="name" />
                     <YAxis domain={[0, 100]} />
-                    <Tooltip />
+                    <RechartsTooltip content={<CustomTooltip />} />
                     <Legend />
                     <Bar dataKey="promedio" name="Promedio (%)">
                       {barData.map((entry, index) => (
@@ -518,7 +519,7 @@ const StatsSection = ({ tasks, taskTypes }) => {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <RechartsTooltip content={<CustomTooltip />} />
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
