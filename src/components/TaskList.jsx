@@ -21,11 +21,15 @@ import {
   TextField,
   Grid,
   useTheme,
+  alpha,
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import CategoryIcon from '@mui/icons-material/Category';
 import { deleteTask, getTasks, saveTasks, getSortPreferences, saveSortPreferences } from '../utils/storage';
 import TaskDialog from './TaskDialog';
 import ConfirmDialog from './ConfirmDialog';
@@ -418,6 +422,111 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
           </Grid>
         </CardContent>
       </Card>
+      
+      {/* Tarjetas de estadísticas */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            height: '100%',
+            backgroundColor: alpha(theme.palette.primary.main, 0.08),
+            transition: 'transform 0.2s',
+            '&:hover': { transform: 'translateY(-4px)' }
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <Typography color="text.secondary" variant="subtitle2" gutterBottom>
+                  Total Tareas
+                </Typography>
+                <AssignmentIcon color="primary" />
+              </Box>
+              <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>
+                {filteredTasks.length}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {tasks.length > 0 ? 
+                  `${Math.round((filteredTasks.length / tasks.length) * 100)}% del total` : 
+                  '0% del total'}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            height: '100%',
+            backgroundColor: alpha(theme.palette.warning.main, 0.08),
+            transition: 'transform 0.2s',
+            '&:hover': { transform: 'translateY(-4px)' }
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <Typography color="text.secondary" variant="subtitle2" gutterBottom>
+                  Tareas Pendientes
+                </Typography>
+                <AssessmentIcon color="warning" />
+              </Box>
+              <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>
+                {filteredTasks.filter(task => task.totalScore === undefined || task.totalScore === null).length}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {filteredTasks.length > 0 ? 
+                  `${Math.round((filteredTasks.filter(task => task.totalScore === undefined || task.totalScore === null).length / filteredTasks.length) * 100)}% sin evaluar` : 
+                  '0% sin evaluar'}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            height: '100%',
+            backgroundColor: alpha(theme.palette.success.main, 0.08),
+            transition: 'transform 0.2s',
+            '&:hover': { transform: 'translateY(-4px)' }
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <Typography color="text.secondary" variant="subtitle2" gutterBottom>
+                  Tareas Evaluadas
+                </Typography>
+                <BarChartIcon color="success" />
+              </Box>
+              <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>
+                {filteredTasks.filter(task => task.totalScore !== undefined && task.totalScore !== null).length}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {filteredTasks.length > 0 ? 
+                  `Promedio: ${(filteredTasks.filter(task => task.totalScore !== undefined && task.totalScore !== null).reduce((sum, task) => sum + task.totalScore, 0) / filteredTasks.filter(task => task.totalScore !== undefined && task.totalScore !== null).length || 0).toFixed(1)}%` : 
+                  'Sin evaluaciones'}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            height: '100%',
+            backgroundColor: alpha(theme.palette.info.main, 0.08),
+            transition: 'transform 0.2s',
+            '&:hover': { transform: 'translateY(-4px)' }
+          }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <Typography color="text.secondary" variant="subtitle2" gutterBottom>
+                  Tipos de Tarea
+                </Typography>
+                <CategoryIcon color="info" />
+              </Box>
+              <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>
+                {[...new Set(filteredTasks.map(task => task.type))].length}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {Object.keys(taskTypes).length} tipos disponibles
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
       
       <Card>
         <CardContent>
