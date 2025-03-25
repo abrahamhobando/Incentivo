@@ -600,45 +600,137 @@ const StatsSection = ({ tasks, taskTypes }) => {
           </Paper>
         </Grid>
 
-        {/* Tabla - Criterios por debajo del 100% */}
+        {/* Criterios por debajo del 100% - Diseño mejorado */}
         <Grid item xs={12}>
           <Paper 
             elevation={0} 
             sx={{ 
-              p: 2, 
+              p: 3, 
               borderRadius: 2,
               boxShadow: theme => `0 2px 10px ${alpha(theme.palette.primary.main, 0.1)}`,
             }}
           >
-            <Typography variant="h6" gutterBottom>Criterios por Debajo del 100%</Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Detalle de los criterios que no alcanzaron la calificación perfecta
-            </Typography>
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              mb: 2,
+              pb: 2,
+              borderBottom: 1,
+              borderColor: 'divider'
+            }}>
+              <AssessmentIcon 
+                color="error" 
+                sx={{ 
+                  mr: 1.5, 
+                  fontSize: 28,
+                  animation: 'pulse 2s infinite',
+                  '@keyframes pulse': {
+                    '0%': { opacity: 0.7 },
+                    '50%': { opacity: 1 },
+                    '100%': { opacity: 0.7 },
+                  }
+                }} 
+              />
+              <Box>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>Criterios por Debajo del 100%</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Detalle de los criterios que no alcanzaron la calificación perfecta
+                </Typography>
+              </Box>
+            </Box>
+            
             {criteriaStats.length > 0 ? (
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Criterio</TableCell>
-                      <TableCell align="right">Promedio</TableCell>
-                      <TableCell align="right">Tareas Afectadas</TableCell>
-                      <TableCell align="right">% Afectación</TableCell>
-                      <TableCell align="right">Impacto Total</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {criteriaStats.filter(c => c.belowPerfect > 0).map((criteria) => (
-                      <TableRow key={criteria.name}>
-                        <TableCell>{criteria.name}</TableCell>
-                        <TableCell align="right">{criteria.avgScore.toFixed(2)}%</TableCell>
-                        <TableCell align="right">{criteria.belowPerfect} de {criteria.count}</TableCell>
-                        <TableCell align="right">{criteria.impactPercentage.toFixed(2)}%</TableCell>
-                        <TableCell align="right">{criteria.impactScore.toFixed(2)}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <Box>
+                <Grid container spacing={2}>
+                  {criteriaStats.filter(c => c.belowPerfect > 0).map((criteria) => {
+                    // Calcular color basado en el promedio
+                    const getColor = (score) => {
+                      if (score >= 90) return 'success';
+                      if (score >= 70) return 'primary';
+                      if (score >= 50) return 'warning';
+                      return 'error';
+                    };
+                    
+                    const color = getColor(criteria.avgScore);
+                    const progressColor = theme.palette[color].main;
+                    
+                    return (
+                      <Grid item xs={12} md={6} lg={4} key={criteria.name}>
+                        <Paper 
+                          elevation={0} 
+                          sx={{ 
+                            p: 2, 
+                            height: '100%',
+                            borderRadius: 2,
+                            border: 1,
+                            borderColor: 'divider',
+                            transition: 'transform 0.2s, box-shadow 0.2s',
+                            '&:hover': { 
+                              transform: 'translateY(-4px)',
+                              boxShadow: theme => `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`,
+                            }
+                          }}
+                        >
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 0.5 }}>
+                              {criteria.name}
+                            </Typography>
+                            <Chip 
+                              label={`${criteria.avgScore.toFixed(0)}%`} 
+                              color={color} 
+                              size="small"
+                              sx={{ fontWeight: 'bold' }}
+                            />
+                          </Box>
+                          
+                          {/* Barra de progreso */}
+                          <Box sx={{ mt: 1, mb: 2, position: 'relative', height: 8, bgcolor: alpha(progressColor, 0.15), borderRadius: 1 }}>
+                            <Box 
+                              sx={{ 
+                                position: 'absolute', 
+                                left: 0, 
+                                top: 0, 
+                                height: '100%', 
+                                width: `${criteria.avgScore}%`, 
+                                bgcolor: progressColor,
+                                borderRadius: 1,
+                                transition: 'width 1s ease-in-out'
+                              }} 
+                            />
+                          </Box>
+                          
+                          <Grid container spacing={1}>
+                            <Grid item xs={6}>
+                              <Typography variant="caption" color="text.secondary" display="block">
+                                Tareas Afectadas
+                              </Typography>
+                              <Typography variant="body2" fontWeight="medium">
+                                {criteria.belowPerfect} de {criteria.count}
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                              <Typography variant="caption" color="text.secondary" display="block">
+                                % Afectación
+                              </Typography>
+                              <Typography variant="body2" fontWeight="medium">
+                                {criteria.impactPercentage.toFixed(1)}%
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                              <Typography variant="caption" color="text.secondary" display="block">
+                                Impacto Total
+                              </Typography>
+                              <Typography variant="body2" fontWeight="medium">
+                                {criteria.impactScore.toFixed(1)} puntos
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </Paper>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </Box>
             ) : (
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
                 <Typography variant="body1" color="text.secondary">
