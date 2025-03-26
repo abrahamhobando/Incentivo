@@ -19,6 +19,7 @@ import {
   Stack,
   Tooltip,
   IconButton,
+  Avatar,
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -32,6 +33,27 @@ import { useTheme } from '@mui/material/styles';
 const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
   const theme = useTheme();
   const { mode } = useContext(ColorModeContext);
+  
+  // Función para generar un color basado en el nombre
+  const getAvatarColor = (name) => {
+    const colors = [
+      theme.palette.primary.main,
+      theme.palette.secondary.main,
+      theme.palette.success.main,
+      theme.palette.info.main,
+      theme.palette.warning.main,
+      theme.palette.error.main,
+    ];
+    
+    // Usar la suma de los códigos ASCII de las letras del nombre para determinar el color
+    const charSum = name.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    return colors[charSum % colors.length];
+  };
+  
+  // Función para obtener el nombre del empleado
+  const getEmployeeName = (employeeId) => {
+    return employees.find(emp => emp.id === employeeId)?.name || 'Usuario';
+  };
   const [editedTask, setEditedTask] = React.useState(task);
 
   React.useEffect(() => {
@@ -132,7 +154,21 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
                     onChange={(e) => setEditedTask(prev => ({ ...prev, employeeId: e.target.value }))}
                     label="Asignada a"
                     required
-                    startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
+                    startAdornment={
+                    <Box sx={{ display: 'flex', alignItems: 'center', ml: 1, mr: 1 }}>
+                      <Avatar 
+                        sx={{ 
+                          bgcolor: getAvatarColor(editedTask.employeeId ? getEmployeeName(editedTask.employeeId) : 'Usuario'),
+                          width: 24,
+                          height: 24,
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {editedTask.employeeId ? getEmployeeName(editedTask.employeeId).charAt(0).toUpperCase() : 'U'}
+                      </Avatar>
+                    </Box>
+                  }
                   >
                     {employees?.map((employee) => (
                       <MenuItem key={employee.id} value={employee.id}>

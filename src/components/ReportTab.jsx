@@ -23,6 +23,7 @@ import {
   FormControlLabel,
   Button,
   Chip,
+  Avatar,
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -36,6 +37,22 @@ import { useTheme } from '@mui/material/styles';
 const ReportTab = ({ employees, tasks }) => {
   const theme = useTheme();
   const { mode } = useContext(ColorModeContext);
+  
+  // Función para generar un color basado en el nombre
+  const getAvatarColor = (name) => {
+    const colors = [
+      theme.palette.primary.main,
+      theme.palette.secondary.main,
+      theme.palette.success.main,
+      theme.palette.info.main,
+      theme.palette.warning.main,
+      theme.palette.error.main,
+    ];
+    
+    // Usar la suma de los códigos ASCII de las letras del nombre para determinar el color
+    const charSum = name.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    return colors[charSum % colors.length];
+  };
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [dateRange, setDateRange] = useState({
     startDate: '',
@@ -205,22 +222,19 @@ const ReportTab = ({ employees, tasks }) => {
                 >
                   <CardContent sx={{ p: 2, pb: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Box 
+                      <Avatar 
                         sx={{ 
-                          width: 40, 
-                          height: 40, 
-                          borderRadius: '50%', 
-                          bgcolor: 'primary.main', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'center',
+                          bgcolor: getAvatarColor(stat.employee.name),
+                          width: 40,
+                          height: 40,
+                          fontWeight: 'bold',
+                          fontSize: '1.1rem',
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                           mr: 1.5
                         }}
                       >
-                        <Typography variant="h6" color="white">
-                          {stat.employee.name.charAt(0)}
-                        </Typography>
-                      </Box>
+                        {stat.employee.name.charAt(0).toUpperCase()}
+                      </Avatar>
                       <Typography variant="h6" sx={{ fontWeight: 'medium' }}>
                         {stat.employee.name}
                       </Typography>

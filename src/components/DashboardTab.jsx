@@ -15,6 +15,7 @@ import {
   Chip,
   useTheme,
   alpha,
+  Avatar,
 } from '@mui/material';
 import StatsSection from './StatsSection';
 import { motion } from 'framer-motion';
@@ -141,6 +142,22 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
     } else {
       return taskTypes[type] || '#ffffff';
     }
+  };
+
+  // Función para generar un color basado en el nombre
+  const getAvatarColor = (name) => {
+    const colors = [
+      theme.palette.primary.main,
+      theme.palette.secondary.main,
+      theme.palette.success.main,
+      theme.palette.info.main,
+      theme.palette.warning.main,
+      theme.palette.error.main,
+    ];
+    
+    // Usar la suma de los códigos ASCII de las letras del nombre para determinar el color
+    const charSum = name.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    return colors[charSum % colors.length];
   };
 
   // Función para obtener el color del estado de la tarea
@@ -316,7 +333,17 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                 recentEmployees.map((employee) => (
                   <ListItem key={employee.id} sx={{ px: 1, py: 0.5 }}>
                     <ListItemIcon sx={{ minWidth: 36 }}>
-                      <PersonIcon color="primary" fontSize="small" />
+                      <Avatar 
+                        sx={{ 
+                          bgcolor: getAvatarColor(employee.name),
+                          width: 28,
+                          height: 28,
+                          fontSize: '0.875rem',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {employee.name.charAt(0).toUpperCase()}
+                      </Avatar>
                     </ListItemIcon>
                     <ListItemText primary={employee.name} />
                   </ListItem>
