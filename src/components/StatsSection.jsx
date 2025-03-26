@@ -143,6 +143,7 @@ const StatsSection = ({ tasks, taskTypes }) => {
             count: 0,
             belowPerfect: 0,
             impactScore: 0,
+            affectedTaskTypes: new Set(), // Conjunto para almacenar los tipos de tarea afectados
           };
         }
         
@@ -154,6 +155,8 @@ const StatsSection = ({ tasks, taskTypes }) => {
           allCriteria[criterio].belowPerfect += 1;
           // Calcular el impacto (100 - puntuación)
           allCriteria[criterio].impactScore += (100 - puntuacion);
+          // Registrar el tipo de tarea afectado
+          allCriteria[criterio].affectedTaskTypes.add(task.type);
         }
       });
     });
@@ -163,6 +166,8 @@ const StatsSection = ({ tasks, taskTypes }) => {
       ...criteria,
       avgScore: criteria.totalScore / criteria.count,
       impactPercentage: (criteria.belowPerfect / criteria.count) * 100,
+      // Convertir el Set a un array para facilitar su uso en el renderizado
+      affectedTaskTypes: Array.from(criteria.affectedTaskTypes),
     }));
     
     // Ordenar por impacto (descendente)
@@ -724,6 +729,25 @@ const StatsSection = ({ tasks, taskTypes }) => {
                               <Typography variant="body2" fontWeight="medium">
                                 {criteria.impactScore.toFixed(1)} puntos
                               </Typography>
+                            </Grid>
+                            <Grid item xs={12} sx={{ mt: 1 }}>
+                              <Typography variant="caption" color="text.secondary" display="block">
+                                Tipos de Tarea Afectados
+                              </Typography>
+                              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                                {criteria.affectedTaskTypes.map(type => (
+                                  <Chip 
+                                    key={type}
+                                    label={type} 
+                                    size="small" 
+                                    sx={{ 
+                                      bgcolor: mode === 'dark' ? theme.palette.taskTypes[type] || '#333333' : null,
+                                      fontSize: '0.7rem',
+                                      height: 20,
+                                    }} 
+                                  />
+                                ))}
+                              </Box>
                             </Grid>
                           </Grid>
                         </Paper>
