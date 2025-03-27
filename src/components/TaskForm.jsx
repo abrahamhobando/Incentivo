@@ -238,6 +238,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
   const calculateTotalScore = () => {
     if (!taskData.type || !taskTypes[taskData.type]) return null;
     
+    // Verificar si hay al menos un criterio evaluado
     const hasEvaluations = taskTypes[taskData.type].criteria.some(
       criterion => taskData.evaluations[criterion.name] !== undefined && 
                  taskData.evaluations[criterion.name] !== null && 
@@ -249,21 +250,26 @@ const TaskForm = ({ employees, onTaskAdded }) => {
     return taskTypes[taskData.type].criteria.reduce((total, criterion) => {
       let score = taskData.evaluations[criterion.name] || 0;
       
-      if (taskData.type === 'Práctica de procesos') {
-        if (criterion.name === 'Calidad') {
-          score = score < 70 ? 0 : ((score - 69) / 31) * 60;
-        } else if (criterion.name === 'Seguimiento de instrucciones') {
-          score *= 0.40;
+      // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
+      if ((taskData.type === 'PRA' || taskData.type === 'Validacion') && 
+          criterion.name === 'Calidad' && score < 70) {
+        // Si calidad es menor a 70%, se pierde todo el porcentaje
+        return total;
+      }
+      
+      // Aplicar regla especial para Entrenamientos (Recibe)
+      if (taskData.type === 'Entrenamientos (Recibe)') {
+        if (criterion.name === 'Pruebas teóricas' && score < 75) {
+          // Si pruebas teóricas es menor a 75%, se pierde todo el porcentaje
+          return total;
         }
-      } else if (taskData.type === 'Entrenamientos (Recibe)') {
-        if (criterion.name === 'Pruebas teóricas') {
-          score = score < 75 ? 0 : ((score - 74) / 26) * 40;
-        } else if (criterion.name === 'Pruebas prácticas') {
-          score = score < 75 ? 0 : ((score - 74) / 26) * 60;
+        if (criterion.name === 'Pruebas prácticas' && score < 75) {
+          // Si pruebas prácticas es menor a 75%, se pierde todo el porcentaje
+          return total;
         }
       }
       
-      return total + score;
+      return total + (score * criterion.weight) / 100;
     }, 0);
   };
 
