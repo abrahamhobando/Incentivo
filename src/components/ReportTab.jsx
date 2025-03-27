@@ -28,9 +28,11 @@ import {
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DownloadIcon from '@mui/icons-material/Download';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ReportPDF from './ReportPDF';
+import GeneralReportPDF from './GeneralReportPDF';
 import { ColorModeContext } from '../main';
 import { useTheme } from '@mui/material/styles';
 
@@ -200,9 +202,41 @@ const ReportTab = ({ employees, tasks }) => {
       
       {!selectedEmployee && (
         <Box sx={{ mt: 3 }}>
-          <Typography variant="h5" gutterBottom>
-            Informes
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h5" gutterBottom>
+              Informes
+            </Typography>
+            <PDFDownloadLink 
+              document={
+                <GeneralReportPDF 
+                  employees={employees} 
+                  tasks={tasks} 
+                  dateRange={dateRange} 
+                />
+              } 
+              fileName={`informe_general_${new Date().toISOString().split('T')[0]}.pdf`}
+              style={{ textDecoration: 'none' }}
+            >
+              {({ blob, url, loading, error }) => (
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  startIcon={<SummarizeIcon />}
+                  disabled={loading}
+                  sx={{ 
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 6px 12px rgba(0,0,0,0.15)'
+                    }
+                  }}
+                >
+                  {loading ? 'Generando PDF...' : 'Descargar Informe General'}
+                </Button>
+              )}
+            </PDFDownloadLink>
+          </Box>
           <Grid container spacing={2}>
             {employeeStats.map((stat) => (
               <Grid item xs={12} sm={6} md={4} key={stat.employee.id}>
