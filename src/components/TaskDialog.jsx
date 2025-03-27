@@ -83,25 +83,26 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
     if (!hasEvaluations) return null;
     
     return taskTypes[editedTask.type].criteria.reduce((total, criterion) => {
-      const score = editedTask.evaluations[criterion.name] || 0;
+      let score = editedTask.evaluations[criterion.name] || 0;
       
-      // Aplicar regla especial para criterio de Calidad en tareas PRA, Validacion y Práctica de procesos
-      if ((editedTask.type === 'PRA' || editedTask.type === 'Validacion' || editedTask.type === 'Práctica de procesos') && 
-          criterion.name === 'Calidad' && score < 70) {
-        // Si calidad es menor a 70%, se pierde todo el porcentaje
-        return total;
+      // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
+      if ((editedTask.type === 'PRA' || editedTask.type === 'Validacion') && 
+          criterion.name === 'Calidad') {
+        // Si calidad es menor a 70, el puntaje será 0
+        // Si calidad es >= 70, se calcula proporcionalmente con la fórmula ((Nota - 69) / 31) * 60
+        score = score < 70 ? 0 : ((score - 69) / 31) * 60;
+        return total + score;
       }
       
-      // Aplicar regla especial para Entrenamientos (Recibe)
-      if (editedTask.type === 'Entrenamientos (Recibe)') {
-        if (criterion.name === 'Pruebas teóricas' && score < 75) {
-          // Si pruebas teóricas es menor a 75%, se pierde todo el porcentaje
-          return total;
+      if (editedTask.type === 'Práctica de procesos') {
+        if (criterion.name === 'Calidad') {
+          score = score < 70 ? 0 : ((score - 69) / 31) * 60;
+        } else if (criterion.name === 'Seguimiento de instrucciones') {
+          score = score * 0.40;
         }
-        if (criterion.name === 'Pruebas prácticas' && score < 75) {
-          // Si pruebas prácticas es menor a 75%, se pierde todo el porcentaje
-          return total;
-        }
+        // Para Práctica de procesos, devolvemos directamente la suma de los puntajes calculados
+        // en lugar de aplicar los pesos de los criterios (ya que los pesos están incluidos en las fórmulas)
+        return total + score;
       }
       
       return total + (score * criterion.weight) / 100;

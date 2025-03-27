@@ -252,9 +252,23 @@ const TaskForm = ({ employees, onTaskAdded }) => {
       
       // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
       if ((taskData.type === 'PRA' || taskData.type === 'Validacion') && 
-          criterion.name === 'Calidad' && score < 70) {
-        // Si calidad es menor a 70%, se pierde todo el porcentaje
-        return total;
+          criterion.name === 'Calidad') {
+        // Si calidad es menor a 70, el puntaje será 0
+        // Si calidad es >= 70, se calcula proporcionalmente con la fórmula ((Nota - 69) / 31) * 60
+        score = score < 70 ? 0 : ((score - 69) / 31) * 60;
+        return total + score;
+      }
+      
+      // Aplicar regla especial para Práctica de procesos
+      if (taskData.type === 'Práctica de procesos') {
+        if (criterion.name === 'Calidad') {
+          score = score < 70 ? 0 : ((score - 69) / 31) * 60;
+        } else if (criterion.name === 'Seguimiento de instrucciones') {
+          score = score * 0.40;
+        }
+        // Para Práctica de procesos, devolvemos directamente la suma de los puntajes calculados
+        // en lugar de aplicar los pesos de los criterios (ya que los pesos están incluidos en las fórmulas)
+        return total + score;
       }
       
       // Aplicar regla especial para Entrenamientos (Recibe)
