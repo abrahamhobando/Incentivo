@@ -273,13 +273,17 @@ const TaskForm = ({ employees, onTaskAdded }) => {
       
       // Aplicar regla especial para Entrenamientos (Recibe)
       if (taskData.type === 'Entrenamientos (Recibe)') {
-        if (criterion.name === 'Pruebas teóricas' && score < 75) {
-          // Si pruebas teóricas es menor a 75%, se pierde todo el porcentaje
-          return total;
+        if (criterion.name === 'Pruebas teóricas') {
+          // Si la nota es menor a 75, el puntaje será 0
+          // Si la nota es >= 75, se calcula proporcionalmente con la fórmula ((Nota - 74) / 26) * 40
+          score = score < 75 ? 0 : ((score - 74) / 26) * 40;
+          return total + score;
         }
-        if (criterion.name === 'Pruebas prácticas' && score < 75) {
-          // Si pruebas prácticas es menor a 75%, se pierde todo el porcentaje
-          return total;
+        if (criterion.name === 'Pruebas prácticas') {
+          // Si la nota es menor a 75, el puntaje será 0
+          // Si la nota es >= 75, se calcula proporcionalmente con la fórmula ((Nota - 74) / 26) * 60
+          score = score < 75 ? 0 : ((score - 74) / 26) * 60;
+          return total + score;
         }
       }
       
