@@ -318,7 +318,7 @@ const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
             </View>
           </View>
 
-          <Text style={styles.sectionTitle}>Tareas por Tipo</Text>
+          <Text style={styles.sectionTitle}>Asignaciones por Categoría</Text>
           {Object.entries(tasksByType).map(([type, count]) => (
             <View style={styles.taskTypeRow} key={type}>
               <Text style={styles.taskTypeLabel}>{type}:</Text>
@@ -328,7 +328,7 @@ const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Resumen por Empleado</Text>
+          <Text style={styles.sectionTitle}>Resumen por Colaborador</Text>
           
           {employeesWithStats.map((stat) => (
             <View style={styles.employeeSection} key={stat.employee.id}>

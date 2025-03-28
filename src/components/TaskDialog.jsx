@@ -235,7 +235,7 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <CategoryIcon color="action" />
                   <Typography variant="subtitle1">
-                    Tipo de Tarea: <Chip 
+                    Categoría: <Chip 
                       label={task.type} 
                       size="small" 
                       sx={{ 
@@ -257,7 +257,7 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
             <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
               <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2, display: 'flex', alignItems: 'center' }}>
                 Criterios de Evaluación
-                <Tooltip title="Los criterios varían según el tipo de tarea seleccionado">
+                <Tooltip title="Los criterios varían según la categoría seleccionada">
                   <IconButton size="small" sx={{ ml: 1 }}>
                     <InfoOutlinedIcon fontSize="small" />
                   </IconButton>

@@ -206,7 +206,7 @@ const ReportPDF = ({ employeeName, dateRange, statistics, tasks }) => {
         )}
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Detalle de Tareas</Text>
+          <Text style={styles.sectionTitle}>Detalle de Asignaciones</Text>
           
           <View style={styles.table}>
             <View style={styles.tableRowHeader}>

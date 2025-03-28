@@ -163,7 +163,7 @@ const StatsPDF = ({ dateRange, filteredTasks, taskTypeStats, criteriaStats, lowP
           <Text style={styles.sectionTitle}>Resumen General</Text>
           <View style={styles.statsContainer}>
             <View style={styles.statBox}>
-              <Text style={styles.statLabel}>Tareas Evaluadas</Text>
+              <Text style={styles.statLabel}>Asignaciones Evaluadas</Text>
               <Text style={styles.statValue}>{totalTasks}</Text>
             </View>
             <View style={styles.statBox}>
@@ -191,11 +191,11 @@ const StatsPDF = ({ dateRange, filteredTasks, taskTypeStats, criteriaStats, lowP
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Promedio por Tipo de Tarea</Text>
+          <Text style={styles.sectionTitle}>Promedio por Categoría</Text>
           <View style={styles.table}>
             <View style={styles.tableRowHeader}>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCellHeader}>Tipo de Tarea</Text>
+                <Text style={styles.tableCellHeader}>Categoría</Text>
               </View>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCellHeader}>Cantidad</Text>
@@ -269,7 +269,7 @@ const StatsPDF = ({ dateRange, filteredTasks, taskTypeStats, criteriaStats, lowP
 
         {lowPerformanceTasks.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Tareas con Bajo Rendimiento</Text>
+            <Text style={styles.sectionTitle}>Asignaciones con Bajo Rendimiento</Text>
             <View style={styles.table}>
               <View style={styles.tableRowHeader}>
                 <View style={[styles.tableCol, { width: '50%' }]}>

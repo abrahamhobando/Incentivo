@@ -308,7 +308,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
             <CardContent>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                  Total Tareas
+                  Total Asignaciones
                 </Typography>
                 <AssignmentIcon color="primary" />
               </Box>
@@ -334,7 +334,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
             <CardContent>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                  Tareas Pendientes
+                  Asignaciones Pendientes
                 </Typography>
                 <AssessmentIcon color="warning" />
               </Box>
@@ -360,7 +360,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
             <CardContent>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                  Tareas Evaluadas
+                  Asignaciones Evaluadas
                 </Typography>
                 <BarChartIcon color="success" />
               </Box>
@@ -479,7 +479,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
             <Grid item xs={12} md={3}>
               <FormControl fullWidth size="small">
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Typography variant="body2">Solo tareas sin evaluar</Typography>
+                  <Typography variant="body2">Solo asignaciones sin evaluar</Typography>
                   <Button
                     onClick={() => setFilters(prev => ({ ...prev, onlyUnevaluated: !prev.onlyUnevaluated }))}
                     color={filters.onlyUnevaluated ? "primary" : "inherit"}
@@ -494,7 +494,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                       justifyContent: 'center'
                     }}
                   >
-                    {filters.onlyUnevaluated ? "Mostrar solo tareas sin evaluar" : "Mostrar todas las tareas"}
+                    {filters.onlyUnevaluated ? "Mostrar solo asignaciones sin evaluar" : "Mostrar todas las asignaciones"}
                   </Button>
                 </Box>
               </FormControl>
