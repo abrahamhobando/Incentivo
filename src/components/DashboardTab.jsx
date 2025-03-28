@@ -418,10 +418,12 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                           `${task.totalScore.toFixed(2)}%` : 'Pendiente'} 
                         size="small" 
                         color={getTaskStatusColor(task)}
-                        variant="outlined"
+                        variant="filled"
                         sx={{ 
-                          fontSize: '0.7rem',
-                          height: 20,
+                          fontSize: '0.75rem',
+                          height: 22,
+                          fontWeight: 'bold',
+                          boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
                         }} 
                       />
                     </Box>
