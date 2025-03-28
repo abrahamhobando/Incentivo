@@ -606,8 +606,8 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                     <TableCell align="right">
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
                         <Chip
-                          label={task.totalScore !== undefined && task.totalScore !== null ? `${task.totalScore.toFixed(2)}%` : 'Sin evaluar'}
-                          color={task.totalScore !== undefined && task.totalScore !== null ? getScoreColor(task.totalScore) : 'default'}
+                          label={task.finalScore !== undefined && task.finalScore !== null ? `${task.finalScore.toFixed(2)}%` : 'Sin evaluar'}
+                          color={task.finalScore !== undefined && task.finalScore !== null ? getScoreColor(task.finalScore) : 'default'}
                           size="small"
                           sx={{
                             ...(task.totalScore === undefined || task.totalScore === null ? {
