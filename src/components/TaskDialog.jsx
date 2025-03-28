@@ -109,14 +109,35 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
       if (editedTask.type === 'Entrenamientos (Recibe)') {
         if (criterion.name === 'Pruebas teóricas') {
           // Si la nota es menor a 75, el puntaje será 0
-          // Si la nota es >= 75, se calcula proporcionalmente con la fórmula ((Nota - 74) / 26) * 40
-          score = score < 75 ? 0 : ((score - 74) / 26) * 40;
+          if (score < 75) return total + 0;
+          
+          // Fórmulas según los rangos de notas para pruebas teóricas
+          if (score >= 75 && score <= 85) {
+            score = 10 + (score - 75) * 1;
+          } else if (score >= 86 && score <= 94) {
+            score = 20 + (score - 85) * 1;
+          } else if (score >= 95 && score <= 96) {
+            score = 30 + (score - 95) * 2.5;
+          } else if (score >= 97 && score <= 100) {
+            score = 32.5 + (score - 96) * 1.875;
+          }
           return total + score;
         }
         if (criterion.name === 'Pruebas prácticas') {
           // Si la nota es menor a 75, el puntaje será 0
-          // Si la nota es >= 75, se calcula proporcionalmente con la fórmula ((Nota - 74) / 26) * 60
-          score = score < 75 ? 0 : ((score - 74) / 26) * 60;
+          if (score < 75) return total + 0;
+          
+          // Fórmulas según los rangos de notas para pruebas prácticas
+          if (score >= 75 && score <= 85) {
+            score = 10 + (score - 75) * 1.5;
+          } else if (score >= 86 && score <= 94) {
+            score = 25 + (score - 85) * 1.11;
+          } else if (score >= 95 && score <= 96) {
+            score = 35 + (score - 95) * 7.5;
+          } else if (score >= 97 && score <= 100) {
+            // Nueva fórmula ajustada para que con nota 100 dé exactamente 60%
+            score = 42.5 + (score - 96) * (17.5 / 4); // 17.5/4 = 4.375, con nota 100 da exactamente 60%
+          }
           return total + score;
         }
       }
