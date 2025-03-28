@@ -415,7 +415,7 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                       />
                       <Chip 
                         label={task.totalScore !== undefined && task.totalScore !== null ? 
-                          `${task.totalScore}%` : 'Pendiente'} 
+                          `${task.totalScore.toFixed(2)}%` : 'Pendiente'} 
                         size="small" 
                         color={getTaskStatusColor(task)}
                         variant="outlined"
