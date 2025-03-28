@@ -584,10 +584,10 @@ const StatsSection = ({ tasks, taskTypes }) => {
                             label={`${task.totalScore.toFixed(2)}%`} 
                             size="small" 
                             color={getScoreColor(task.totalScore)}
-                            variant="outlined"
                             sx={{ 
                               fontSize: '0.7rem',
                               height: 20,
+                              fontWeight: 'bold'
                             }} 
                           />
                         </TableCell>
