@@ -130,6 +130,108 @@ const styles = StyleSheet.create({
     width: '70%',
     fontWeight: 'bold',
   },
+  // Estilos para la tabla de tareas detalladas
+  taskTable: {
+    display: 'table',
+    width: '100%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginTop: 8,
+    marginBottom: 10,
+  },
+  taskTableRow: {
+    flexDirection: 'row',
+  },
+  taskTableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#f0f0f0',
+  },
+  taskTableCol: {
+    width: '25%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  taskTableCell: {
+    margin: 3,
+    fontSize: 8,
+  },
+  taskTableHeaderCell: {
+    margin: 3,
+    fontSize: 8,
+    fontWeight: 'bold',
+  },
+  // Estilos para la tabla de evaluaciones detalladas
+  evaluationTable: {
+    display: 'table',
+    width: '100%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  evaluationRow: {
+    flexDirection: 'row',
+  },
+  evaluationCol: {
+    width: '25%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  evaluationCell: {
+    margin: 3,
+    fontSize: 8,
+  },
+  evaluationHeader: {
+    margin: 3,
+    fontSize: 8,
+    fontWeight: 'bold',
+  },
+  taskDetail: {
+    marginBottom: 10,
+    padding: 8,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 3,
+  },
+  taskDetailHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 3,
+  },
+  taskDetailTitle: {
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
+  taskDetailScore: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: '#1976d2',
+  },
+  taskDetailInfo: {
+    fontSize: 8,
+    marginBottom: 3,
+  },
+  commentBox: {
+    marginTop: 5, 
+    padding: 4, 
+    backgroundColor: '#f0f0f0', 
+    borderRadius: 2, 
+    borderLeftWidth: 2, 
+    borderLeftColor: '#1976d2', 
+    borderLeftStyle: 'solid'
+  },
+  commentTitle: {
+    fontSize: 7, 
+    fontWeight: 'bold', 
+    marginBottom: 2, 
+    color: '#1976d2'
+  },
+  commentText: {
+    fontSize: 7
+  }
 });
 
 const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
@@ -162,7 +264,8 @@ const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
         totalTasks: 0,
         averageScore: 0,
         bonusPercentage: '0.00',
-        tasksByType: {}
+        tasksByType: {},
+        tasks: []
       };
     }
     
@@ -181,7 +284,8 @@ const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
       totalTasks: employeeTasks.length,
       averageScore,
       bonusPercentage,
-      tasksByType
+      tasksByType,
+      tasks: employeeTasks // Incluir las tareas del empleado para mostrar detalles
     };
   }).filter(stat => stat.totalTasks > 0); // Filtrar solo empleados con tareas evaluadas
 
@@ -240,6 +344,112 @@ const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
                 <View style={styles.taskTypeRow} key={`${stat.employee.id}-${type}`}>
                   <Text style={styles.taskTypeLabel}>{type}:</Text>
                   <Text style={styles.taskTypeValue}>{count}</Text>
+                </View>
+              ))}
+              
+              {/* Sección de detalle de tareas por empleado */}
+              <Text style={[styles.sectionTitle, { fontSize: 12, marginTop: 10 }]}>Detalle de Tareas</Text>
+              
+              {/* Tabla de tareas */}
+              <View style={styles.taskTable}>
+                <View style={styles.taskTableHeader}>
+                  <View style={styles.taskTableCol}>
+                    <Text style={styles.taskTableHeaderCell}>Fecha</Text>
+                  </View>
+                  <View style={styles.taskTableCol}>
+                    <Text style={styles.taskTableHeaderCell}>Título</Text>
+                  </View>
+                  <View style={styles.taskTableCol}>
+                    <Text style={styles.taskTableHeaderCell}>Tipo</Text>
+                  </View>
+                  <View style={styles.taskTableCol}>
+                    <Text style={styles.taskTableHeaderCell}>Calificación</Text>
+                  </View>
+                </View>
+                
+                {stat.tasks.map((task) => (
+                  <View style={styles.taskTableRow} key={task.id}>
+                    <View style={styles.taskTableCol}>
+                      <Text style={styles.taskTableCell}>{task.date}</Text>
+                    </View>
+                    <View style={styles.taskTableCol}>
+                      <Text style={styles.taskTableCell}>{task.title}</Text>
+                    </View>
+                    <View style={styles.taskTableCol}>
+                      <Text style={styles.taskTableCell}>{task.type}</Text>
+                    </View>
+                    <View style={styles.taskTableCol}>
+                      <Text style={styles.taskTableCell}>{task.totalScore.toFixed(2)}%</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+              
+              {/* Evaluaciones detalladas de cada tarea */}
+              <Text style={[styles.sectionTitle, { fontSize: 12, marginTop: 10 }]}>Evaluaciones Detalladas</Text>
+              
+              {stat.tasks.map((task) => (
+                <View style={styles.taskDetail} key={task.id}>
+                  <View style={styles.taskDetailHeader}>
+                    <Text style={styles.taskDetailTitle}>{task.title}</Text>
+                    <Text style={styles.taskDetailScore}>{task.totalScore.toFixed(2)}%</Text>
+                  </View>
+                  <Text style={styles.taskDetailInfo}>Fecha: {task.date} | Tipo: {task.type}</Text>
+                  
+                  <View style={styles.evaluationTable}>
+                    <View style={styles.evaluationRow}>
+                      <View style={styles.evaluationCol}>
+                        <Text style={styles.evaluationHeader}>Criterio</Text>
+                      </View>
+                      <View style={styles.evaluationCol}>
+                        <Text style={styles.evaluationHeader}>Peso</Text>
+                      </View>
+                      <View style={styles.evaluationCol}>
+                        <Text style={styles.evaluationHeader}>Puntuación</Text>
+                      </View>
+                      <View style={styles.evaluationCol}>
+                        <Text style={styles.evaluationHeader}>Ponderado</Text>
+                      </View>
+                    </View>
+                    
+                    {Object.entries(task.evaluations || {}).map(([criterio, puntuacion]) => {
+                      const peso = task.type === 'PRA' ?
+                        (criterio === 'Calidad' ? 60 : 40) :
+                        (criterio === 'Calidad' ? 60 : 20);
+                      // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
+                      let ponderado = 0;
+                      if ((task.type === 'PRA' || task.type === 'Validacion') && 
+                          criterio === 'Calidad' && puntuacion < 70) {
+                        // Si calidad es menor a 70%, se pierde todo el porcentaje
+                        ponderado = 0;
+                      } else {
+                        ponderado = (puntuacion * peso / 100).toFixed(2);
+                      }
+                      
+                      return (
+                        <View style={styles.evaluationRow} key={criterio}>
+                          <View style={styles.evaluationCol}>
+                            <Text style={styles.evaluationCell}>{criterio}</Text>
+                          </View>
+                          <View style={styles.evaluationCol}>
+                            <Text style={styles.evaluationCell}>{peso}%</Text>
+                          </View>
+                          <View style={styles.evaluationCol}>
+                            <Text style={styles.evaluationCell}>{puntuacion}%</Text>
+                          </View>
+                          <View style={styles.evaluationCol}>
+                            <Text style={styles.evaluationCell}>{ponderado}%</Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                  {task.comments && (
+                    <View style={styles.commentBox}>
+                      <Text style={styles.commentTitle}>Comentarios de la tarea:</Text>
+                      <Text style={styles.commentText}>{task.comments}</Text>
+                    </View>
+                  )}
                 </View>
               ))}
             </View>
