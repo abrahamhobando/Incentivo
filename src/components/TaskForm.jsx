@@ -251,23 +251,39 @@ const TaskForm = ({ employees, onTaskAdded }) => {
       let score = taskData.evaluations[criterion.name] || 0;
       
       // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
-      if ((taskData.type === 'PRA' || taskData.type === 'Validacion') && 
+      if ((taskData.type === 'PRA' || taskData.type === 'Validacion' || taskData.type === 'Práctica de procesos') && 
           criterion.name === 'Calidad') {
         // Si calidad es menor a 70, el puntaje será 0
-        // Si calidad es >= 70, se calcula proporcionalmente con la fórmula ((Nota - 69) / 31) * 60
-        score = score < 70 ? 0 : ((score - 69) / 31) * 60;
-        return total + score;
+        if (score < 70) {
+          return total + 0;
+        }
+        
+        // Fórmulas por rangos según la tabla proporcionada
+        let calidadPercentage = 0;
+        
+        if (score >= 70 && score <= 80) {
+          // Para notas de 70 a 80: Porcentaje de Calidad = 10 + (Nota - 70) × 1
+          calidadPercentage = 10 + (score - 70) * 1;
+        } else if (score >= 81 && score <= 84) {
+          // Para notas de 81 a 84: Porcentaje de Calidad = 20 + (Nota - 80) × 2
+          calidadPercentage = 20 + (score - 80) * 2;
+        } else if (score >= 85 && score <= 89) {
+          // Para notas de 85 a 89: Porcentaje de Calidad = 27.5 + (Nota - 84) × 2.5
+          calidadPercentage = 27.5 + (score - 84) * 2.5;
+        } else if (score >= 90 && score <= 94) {
+          // Para notas de 90 a 94: Porcentaje de Calidad = 38 + (Nota - 89) × 2.5
+          calidadPercentage = 38 + (score - 89) * 2.5;
+        } else if (score >= 95 && score <= 100) {
+          // Para notas de 95 a 100: Porcentaje de Calidad = 50 + (Nota - 95) × 2
+          calidadPercentage = 50 + (score - 95) * 2;
+        }
+        
+        return total + calidadPercentage;
       }
       
-      // Aplicar regla especial para Práctica de procesos
-      if (taskData.type === 'Práctica de procesos') {
-        if (criterion.name === 'Calidad') {
-          score = score < 70 ? 0 : ((score - 69) / 31) * 60;
-        } else if (criterion.name === 'Seguimiento de instrucciones') {
-          score = score * 0.40;
-        }
-        // Para Práctica de procesos, devolvemos directamente la suma de los puntajes calculados
-        // en lugar de aplicar los pesos de los criterios (ya que los pesos están incluidos en las fórmulas)
+      // Para Práctica de procesos, solo aplicamos la regla especial para el criterio 'Seguimiento de instrucciones'
+      if (taskData.type === 'Práctica de procesos' && criterion.name === 'Seguimiento de instrucciones') {
+        score = score * 0.40;
         return total + score;
       }
       
