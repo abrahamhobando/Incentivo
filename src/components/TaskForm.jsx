@@ -373,7 +373,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
       <CardContent sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h5" component="h2" gutterBottom sx={{ display: 'flex', alignItems: 'center', mb: 0 }}>
-            <AddTaskIcon sx={{ mr: 1 }} /> Nueva Tarea
+            <AddTaskIcon sx={{ mr: 1 }} /> Nueva Asignación
           </Typography>
           <Button
             variant="contained"
@@ -386,7 +386,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
               borderRadius: '8px',
             }}
           >
-            Crear
+            Crear nueva asignación
           </Button>
         </Box>
         <Divider sx={{ mb: 3 }} />
@@ -403,7 +403,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
-                  label="Título de la Tarea"
+                  label="Título de la asignación"
                   name="title"
                   value={taskData.title}
                   onChange={handleChange}
@@ -418,7 +418,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
               <Grid item xs={12} md={6}>
                 {!multipleAssignment ? (
                   <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
-                    <InputLabel>Asignado</InputLabel>
+                    <InputLabel>Colaborador asignado</InputLabel>
                     <Select
                       name="employeeId"
                       value={taskData.employeeId}
@@ -471,7 +471,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
-                  <InputLabel>Tipo de Tarea</InputLabel>
+                  <InputLabel>Categoría</InputLabel>
                   <Select
                     name="type"
                     value={taskData.type}
@@ -507,7 +507,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
                 <TextField
                   fullWidth
                   type="date"
-                  label="Fecha"
+                  label="Fecha de asignación"
                   name="date"
                   value={taskData.date}
                   onChange={handleChange}
@@ -639,7 +639,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
           
           <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
             <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
-              Comentarios Adicionales
+              Observaciones
             </Typography>
             
             <TextField
@@ -694,7 +694,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
               }}
               disabled={multipleAssignment && selectedEmployees.length === 0}
             >
-              Agregar Tarea{multipleAssignment && selectedEmployees.length > 0 ? `s (${selectedEmployees.length})` : ''}
+              Crear asignación{multipleAssignment && selectedEmployees.length > 0 ? `s (${selectedEmployees.length})` : ''}
             </Button>
           </Box>
           </Box>

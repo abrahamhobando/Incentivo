@@ -158,7 +158,7 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ pb: 1 }}>
         <Typography variant="h5" component="h2" sx={{ display: 'flex', alignItems: 'center' }}>
-          <AssignmentIcon sx={{ mr: 1 }} /> Detalles de la Tarea: {task.title}
+          <AssignmentIcon sx={{ mr: 1 }} /> Detalles de la Asignación: {task.title}
         </Typography>
       </DialogTitle>
       <Divider />
@@ -342,7 +342,7 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
                   }
                 }}>
                   <Typography variant="subtitle2" sx={{ mb: 0.5, opacity: 0.8 }}>
-                    Puntuación Total
+                    Calificación Final
                   </Typography>
                   <Box sx={{ 
                     display: 'flex', 

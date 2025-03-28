@@ -27,7 +27,7 @@ const ConfirmDialog = ({ open, onClose, onConfirm, title, message }) => {
           Cancelar
         </Button>
         <Button onClick={onConfirm} color="error" variant="contained" autoFocus>
-          Eliminar
+          Confirmar
         </Button>
       </DialogActions>
     </Dialog>

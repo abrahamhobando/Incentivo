@@ -153,9 +153,9 @@ function App() {
                 }
               }}
             >
-              <Tab icon={<DashboardIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Inicio" />
-              <Tab label="Gestión de CADS" />
-              <Tab label="Gestión de Tareas" />
+              <Tab icon={<DashboardIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Panel Principal" />
+              <Tab label="Colaboradores" />
+              <Tab label="Asignaciones" />
               <Tab label="Informes" />
             </Tabs>
           </Paper>

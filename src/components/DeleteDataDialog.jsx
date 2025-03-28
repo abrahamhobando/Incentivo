@@ -259,7 +259,7 @@ const DeleteDataDialog = ({ onDataDeleted }) => {
           }}
         >
           <Tab label="Por Rango de Fechas" />
-          <Tab label="Selección Manual" />
+          <Tab label="Selección individual" />
         </Tabs>
 
         <DialogContent sx={{ p: 3 }}>
@@ -370,8 +370,9 @@ const DeleteDataDialog = ({ onDataDeleted }) => {
                   color="error"
                   onClick={handleDeleteSelectedTasks}
                   disabled={selectedTasks.length === 0}
+                  sx={{ mt: 2 }}
                 >
-                  Eliminar {selectedTasks.length} Tarea(s)
+                  Eliminar elementos seleccionados
                 </Button>
               </Box>
             </Box>

@@ -162,11 +162,11 @@ const ReportTab = ({ employees, tasks }) => {
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={12} md={4}>
           <FormControl fullWidth size="small">
-            <InputLabel>Seleccionar Asignado</InputLabel>
+            <InputLabel>Seleccionar colaborador</InputLabel>
             <Select
               value={selectedEmployee}
               onChange={handleEmployeeChange}
-              label="Seleccionar Asignado"
+              label="Seleccionar colaborador"
             >
               {employees.map((employee) => (
                 <MenuItem key={employee.id} value={employee.id}>
@@ -180,7 +180,7 @@ const ReportTab = ({ employees, tasks }) => {
           <TextField
             fullWidth
             type="date"
-            label="Fecha Inicio"
+            label="Periodo"
             value={dateRange.startDate}
             onChange={handleDateChange('startDate')}
             InputLabelProps={{ shrink: true }}
@@ -337,7 +337,7 @@ const ReportTab = ({ employees, tasks }) => {
                   startIcon={<DownloadIcon />}
                   disabled={loading}
                 >
-                  {loading ? 'Generando PDF...' : 'Descargar PDF'}
+                  {loading ? 'Generando PDF...' : 'Exportar a PDF'}
                 </Button>
               )}
             </PDFDownloadLink>
@@ -348,7 +348,7 @@ const ReportTab = ({ employees, tasks }) => {
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Tareas Completadas
+                    Total de asignaciones
                   </Typography>
                   <Typography variant="h4" color="primary">
                     {statistics.totalTasks}
@@ -360,7 +360,7 @@ const ReportTab = ({ employees, tasks }) => {
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Promedio General
+                    Promedio de desempeño
                   </Typography>
                   <Typography variant="h4" color="primary">
                     {statistics.averageScore.toFixed(2)}%
@@ -372,7 +372,7 @@ const ReportTab = ({ employees, tasks }) => {
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Bono Obtenido
+                    Incentivo calculado
                   </Typography>
                   <Typography variant="h4" color="primary">
                     {statistics.bonusPercentage}%
@@ -425,7 +425,7 @@ const ReportTab = ({ employees, tasks }) => {
           <Box sx={{ mb: 2 }}>
             <FormControlLabel
               control={<Switch checked={showDetails} onChange={(e) => setShowDetails(e.target.checked)} />}
-              label="Mostrar detalles de evaluación"
+              label="Ver desglose"
             />
           </Box>
 

@@ -771,7 +771,7 @@ const DataTransfer = ({ onDataImported }) => {
           </IconButton>
         </Tooltip>
         
-        <Tooltip title="Exportar datos JSON">
+        <Tooltip title="Exportar">
           <IconButton 
             onClick={handleExport} 
             color="inherit" 
@@ -794,7 +794,7 @@ const DataTransfer = ({ onDataImported }) => {
           </IconButton>
         </Tooltip>
         
-        <Tooltip title="Importar datos">
+        <Tooltip title="Importar">
           <IconButton 
             color="inherit" 
             aria-label="importar datos"
