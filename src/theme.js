@@ -14,13 +14,13 @@ const lightTheme = createTheme({
       dark: '#1a4d33',
     },
     taskTypes: {
-      PRA: '#e0f2f1',
-      Validation: '#e8f5e9',
-      "STD Times": '#fff8e1',
-      "Entrenamientos (Recibe)": '#e1f5fe',
-      "Entrenamientos (Brinda)": '#f8bbd0',
-      "Práctica de procesos": '#c8e6c9',
-      "Refrescamientos (Brinda)": '#ffccbc'
+      PRA: '#bbdefb',  // Azul más vibrante
+      Validation: '#c8e6c9',  // Verde más vibrante
+      "STD Times": '#fff59d',  // Amarillo más vibrante
+      "Entrenamientos (Recibe)": '#b3e5fc',  // Azul claro más vibrante
+      "Entrenamientos (Brinda)": '#f8bbd0',  // Rosa más vibrante
+      "Práctica de procesos": '#a5d6a7',  // Verde claro más vibrante
+      "Refrescamientos (Brinda)": '#ffab91'  // Naranja más vibrante
     },
     success: {
       main: '#a5d6a7',  // Verde pastel
@@ -102,7 +102,33 @@ const lightTheme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          borderRadius: 6,
+          borderRadius: 16,
+          transition: 'all 0.2s ease-in-out',
+          fontWeight: 500,
+          border: 'none',
+          boxShadow: 'none',
+          '&:hover': {
+            transform: 'translateY(-2px)',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          }
+        },
+        colorPrimary: {
+          boxShadow: 'none',
+        },
+        colorSecondary: {
+          boxShadow: 'none',
+        },
+        colorSuccess: {
+          boxShadow: 'none',
+        },
+        colorError: {
+          boxShadow: 'none',
+        },
+        colorWarning: {
+          boxShadow: 'none',
+        },
+        colorInfo: {
+          boxShadow: 'none',
         },
       },
     },
@@ -124,13 +150,13 @@ const darkTheme = createTheme({
       dark: '#7c4dff',
     },
     taskTypes: {
-      PRA: '#2c4356',
-      Validation: '#4a3f6b',
-      "STD Times": '#4e4238',
-      "Entrenamientos (Recibe)": '#1e4d6b',
-      "Entrenamientos (Brinda)": '#614b5e',
-      "Práctica de procesos": '#2d4a3e',
-      "Refrescamientos (Brinda)": '#5c4037',
+      PRA: '#1565c0',  // Azul más vibrante en oscuro
+      Validation: '#2e7d32',  // Verde más vibrante en oscuro
+      "STD Times": '#fbc02d',  // Amarillo más vibrante en oscuro
+      "Entrenamientos (Recibe)": '#0288d1',  // Azul claro más vibrante en oscuro
+      "Entrenamientos (Brinda)": '#c2185b',  // Rosa más vibrante en oscuro
+      "Práctica de procesos": '#388e3c',  // Verde claro más vibrante en oscuro
+      "Refrescamientos (Brinda)": '#e64a19'  // Naranja más vibrante en oscuro
     },
     success: {
       main: '#81c784',  // Verde pastel oscuro
@@ -220,7 +246,33 @@ const darkTheme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          borderRadius: 6,
+          borderRadius: 16,
+          transition: 'all 0.2s ease-in-out',
+          fontWeight: 500,
+          border: 'none',
+          boxShadow: 'none',
+          '&:hover': {
+            transform: 'translateY(-2px)',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          }
+        },
+        colorPrimary: {
+          boxShadow: 'none',
+        },
+        colorSecondary: {
+          boxShadow: 'none',
+        },
+        colorSuccess: {
+          boxShadow: 'none',
+        },
+        colorError: {
+          boxShadow: 'none',
+        },
+        colorWarning: {
+          boxShadow: 'none',
+        },
+        colorInfo: {
+          boxShadow: 'none',
         },
       },
     },

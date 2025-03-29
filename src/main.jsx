@@ -33,6 +33,12 @@ const ThemeApp = () => {
   // Guardar el tema en localStorage cuando cambie
   useEffect(() => {
     localStorage.setItem('themeMode', mode);
+    
+    // Emitir un evento personalizado cuando cambie el tema
+    // para que el script en index.html pueda actualizar el favicon
+    document.dispatchEvent(
+      new CustomEvent('themeChanged', { detail: { mode } })
+    );
   }, [mode]);
 
   const colorMode = useMemo(

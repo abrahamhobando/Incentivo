@@ -1,0 +1,24 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo cuadrado con bordes redondeados y gradiente -->
+  <rect width="180" height="180" rx="40" fill="url(#paint0_linear)" />
+  
+  <!-- Icono de asignación/tarea más grande y centrado -->
+  <path d="M114 72H94V64C94 61.8 92.2 60 90 60H70C67.8 60 66 61.8 66 64V72H46C43.8 72 42 73.8 42 76V124C42 126.2 43.8 128 46 128H114C116.2 128 118 126.2 118 124V76C118 73.8 116.2 72 114 72ZM70 64H90V72H70V64ZM114 124H46V76H66V84H94V76H114V124Z" fill="white"/>
+  
+  <!-- Marcas de verificación (check) más grandes -->
+  <path d="M58 96L66 104L82 88" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M58 112L66 120L82 104" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Líneas de texto más grandes -->
+  <rect x="94" y="96" width="28" height="6" rx="3" fill="white"/>
+  <rect x="94" y="104" width="20" height="6" rx="3" fill="white"/>
+  <rect x="94" y="112" width="24" height="6" rx="3" fill="white"/>
+  
+  <!-- Definición del gradiente -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3f51b5"/>
+      <stop offset="100%" stop-color="#1976d2"/>
+    </linearGradient>
+  </defs>
+</svg> 

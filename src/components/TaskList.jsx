@@ -478,25 +478,22 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
             </Grid>
             <Grid item xs={12} md={3}>
               <FormControl fullWidth size="small">
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Typography variant="body2">Solo asignaciones sin evaluar</Typography>
-                  <Button
-                    onClick={() => setFilters(prev => ({ ...prev, onlyUnevaluated: !prev.onlyUnevaluated }))}
-                    color={filters.onlyUnevaluated ? "primary" : "inherit"}
-                    variant={filters.onlyUnevaluated ? "contained" : "outlined"}
-                    size="small"
-                    fullWidth
-                    sx={{ 
-                      minHeight: '40px',
-                      textTransform: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    {filters.onlyUnevaluated ? "Mostrar solo asignaciones sin evaluar" : "Mostrar todas las asignaciones"}
-                  </Button>
-                </Box>
+                <Button
+                  onClick={() => setFilters(prev => ({ ...prev, onlyUnevaluated: !prev.onlyUnevaluated }))}
+                  color={filters.onlyUnevaluated ? "primary" : "inherit"}
+                  variant={filters.onlyUnevaluated ? "contained" : "outlined"}
+                  size="small"
+                  fullWidth
+                  sx={{ 
+                    minHeight: '40px',
+                    textTransform: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  {filters.onlyUnevaluated ? "Sin evaluar" : "Todas las tareas"}
+                </Button>
               </FormControl>
             </Grid>
             <Grid item xs={12} md={3}>
@@ -594,6 +591,14 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                         sx={{
                           bgcolor: getTaskTypeColor(task.type),
                           fontWeight: 500,
+                          border: 'none',
+                          boxShadow: 'none',
+                          borderRadius: '16px',
+                          transition: 'all 0.2s ease-in-out',
+                          '&:hover': {
+                            transform: 'translateY(-1px)',
+                            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.08)'
+                          }
                         }}
                         size="small"
                       />
@@ -610,14 +615,28 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                           color={task.totalScore !== undefined && task.totalScore !== null ? getScoreColor(task.totalScore) : 'default'}
                           size="small"
                           sx={{
+                            minWidth: '85px',
                             ...(task.totalScore === undefined || task.totalScore === null ? {
-                              bgcolor: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+                              bgcolor: mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
                               color: mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
                               fontStyle: 'italic',
                               '&:hover': {
-                                bgcolor: mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)'
+                                bgcolor: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'
                               }
-                            } : {})
+                            } : {
+                              fontWeight: 700,
+                              fontSize: '0.85rem',
+                              height: '28px',
+                              '& .MuiChip-label': { px: 1.8 }
+                            }),
+                            border: 'none',
+                            boxShadow: 'none',
+                            borderRadius: '14px',
+                            transition: 'all 0.2s ease-in-out',
+                            '&:hover': {
+                              transform: 'translateY(-1px)',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                            }
                           }}
                         />
                         <Box sx={{ visibility: hoveredTaskId === task.id ? 'visible' : 'hidden' }}>

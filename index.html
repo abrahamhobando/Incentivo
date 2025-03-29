@@ -4,10 +4,66 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistema de Gestión de CADS y Tareas</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="application-name" content="Sistema de Asignaciones">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Asignaciones">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" id="favicon">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#3f51b5">
+    
+    <!-- Fuentes -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap"
     />
+    
+    <!-- Script para manejar el favicon según el modo claro/oscuro -->
+    <script>
+      // Función para actualizar el favicon según el modo
+      function updateFavicon(isDarkMode) {
+        const favicon = document.getElementById('favicon');
+        
+        // Si no se especifica, detectar por preferencia del sistema
+        if (isDarkMode === undefined) {
+          isDarkMode = window.matchMedia && 
+            window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+          // También comprobar localStorage si no coincide con la preferencia del sistema
+          const savedMode = localStorage.getItem('themeMode');
+          if (savedMode) {
+            isDarkMode = savedMode === 'dark';
+          }
+        }
+        
+        // Cambiar el favicon según el modo
+        favicon.href = isDarkMode ? '/favicon-dark.svg' : '/favicon.svg';
+        
+        // Actualizar theme-color para navegadores móviles
+        document.querySelector('meta[name="theme-color"]').setAttribute(
+          'content', 
+          isDarkMode ? '#0f172a' : '#3f51b5'
+        );
+      }
+      
+      // Actualizar inicialmente
+      updateFavicon();
+      
+      // Escuchar cambios en el modo de preferencia del sistema
+      window.matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', (e) => updateFavicon(e.matches));
+        
+      // También escuchar el evento personalizado de la aplicación React
+      document.addEventListener('themeChanged', (e) => {
+        updateFavicon(e.detail.mode === 'dark');
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>

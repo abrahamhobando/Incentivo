@@ -451,30 +451,16 @@ const ReportTab = ({ employees, tasks }) => {
                   sx={{
                     fontSize: '0.85rem',
                     fontWeight: 600,
-                    bgcolor: (theme) => {
-                      if (type === 'PRA') return theme.palette.primary.light;
-                      if (type === 'STD Times') return theme.palette.secondary.light;
-                      if (type === 'Entrenamientos (Recibe)') return theme.palette.info.light;
-                      if (type === 'Entrenamientos (Brinda)') return theme.palette.success.light;
-                      if (type === 'Refrescamientos (Brinda)') return theme.palette.warning.light;
-                      if (type === 'Práctica de procesos') return theme.palette.error.light;
-                      return theme.palette.grey[300];
-                    },
-                    color: (theme) => {
-                      if (type === 'PRA') return theme.palette.primary.dark;
-                      if (type === 'STD Times') return theme.palette.secondary.dark;
-                      if (type === 'Entrenamientos (Recibe)') return theme.palette.info.dark;
-                      if (type === 'Entrenamientos (Brinda)') return theme.palette.success.dark;
-                      if (type === 'Refrescamientos (Brinda)') return theme.palette.warning.dark;
-                      if (type === 'Práctica de procesos') return theme.palette.error.dark;
-                      return theme.palette.grey[700];
-                    },
+                    bgcolor: (theme) => alpha(theme.palette.taskTypes[type] || theme.palette.grey[300], mode === 'dark' ? 0.3 : 1),
+                    color: (theme) => mode === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.8)',
                     '& .MuiChip-label': { px: 1.5 },
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                    transition: 'all 0.3s ease-in-out',
+                    border: 'none',
+                    boxShadow: 'none',
+                    borderRadius: '16px',
+                    transition: 'all 0.2s ease-in-out',
                     '&:hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
+                      transform: 'translateY(-1px)',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                     }
                   }}
                 />
@@ -529,58 +515,52 @@ const ReportTab = ({ employees, tasks }) => {
                               sx={{
                                 height: '32px',
                                 fontSize: '0.9rem',
-                                fontWeight: 700,
-                                bgcolor: (theme) => {
-                                  if (task.type === 'PRA') return theme.palette.primary.light;
-                                  if (task.type === 'STD Times') return theme.palette.secondary.light;
-                                  if (task.type === 'Entrenamientos (Recibe)') return theme.palette.info.light;
-                                  if (task.type === 'Entrenamientos (Brinda)') return theme.palette.success.light;
-                                  if (task.type === 'Refrescamientos (Brinda)') return theme.palette.warning.light;
-                                  if (task.type === 'Práctica de procesos') return theme.palette.error.light;
-                                  return theme.palette.grey[300];
-                                },
-                                color: (theme) => {
-                                  if (task.type === 'PRA') return theme.palette.primary.dark;
-                                  if (task.type === 'STD Times') return theme.palette.secondary.dark;
-                                  if (task.type === 'Entrenamientos (Recibe)') return theme.palette.info.dark;
-                                  if (task.type === 'Entrenamientos (Brinda)') return theme.palette.success.dark;
-                                  if (task.type === 'Refrescamientos (Brinda)') return theme.palette.warning.dark;
-                                  if (task.type === 'Práctica de procesos') return theme.palette.error.dark;
-                                  return theme.palette.grey[700];
-                                },
+                                fontWeight: 600,
+                                bgcolor: (theme) => theme.palette.taskTypes[task.type] || theme.palette.grey[300],
+                                color: (theme) => mode === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.8)',
                                 '& .MuiChip-label': { px: 2 },
                                 mr: 1.5,
-                                boxShadow: '0 3px 6px rgba(0,0,0,0.15)',
+                                border: 'none',
+                                boxShadow: 'none',
                                 transition: 'all 0.3s ease-in-out',
+                                borderRadius: '16px',
                                 '&:hover': {
-                                  transform: 'translateY(-3px)',
-                                  boxShadow: '0 6px 12px rgba(0,0,0,0.3)'
+                                  transform: 'translateY(-1px)',
+                                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                                 }
                               }}
                             />
-                            <Typography
-                              variant="body1"
+                            <Chip
+                              label={`${task.totalScore.toFixed(1)}%`}
+                              size="small"
                               sx={{
+                                height: '28px',
+                                fontSize: '0.9rem',
                                 fontWeight: 700,
+                                bgcolor: (theme) => {
+                                  if (task.totalScore >= 90) return alpha(theme.palette.success.main, 0.12);
+                                  if (task.totalScore >= 70) return alpha(theme.palette.info.main, 0.12);
+                                  if (task.totalScore >= 50) return alpha(theme.palette.warning.main, 0.12);
+                                  return alpha(theme.palette.error.main, 0.12);
+                                },
                                 color: (theme) => {
                                   if (task.totalScore >= 90) return theme.palette.success.main;
                                   if (task.totalScore >= 70) return theme.palette.info.main;
                                   if (task.totalScore >= 50) return theme.palette.warning.main;
                                   return theme.palette.error.main;
                                 },
-                                bgcolor: (theme) => {
-                                  if (task.totalScore >= 90) return alpha(theme.palette.success.main, 0.1);
-                                  if (task.totalScore >= 70) return alpha(theme.palette.info.main, 0.1);
-                                  if (task.totalScore >= 50) return alpha(theme.palette.warning.main, 0.1);
-                                  return alpha(theme.palette.error.main, 0.1);
-                                },
-                                px: 1.5,
-                                py: 0.5,
-                                borderRadius: 1
+                                '& .MuiChip-label': { px: 1.8 },
+                                mr: 1.5,
+                                border: 'none',
+                                boxShadow: 'none',
+                                transition: 'all 0.2s ease-in-out',
+                                borderRadius: '14px',
+                                '&:hover': {
+                                  transform: 'translateY(-1px)',
+                                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                                }
                               }}
-                            >
-                              {task.totalScore.toFixed(1)}%
-                            </Typography>
+                            />
                           </Box>
                         </Box>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -678,23 +658,30 @@ const ReportTab = ({ employees, tasks }) => {
                                       label={`${puntuacion}%`}
                                       sx={{
                                         height: '24px',
-                                        fontSize: '0.8rem',
-                                        fontWeight: 600,
+                                        fontSize: '0.85rem',
+                                        fontWeight: 700,
                                         bgcolor: (theme) => {
-                                          if (puntuacion >= 90) return theme.palette.success.light;
-                                          if (puntuacion >= 70) return theme.palette.info.light;
-                                          if (puntuacion >= 50) return theme.palette.warning.light;
-                                          return theme.palette.error.light;
+                                          if (puntuacion >= 90) return alpha(theme.palette.success.main, 0.1);
+                                          if (puntuacion >= 70) return alpha(theme.palette.info.main, 0.1);
+                                          if (puntuacion >= 50) return alpha(theme.palette.warning.main, 0.1);
+                                          return alpha(theme.palette.error.main, 0.1);
                                         },
                                         color: (theme) => {
-                                          if (puntuacion >= 90) return theme.palette.success.dark;
-                                          if (puntuacion >= 70) return theme.palette.info.dark;
-                                          if (puntuacion >= 50) return theme.palette.warning.dark;
-                                          return theme.palette.error.dark;
+                                          if (puntuacion >= 90) return theme.palette.success.main;
+                                          if (puntuacion >= 70) return theme.palette.info.main;
+                                          if (puntuacion >= 50) return theme.palette.warning.main;
+                                          return theme.palette.error.main;
                                         },
-                                        '& .MuiChip-label': { px: 1 },
+                                        '& .MuiChip-label': { px: 1.5 },
                                         mr: 1.5,
-                                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                        border: 'none',
+                                        boxShadow: 'none',
+                                        borderRadius: '12px',
+                                        transition: 'all 0.2s ease-in-out',
+                                        '&:hover': {
+                                          transform: 'translateY(-1px)',
+                                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                        }
                                       }}
                                     />
                                     <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary' }}>
