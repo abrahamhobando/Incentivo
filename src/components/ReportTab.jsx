@@ -628,8 +628,20 @@ const ReportTab = ({ employees, tasks }) => {
                               const criteriaItem = taskCriteria.find(c => c.name === criterio);
                               const peso = criteriaItem ? criteriaItem.weight : 100 / Object.keys(task.evaluations || {}).length;
                               let ponderado = 0;
-                              if ((task.type === 'PRA' || task.type === 'Validacion') && criterio === 'Calidad' && puntuacion < 70) {
-                                ponderado = 0;
+                              if (task.type === 'Entrenamientos (Recibe)') {
+                                if (criterio === 'Pruebas teóricas') {
+                                  if (puntuacion < 75) ponderado = 0;
+                                  else if (puntuacion >= 75 && puntuacion <= 85) ponderado = 10 + (puntuacion - 75) * 1;
+                                  else if (puntuacion >= 86 && puntuacion <= 94) ponderado = 20 + (puntuacion - 85) * 1;
+                                  else if (puntuacion >= 95 && puntuacion <= 96) ponderado = 30 + (puntuacion - 95) * 2.5;
+                                  else if (puntuacion >= 97 && puntuacion <= 100) ponderado = 32.5 + (puntuacion - 96) * 1.875;
+                                } else if (criterio === 'Pruebas prácticas') {
+                                  if (puntuacion < 75) ponderado = 0;
+                                  else if (puntuacion >= 75 && puntuacion <= 85) ponderado = 10 + (puntuacion - 75) * 1.5;
+                                  else if (puntuacion >= 86 && puntuacion <= 94) ponderado = 25 + (puntuacion - 85) * 1.11;
+                                  else if (puntuacion >= 95 && puntuacion <= 96) ponderado = 35 + (puntuacion - 95) * 7.5;
+                                  else if (puntuacion >= 97 && puntuacion <= 100) ponderado = 42.5 + (puntuacion - 96) * 4.375;
+                                }
                               } else {
                                 ponderado = (puntuacion * peso / 100).toFixed(1);
                               }
