@@ -24,29 +24,29 @@ const containerVariants = {
   visible: { 
     opacity: 1,
     transition: { 
-      staggerChildren: 0.06,
-      delayChildren: 0.1,
-      duration: 0.4,
-      ease: [0.25, 0.1, 0.25, 1.0] // Curva de aceleración al estilo Apple
+      staggerChildren: 0.05,
+      delayChildren: 0.08,
+      duration: 0.3,
+      ease: [0.25, 0.1, 0.25, 1.0] // Curva de aceleración estilo Apple
     } 
   },
   exit: {
     opacity: 0,
     transition: {
-      duration: 0.2,
+      duration: 0.15,
       ease: [0.25, 0.1, 0.25, 1.0]
     }
   }
 };
 
 const itemVariants = {
-  hidden: { y: 15, opacity: 0, scale: 0.98 },
+  hidden: { y: 12, opacity: 0, scale: 0.98 },
   visible: { 
     y: 0, 
     opacity: 1,
     scale: 1,
     transition: {
-      duration: 0.4,
+      duration: 0.3,
       ease: [0.25, 0.1, 0.25, 1.0]
     }
   }
@@ -95,17 +95,17 @@ function App() {
           flexGrow: 1, 
           minHeight: '100vh',
           background: mode === 'light' 
-            ? 'linear-gradient(145deg, rgba(241,245,249,1) 0%, rgba(214,229,250,0.6) 100%)' 
-            : 'linear-gradient(145deg, #000000 0%, rgba(39,39,42,0.8) 100%)',
+            ? 'linear-gradient(135deg, #F5F5F7 0%, rgba(214,229,250,0.5) 100%)' 
+            : 'linear-gradient(135deg, #000000 0%, rgba(39,39,42,0.7) 100%)',
           backgroundAttachment: 'fixed'
         }}
       >
         <CssBaseline />
         <motion.div
-          initial={{ y: -50, opacity: 0 }}
+          initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ 
-            duration: 0.5, 
+            duration: 0.4, 
             ease: [0.25, 0.1, 0.25, 1.0],
             delay: 0.1
           }}
@@ -115,25 +115,25 @@ function App() {
             color="transparent" 
             elevation={0}
             sx={{
-              backdropFilter: 'blur(15px)',
+              backdropFilter: 'blur(20px) saturate(180%)',
               backgroundColor: mode === 'light' 
-                ? alpha(theme.palette.background.paper, 0.7)
-                : alpha(theme.palette.background.paper, 0.6),
+                ? alpha(theme.palette.background.paper, 0.8)
+                : alpha(theme.palette.background.paper, 0.7),
               borderBottom: '1px solid',
               borderColor: mode === 'light'
-                ? 'rgba(0, 0, 0, 0.05)'
-                : 'rgba(255, 255, 255, 0.05)',
+                ? 'rgba(0, 0, 0, 0.03)'
+                : 'rgba(255, 255, 255, 0.03)',
               zIndex: theme => theme.zIndex.drawer + 1,
             }}
           >
-            <Toolbar sx={{ py: 1 }}>
+            <Toolbar sx={{ py: 0.5 }}>
               <Typography 
                 variant="h6" 
                 component="div" 
                 sx={{ 
                   flexGrow: 1, 
                   fontWeight: 600,
-                  letterSpacing: '-0.5px',
+                  letterSpacing: '-0.012em',
                   display: 'flex',
                   alignItems: 'center',
                   '& svg': {
@@ -143,59 +143,58 @@ function App() {
                 }}
               >
                 <motion.div
-                  initial={{ rotate: -10, scale: 0.9, opacity: 0 }}
+                  initial={{ rotate: -5, scale: 0.95, opacity: 0 }}
                   animate={{ rotate: 0, scale: 1, opacity: 1 }}
                   transition={{ 
-                    duration: 0.5, 
+                    duration: 0.4, 
                     ease: [0.25, 0.1, 0.25, 1.0],
                     delay: 0.3
                   }}
                   whileHover={{ 
-                    rotate: [0, -5, 5, 0],
-                    scale: 1.05,
-                    transition: { duration: 0.5 }
+                    rotate: [0, -3, 3, 0],
+                    scale: 1.03,
+                    transition: { duration: 0.4 }
                   }}
                 >
                   <Box
                     sx={{
-                      width: 36,
-                      height: 36,
+                      width: 32,
+                      height: 32,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      borderRadius: '10px',
-                      background: mode === 'light'
-                        ? 'linear-gradient(135deg, #0A84FF, #5AC8FA)'
-                        : 'linear-gradient(135deg, #0A84FF, #4DA2FF)',
-                      boxShadow: '0 2px 8px rgba(10, 132, 255, 0.25)'
+                      borderRadius: '8px',
+                      background: 'linear-gradient(135deg, #0A84FF, #5AC8FA)',
+                      boxShadow: '0 2px 8px rgba(10, 132, 255, 0.2)'
                     }}
                   >
-                    <AssignmentIcon sx={{ color: '#fff', fontSize: 20 }} />
+                    <AssignmentIcon sx={{ color: '#fff', fontSize: 18 }} />
                   </Box>
                 </motion.div>
                 <motion.span
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={{ opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ 
-                    duration: 0.4, 
+                    duration: 0.3, 
                     ease: [0.25, 0.1, 0.25, 1.0],
                     delay: 0.4
                   }}
+                  style={{ marginLeft: '16px' }}
                 >
                   Sistema de Asignaciones
                 </motion.span>
               </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.92 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ 
-                    duration: 0.4, 
+                    duration: 0.3, 
                     ease: [0.25, 0.1, 0.25, 1.0],
                     delay: 0.5
                   }}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <DataTransfer onDataImported={() => {
                     loadEmployees();
@@ -203,15 +202,15 @@ function App() {
                   }} />
                 </motion.div>
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.92 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ 
-                    duration: 0.4, 
+                    duration: 0.3, 
                     ease: [0.25, 0.1, 0.25, 1.0],
                     delay: 0.6
                   }}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <DeleteDataDialog onDataDeleted={() => {
                     loadEmployees();
@@ -219,15 +218,15 @@ function App() {
                   }} />
                 </motion.div>
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.92 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ 
-                    duration: 0.4, 
+                    duration: 0.3, 
                     ease: [0.25, 0.1, 0.25, 1.0],
                     delay: 0.7
                   }}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <ThemeToggle />
                 </motion.div>
@@ -236,19 +235,19 @@ function App() {
           </AppBar>
         </motion.div>
         
-        <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Container maxWidth="lg" sx={{ py: 3 }}>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
-              duration: 0.5, 
+              duration: 0.4, 
               ease: [0.25, 0.1, 0.25, 1.0],
-              delay: 0.3
+              delay: 0.25
             }}
           >
             <Box 
               sx={{ 
-                mb: 4, 
+                mb: 3, 
                 width: '100%', 
                 overflowX: 'auto',
                 display: 'flex',
@@ -259,51 +258,52 @@ function App() {
               <Paper 
                 elevation={0} 
                 sx={{ 
-                  borderRadius: 3,
+                  borderRadius: 2.5,
                   overflow: 'hidden',
                   backgroundColor: theme => mode === 'light' 
                     ? alpha(theme.palette.background.paper, 0.7)
                     : alpha(theme.palette.background.paper, 0.5),
-                  backdropFilter: 'blur(15px)',
+                  backdropFilter: 'blur(20px) saturate(180%)',
                   boxShadow: theme => mode === 'light'
-                    ? '0 4px 20px rgba(0, 0, 0, 0.05)' 
-                    : '0 4px 20px rgba(0, 0, 0, 0.2)',
+                    ? '0 2px 10px rgba(0, 0, 0, 0.03)' 
+                    : '0 2px 10px rgba(0, 0, 0, 0.15)',
                   border: '1px solid',
                   borderColor: mode === 'light'
-                    ? 'rgba(0, 0, 0, 0.05)'
-                    : 'rgba(255, 255, 255, 0.05)',
+                    ? 'rgba(0, 0, 0, 0.03)'
+                    : 'rgba(255, 255, 255, 0.03)',
                 }}
               >
                 <Tabs 
                   value={currentTab} 
                   onChange={handleTabChange} 
-                  aria-label="Pestañas de gestión"
+                  aria-label="Navegación principal"
                   variant="scrollable"
                   scrollButtons="auto"
                   allowScrollButtonsMobile
                   sx={{
-                    minHeight: 56,
+                    minHeight: 48,
                     '& .MuiTabs-flexContainer': {
                       justifyContent: { xs: 'flex-start', md: 'center' }
                     },
                     '& .MuiTabs-indicator': {
-                      height: 4,
-                      borderRadius: 2,
+                      height: 3,
+                      borderRadius: 1.5,
                       background: 'linear-gradient(to right, #0A84FF, #5AC8FA)',
                     },
                     '& .MuiTab-root': {
-                      minWidth: { xs: 'auto', sm: 140 },
-                      minHeight: 56,
-                      px: { xs: 2, sm: 3 },
-                      py: 1.5,
+                      minWidth: { xs: 'auto', sm: 130 },
+                      minHeight: 48,
+                      px: { xs: 1.5, sm: 2.5 },
+                      py: 1.25,
                       fontWeight: 500,
-                      transition: 'all 0.3s',
+                      fontSize: '0.875rem',
+                      transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1.0)',
                       '&:hover': {
                         color: 'primary.main',
                         opacity: 1,
                         backgroundColor: mode === 'light'
-                          ? 'rgba(255, 255, 255, 0.7)'
-                          : 'rgba(30, 30, 30, 0.5)',
+                          ? 'rgba(255, 255, 255, 0.6)'
+                          : 'rgba(30, 30, 30, 0.4)',
                       },
                       '&.Mui-selected': {
                         fontWeight: 600,
@@ -311,10 +311,10 @@ function App() {
                     }
                   }}
                 >
-                  <Tab icon={<DashboardIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Panel Principal" />
-                  <Tab icon={<PeopleIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Colaboradores" />
-                  <Tab icon={<TaskIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Asignaciones" />
-                  <Tab icon={<AssessmentIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Informes" />
+                  <Tab icon={<DashboardIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Panel Principal" />
+                  <Tab icon={<PeopleIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Colaboradores" />
+                  <Tab icon={<TaskIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Asignaciones" />
+                  <Tab icon={<AssessmentIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Informes" />
                 </Tabs>
               </Paper>
             </Box>
@@ -349,14 +349,14 @@ function App() {
               >
                 <Box>
                   <motion.div variants={itemVariants}>
-                    <Typography variant="h5" component="h2" sx={{ mb: 3, fontWeight: 600, letterSpacing: '-0.5px' }}>
+                    <Typography variant="h5" component="h2" sx={{ mb: 2.5, fontWeight: 600, letterSpacing: '-0.016em' }}>
                       Gestión de Colaboradores
                     </Typography>
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <EmployeeForm onEmployeeAdded={loadEmployees} />
                   </motion.div>
-                  <motion.div variants={itemVariants}>
+                  <motion.div variants={itemVariants} style={{ marginTop: '24px' }}>
                     <EmployeeList employees={employees} onEmployeeDeleted={loadEmployees} />
                   </motion.div>
                 </Box>
@@ -373,7 +373,7 @@ function App() {
               >
                 <Box>
                   <motion.div variants={itemVariants}>
-                    <Typography variant="h5" component="h2" sx={{ mb: 3, fontWeight: 600, letterSpacing: '-0.5px' }}>
+                    <Typography variant="h5" component="h2" sx={{ mb: 2.5, fontWeight: 600, letterSpacing: '-0.016em' }}>
                       Gestión de Asignaciones
                     </Typography>
                   </motion.div>

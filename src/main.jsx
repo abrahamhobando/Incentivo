@@ -26,7 +26,7 @@ const ThemeApp = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1600);
+    }, 1400);
     return () => clearTimeout(timer);
   }, []);
 
@@ -64,7 +64,7 @@ const ThemeApp = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.3 }}
               style={{
                 position: 'fixed',
                 top: 0,
@@ -76,45 +76,42 @@ const ThemeApp = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 background: mode === 'light' 
-                  ? 'linear-gradient(145deg, rgba(241,245,249,1) 0%, rgba(214,229,250,0.8) 100%)' 
-                  : 'linear-gradient(145deg, #000000 0%, rgba(39,39,42,0.9) 100%)',
+                  ? 'linear-gradient(135deg, #F5F5F7 0%, rgba(214,229,250,0.5) 100%)' 
+                  : 'linear-gradient(135deg, #000000 0%, rgba(39,39,42,0.7) 100%)',
                 zIndex: 9999
               }}
             >
               <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
+                initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ 
                   type: "spring", 
-                  stiffness: 260, 
+                  stiffness: 240, 
                   damping: 20,
-                  delay: 0.2
+                  delay: 0.15
                 }}
               >
                 <motion.div
                   style={{
-                    width: 120,
-                    height: 120,
-                    borderRadius: 30,
-                    background: mode === 'light' 
-                      ? 'linear-gradient(135deg, #0A84FF, #5AC8FA)' 
-                      : 'linear-gradient(135deg, #0A84FF, #4DA2FF)',
+                    width: 100,
+                    height: 100,
+                    borderRadius: 20,
+                    background: 'linear-gradient(135deg, #0A84FF, #5AC8FA)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: 32,
-                    boxShadow: '0 10px 30px rgba(10, 132, 255, 0.3)',
+                    marginBottom: 28,
+                    boxShadow: '0 8px 24px rgba(10, 132, 255, 0.25)',
                     position: 'relative',
                     overflow: 'hidden'
                   }}
                   animate={{ 
-                    rotate: [0, 0],
-                    scale: [1, 1.02, 1]
+                    scale: [1, 1.015, 1]
                   }}
                   transition={{ 
                     repeat: Infinity,
                     repeatType: "mirror",
-                    duration: 1.8,
+                    duration: 1.5,
                     ease: "easeInOut" 
                   }}
                 >
@@ -131,34 +128,34 @@ const ThemeApp = () => {
                       opacity: 0.5
                     }}
                     animate={{
-                      x: ['-20%', '20%'],
-                      y: ['-20%', '20%']
+                      x: ['-15%', '15%'],
+                      y: ['-15%', '15%']
                     }}
                     transition={{
                       repeat: Infinity,
                       repeatType: "mirror",
-                      duration: 3,
+                      duration: 2.5,
                       ease: "easeInOut"
                     }}
                   />
                   
                   <motion.svg 
-                    width="56" 
-                    height="56" 
+                    width="48" 
+                    height="48" 
                     viewBox="0 0 24 24" 
                     fill="none"
                     animate={{ 
                       rotate: 360,
-                      scale: [1, 1.1, 1]
+                      scale: [1, 1.05, 1]
                     }}
                     transition={{ 
                       rotate: {
-                        duration: 5,
+                        duration: 4,
                         repeat: Infinity,
                         ease: "linear"
                       },
                       scale: {
-                        duration: 1.5,
+                        duration: 1.2,
                         repeat: Infinity,
                         repeatType: "reverse",
                         ease: "easeInOut"
@@ -172,19 +169,19 @@ const ThemeApp = () => {
               <motion.div
                 style={{
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif',
-                  fontSize: '1.8rem',
+                  fontSize: '1.6rem',
                   fontWeight: 600,
-                  color: mode === 'light' ? '#000000' : '#FFFFFF',
+                  color: mode === 'light' ? '#1D1D1F' : '#F5F5F7',
                   margin: 0,
                   textAlign: 'center',
-                  letterSpacing: '-0.02em',
-                  marginBottom: 16
+                  letterSpacing: '-0.022em',
+                  marginBottom: 12
                 }}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ 
-                  delay: 0.4,
-                  duration: 0.6,
+                  delay: 0.3,
+                  duration: 0.5,
                   ease: "easeOut" 
                 }}
               >
@@ -193,18 +190,18 @@ const ThemeApp = () => {
               <motion.div
                 style={{
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif',
-                  fontSize: '1rem',
+                  fontSize: '0.95rem',
                   fontWeight: 400,
-                  color: mode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+                  color: mode === 'light' ? 'rgba(0, 0, 0, 0.65)' : 'rgba(255, 255, 255, 0.65)',
                   textAlign: 'center',
-                  maxWidth: 260,
+                  maxWidth: 240,
                   letterSpacing: '-0.01em',
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ 
-                  delay: 0.6,
-                  duration: 0.6,
+                  delay: 0.5,
+                  duration: 0.5,
                   ease: "easeOut" 
                 }}
               >
@@ -216,7 +213,7 @@ const ThemeApp = () => {
               key="app"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.4 }}
               style={{ width: '100%', height: '100%' }}
             >
               <App />
