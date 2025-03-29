@@ -628,7 +628,16 @@ const ReportTab = ({ employees, tasks }) => {
                               const criteriaItem = taskCriteria.find(c => c.name === criterio);
                               const peso = criteriaItem ? criteriaItem.weight : 100 / Object.keys(task.evaluations || {}).length;
                               let ponderado = 0;
-                              if (task.type === 'Entrenamientos (Recibe)') {
+                              if ((task.type === 'PRA' || task.type === 'Validacion' || task.type === 'Práctica de procesos') && criterio === 'Calidad') {
+                                if (puntuacion < 70) ponderado = 0;
+                                else if (puntuacion >= 70 && puntuacion <= 80) ponderado = 10 + (puntuacion - 70) * 1;
+                                else if (puntuacion >= 81 && puntuacion <= 84) ponderado = 20 + (puntuacion - 80) * 2;
+                                else if (puntuacion >= 85 && puntuacion <= 89) ponderado = 27.5 + (puntuacion - 84) * 2.5;
+                                else if (puntuacion >= 90 && puntuacion <= 94) ponderado = 38 + (puntuacion - 89) * 2.5;
+                                else if (puntuacion >= 95 && puntuacion <= 100) ponderado = 50 + (puntuacion - 95) * 2;
+                              } else if (task.type === 'Práctica de procesos' && criterio === 'Seguimiento de instrucciones') {
+                                ponderado = puntuacion * 0.40;
+                              } else if (task.type === 'Entrenamientos (Recibe)') {
                                 if (criterio === 'Pruebas teóricas') {
                                   if (puntuacion < 75) ponderado = 0;
                                   else if (puntuacion >= 75 && puntuacion <= 85) ponderado = 10 + (puntuacion - 75) * 1;
