@@ -274,11 +274,13 @@ const ReportPDF = ({ employeeName, dateRange, statistics, tasks }) => {
                   if (task.type === 'PRA' || task.type === 'Práctica de procesos') {
                     peso = criterio === 'Calidad' ? 60 : criterio === 'Seguimiento de instrucciones' ? 40 : 0;
                   } else if (task.type === 'Validacion') {
-                    peso = criterio === 'Calidad' ? 60 : criterio === 'Cumplimiento de tiempo' ? 20 : criterio === 'Seguimiento de instrucciones' ? 20 : 0;
+                    peso = criterio === 'Calidad' ? 60 : criterio === 'Cumplimiento de tiempo' ? 20 : criterio === '0 errores encontrados en GA' ? 20 : 0;
                   } else if (task.type === 'STD Times') {
-                    peso = criterio === 'Seguimiento de instrucciones' ? 60 : criterio === 'Cumplimiento de tiempo' ? 40 : 0;
+                    peso = criterio === 'Seguimiento de instrucciones' ? 60 : criterio === 'Calidad del servicio' ? 40 : 0;
                   } else if (task.type === 'Entrenamientos (Recibe)') {
                     peso = criterio === 'Pruebas teóricas' ? 40 : criterio === 'Pruebas prácticas' ? 60 : 0;
+                  } else if (task.type === 'Entrenamientos (Brinda)') {
+                    peso = 20;
                   } else if (task.type === 'Refrescamientos (Brinda)') {
                     peso = criterio === 'Contenido adecuado' ? 20 : criterio === 'Materiales didácticos' ? 20 : criterio === 'Explicación clara' ? 20 : criterio === 'Entregables' ? 40 : 0;
                   }
