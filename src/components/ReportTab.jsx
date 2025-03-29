@@ -24,21 +24,24 @@ import {
   Button,
   Chip,
   Avatar,
+  Tooltip,
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DownloadIcon from '@mui/icons-material/Download';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import CommentIcon from '@mui/icons-material/Comment';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ReportPDF from './ReportPDF';
 import GeneralReportPDF from './GeneralReportPDF';
 import { ColorModeContext } from '../main';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, alpha } from '@mui/material/styles';
 
 const ReportTab = ({ employees, tasks }) => {
   const theme = useTheme();
   const { mode } = useContext(ColorModeContext);
+  const [openCriteria, setOpenCriteria] = useState({});
   
   // Función para generar un color basado en el nombre
   const getAvatarColor = (name) => {
@@ -61,7 +64,6 @@ const ReportTab = ({ employees, tasks }) => {
     endDate: '',
   });
   
-  const [showDetails, setShowDetails] = useState(false);
   const [employeeStats, setEmployeeStats] = useState([]);
 
   const filteredTasks = useMemo(() => {
@@ -314,10 +316,24 @@ const ReportTab = ({ employees, tasks }) => {
 
       {selectedEmployee && statistics && (
         <Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h5">
-              Informe de {selectedEmployeeName}
-            </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Avatar 
+                sx={{ 
+                  bgcolor: getAvatarColor(selectedEmployeeName),
+                  width: 36,
+                  height: 36,
+                  mr: 1.5,
+                  fontWeight: 'bold',
+                  fontSize: '1rem'
+                }}
+              >
+                {selectedEmployeeName.charAt(0).toUpperCase()}
+              </Avatar>
+              <Typography variant="h6" sx={{ fontWeight: 500, color: 'text.primary' }}>
+                {selectedEmployeeName}
+              </Typography>
+            </Box>
             <PDFDownloadLink 
               document={
                 <ReportPDF 
@@ -332,12 +348,21 @@ const ReportTab = ({ employees, tasks }) => {
             >
               {({ blob, url, loading, error }) => (
                 <Button 
-                  variant="contained" 
+                  variant="outlined" 
                   color="primary" 
-                  startIcon={<DownloadIcon />}
+                  startIcon={<DownloadIcon sx={{ fontSize: '1rem' }} />}
                   disabled={loading}
+                  size="small"
+                  sx={{ 
+                    borderRadius: '8px',
+                    textTransform: 'none',
+                    fontSize: '0.85rem',
+                    fontWeight: 500,
+                    px: 2,
+                    py: 0.75
+                  }}
                 >
-                  {loading ? 'Generando PDF...' : 'Exportar a PDF'}
+                  {loading ? 'Generando...' : 'Exportar PDF'}
                 </Button>
               )}
             </PDFDownloadLink>
@@ -345,251 +370,390 @@ const ReportTab = ({ employees, tasks }) => {
 
           <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
+              <Card elevation={0} sx={{ 
+                border: '1px solid', 
+                borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                borderRadius: 2,
+                height: '100%'
+              }}>
+                <CardContent sx={{ p: 2 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Total de asignaciones
                   </Typography>
-                  <Typography variant="h4" color="primary">
+                  <Typography variant="h5" color="primary" sx={{ fontWeight: 500 }}>
                     {statistics.totalTasks}
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
             <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
+              <Card elevation={0} sx={{ 
+                border: '1px solid', 
+                borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                borderRadius: 2,
+                height: '100%'
+              }}>
+                <CardContent sx={{ p: 2 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Promedio de desempeño
                   </Typography>
-                  <Typography variant="h4" color="primary">
-                    {statistics.averageScore.toFixed(2)}%
+                  <Typography variant="h5" color="primary" sx={{ fontWeight: 500 }}>
+                    {statistics.averageScore.toFixed(1)}%
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
             <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
+              <Card elevation={0} sx={{ 
+                border: '1px solid', 
+                borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                borderRadius: 2,
+                height: '100%'
+              }}>
+                <CardContent sx={{ p: 2 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Incentivo calculado
                   </Typography>
-                  <Typography variant="h4" color="primary">
+                  <Typography variant="h5" color="primary" sx={{ fontWeight: 500 }}>
                     {statistics.bonusPercentage}%
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Tareas Evaluadas por Tipo
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
-                    {Object.entries(statistics.tasksByType).map(([type, count]) => (
-                      <Chip
-                        key={type}
-                        label={`${type}: ${count}`}
-                        sx={{
-                          bgcolor: (theme) => {
-                            if (type === 'PRA') return theme.palette.taskTypes.PRA;
-                            if (type === 'STD Times') return theme.palette.taskTypes["STD Times"];
-                            if (type === 'Entrenamientos (Recibe)') return theme.palette.taskTypes["Entrenamientos (Recibe)"];
-                            if (type === 'Entrenamientos (Brinda)') return theme.palette.taskTypes["Entrenamientos (Brinda)"];
-                            if (type === 'Refrescamientos (Brinda)') return theme.palette.taskTypes["Refrescamientos (Brinda)"];
-                            if (type === 'Práctica de procesos') return theme.palette.taskTypes["Práctica de procesos"];
-                            return theme.palette.taskTypes.Validation;
-                          },
-                          color: 'text.primary',
-                          fontWeight: 'medium',
-                          fontSize: '0.9rem',
-                          py: 2.5,
-                          border: (theme) => mode === 'dark' ? `1px solid ${theme.palette.divider}` : 'none',
-                          '& .MuiChip-label': { px: 1.5 },
-                          transition: 'all 0.2s ease-in-out',
-                          '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                          }
-                        }}
-                        icon={<AssignmentIcon />}
-                      />
-                    ))}
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
+
           </Grid>
 
-          <Box sx={{ mb: 2 }}>
-            <FormControlLabel
-              control={<Switch checked={showDetails} onChange={(e) => setShowDetails(e.target.checked)} />}
-              label="Ver desglose"
-            />
-          </Box>
-
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ 
-                  '& th': { 
-                    fontWeight: 'bold',
-                    color: mode === 'dark' ? 'text.primary' : 'text.primary',
-                    bgcolor: 'background.paper'
-                  } 
-                }}>
-                  <TableCell>Fecha</TableCell>
-                  <TableCell>Título</TableCell>
-                  <TableCell>Tipo</TableCell>
-                  <TableCell align="right">Calificación</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredTasks.map((task) => (
-                  <React.Fragment key={task.id}>
-                    <TableRow sx={{
-                      bgcolor: (theme) => {
-                        if (task.type === 'PRA') return theme.palette.taskTypes.PRA;
-                        if (task.type === 'STD Times') return theme.palette.taskTypes["STD Times"];
-                        if (task.type === 'Entrenamientos (Recibe)') return theme.palette.taskTypes["Entrenamientos (Recibe)"];
-                        if (task.type === 'Entrenamientos (Brinda)') return theme.palette.taskTypes["Entrenamientos (Brinda)"];
-                        if (task.type === 'Refrescamientos (Brinda)') return theme.palette.taskTypes["Refrescamientos (Brinda)"];
-                        if (task.type === 'Práctica de procesos') return theme.palette.taskTypes["Práctica de procesos"];
-                        return theme.palette.taskTypes.Validation;
-                      },
-                      '& > td': { borderBottom: '1px solid rgba(224, 224, 224, 0.2)' }
+          {/* Nuevo componente de asignaciones individuales */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 500, mb: 2 }}>
+                Asignaciones evaluadas
+              </Typography>
+              
+              {/* Tarjetas de estadísticas por tipo de tarea */}
+              <Grid container spacing={2} sx={{ mb: 3 }}>
+                {Object.entries(statistics.tasksByType).map(([type, count]) => (
+                  <Grid item xs={6} sm={4} md={3} key={type}>
+                    <Card elevation={0} sx={{ 
+                      border: '1px solid', 
+                      borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                      borderRadius: 2,
+                      height: '100%',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '4px',
+                        height: '100%',
+                        backgroundColor: (theme) => {
+                          if (type === 'PRA') return theme.palette.primary.main;
+                          if (type === 'STD Times') return theme.palette.secondary.main;
+                          if (type === 'Entrenamientos (Recibe)') return theme.palette.info.main;
+                          if (type === 'Entrenamientos (Brinda)') return theme.palette.success.main;
+                          if (type === 'Refrescamientos (Brinda)') return theme.palette.warning.main;
+                          if (type === 'Práctica de procesos') return theme.palette.error.main;
+                          return theme.palette.grey[500];
+                        }
+                      }
                     }}>
-                      <TableCell>{task.date}</TableCell>
-                      <TableCell>{task.title}</TableCell>
-                      <TableCell>{task.type}</TableCell>
-                      <TableCell align="right">{task.totalScore.toFixed(2)}%</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                        <Collapse in={showDetails} timeout="auto" unmountOnExit>
-                          <Box sx={{ margin: 1 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                              Criterios de Evaluación
-                            </Typography>
-                            <Table size="small">
-                              <TableHead>
-                                <TableRow sx={{ bgcolor: 'background.paper', '& th': { fontWeight: 'bold' } }}>
-                                  <TableCell>Criterio</TableCell>
-                                  <TableCell align="right">Peso</TableCell>
-                                  <TableCell align="right">Puntuación</TableCell>
-                                  <TableCell align="right">Ponderado</TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {Object.entries(task.evaluations || {}).map(([criterio, puntuacion]) => {
-                                  let peso;
-                                  let descripcion;
-                                  
-                                  // Asignar pesos y descripciones según el tipo de tarea
-                                  if (task.type === 'PRA') {
-                                    if (criterio === 'Calidad') {
-                                      peso = 60;
-                                      descripcion = 'Se revisa una muestra del 5% al 15% de los casos realizados, dependiendo de la población del estudio.';
-                                    } else if (criterio === 'Seguimiento de instrucciones') {
-                                      peso = 40;
-                                      descripcion = 'Se siguen las instrucciones del ingeniero a cargo de la prueba para la realización de la misma. Retroalimentación recibida por el ingeniero a cargo de la prueba.';
-                                    } else {
-                                      peso = 40; // Valor por defecto
-                                      descripcion = 'Criterio adicional para PRA.';
-                                    }
-                                  } else if (task.type === 'STD Times') {
-                                    if (criterio === 'Seguimiento de instrucciones') {
-                                      peso = 60;
-                                      descripcion = 'Cumplir indicaciones del ingeniero.';
-                                    } else if (criterio === 'Calidad') {
-                                      peso = 40;
-                                      descripcion = 'Retroalimentación del ingeniero. Retroalimentación de producción: Evaluación aleatoria del equipo de producción.';
-                                    } else {
-                                      peso = 40; // Valor por defecto
-                                      descripcion = 'Criterio adicional para STD Times.';
-                                    }
-                                  } else if (task.type === 'Validacion') {
-                                    if (criterio === 'Calidad') {
-                                      peso = 60;
-                                      descripcion = 'Se revisa una muestra del 15% de los casos realizados en la asignación.';
-                                    } else if (criterio === 'Tiempo') {
-                                      peso = 20;
-                                      descripcion = 'La validación se realiza dentro del periodo establecido.';
-                                    } else if (criterio === 'Funcionalidad') {
-                                      peso = 20;
-                                      descripcion = 'Se realiza la validación correctamente para asegurar que la nueva versión de Treat no tenga errores en GA.';
-                                    } else {
-                                      peso = 20; // Valor por defecto
-                                      descripcion = 'Criterio adicional para Validación.';
-                                    }
-                                  } else if (task.type === 'Entrenamientos (Recibe)') {
-                                    if (criterio === 'Asistencia') {
-                                      peso = 50;
-                                      descripcion = 'Asistencia puntual a todas las sesiones de entrenamiento programadas.';
-                                    } else if (criterio === 'Participación') {
-                                      peso = 30;
-                                      descripcion = 'Participación activa durante las sesiones de entrenamiento.';
-                                    } else if (criterio === 'Evaluación final') {
-                                      peso = 20;
-                                      descripcion = 'Resultado de la evaluación final del entrenamiento recibido.';
-                                    } else {
-                                      peso = 20; // Valor por defecto
-                                      descripcion = 'Criterio adicional para Entrenamientos.';
-                                    }
-                                  } else { // Otros tipos de tareas
-                                    peso = 100 / Object.keys(task.evaluations || {}).length; // Distribución equitativa
-                                    descripcion = `Criterio de evaluación para ${task.type}.`;
-                                  }
-                                  
-                                  // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
-                                  let ponderado = 0;
-                                  if ((task.type === 'PRA' || task.type === 'Validacion') && 
-                                      criterio === 'Calidad' && puntuacion < 70) {
-                                    // Si calidad es menor a 70%, se pierde todo el porcentaje
-                                    ponderado = 0;
-                                  } else {
-                                    ponderado = (puntuacion * peso / 100).toFixed(2);
-                                  }
-                                  return (
-                                    <React.Fragment key={criterio}>
-                                      <TableRow>
-                                        <TableCell component="th" scope="row">{criterio}</TableCell>
-                                        <TableCell align="right">{peso}%</TableCell>
-                                        <TableCell align="right">{puntuacion}%</TableCell>
-                                        <TableCell align="right">{ponderado}%</TableCell>
-                                      </TableRow>
-                                      <TableRow>
-                                        <TableCell colSpan={4} sx={{ pb: 2, pt: 0, color: 'text.secondary' }}>
-                                          {descripcion}
-                                        </TableCell>
-                                      </TableRow>
-                                    </React.Fragment>
-                                  );
-                                })}
-                              </TableBody>
-                            </Table>
-                            {task.comments && (
-                              <Box sx={{
-                                mt: 2,
-                                p: 2,
-                                bgcolor: (theme) => theme.palette.mode === 'dark' ? theme.palette.background.paper : '#f8f9fa',
-                                borderLeft: (theme) => `4px solid ${theme.palette.primary.main}`,
-                                borderRadius: 1
-                              }}>
-                                <Typography variant="subtitle2" color="primary" gutterBottom>Comentarios de la tarea:</Typography>
-                                <Typography variant="body2" color="text.primary">{task.comments}</Typography>
-                              </Box>
-                            )}
-                          </Box>
-                        </Collapse>
-                      </TableCell>
-                    </TableRow>
-                  </React.Fragment>
+                      <CardContent sx={{ p: 2 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                          {type}
+                        </Typography>
+                        <Typography variant="h5" color="primary" sx={{ fontWeight: 500 }}>
+                          {count}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              </Grid>
+              
+              {/* Lista de asignaciones */}
+              {filteredTasks.map((task) => {
+                // Calcular los criterios y sus pesos según el tipo de tarea
+                const taskCriteria = [];
+                
+                if (task.type === 'PRA') {
+                  taskCriteria.push({ name: 'Calidad', weight: 60 });
+                  taskCriteria.push({ name: 'Seguimiento de instrucciones', weight: 40 });
+                } else if (task.type === 'STD Times') {
+                  taskCriteria.push({ name: 'Seguimiento de instrucciones', weight: 60 });
+                  taskCriteria.push({ name: 'Calidad del servicio', weight: 40 });
+                } else if (task.type === 'Validacion') {
+                  taskCriteria.push({ name: 'Calidad', weight: 60 });
+                  taskCriteria.push({ name: 'Cumplimiento de tiempo', weight: 20 });
+                  taskCriteria.push({ name: '0 errores encontrados en GA', weight: 20 });
+                } else if (task.type === 'Entrenamientos (Recibe)') {
+                  taskCriteria.push({ name: 'Pruebas teóricas', weight: 40 });
+                  taskCriteria.push({ name: 'Pruebas prácticas', weight: 60 });
+                } else if (task.type === 'Entrenamientos (Brinda)') {
+                  taskCriteria.push({ name: 'Manejo del grupo', weight: 20 });
+                  taskCriteria.push({ name: 'Transmisión de conocimientos', weight: 20 });
+                  taskCriteria.push({ name: 'Entregables', weight: 20 });
+                  taskCriteria.push({ name: 'Resultados obtenidos', weight: 20 });
+                  taskCriteria.push({ name: 'Calidad del servicio', weight: 20 });
+                } else if (task.type === 'Refrescamientos (Brinda)') {
+                  taskCriteria.push({ name: 'Contenido adecuado', weight: 20 });
+                  taskCriteria.push({ name: 'Materiales didácticos', weight: 20 });
+                  taskCriteria.push({ name: 'Explicación clara', weight: 20 });
+                  taskCriteria.push({ name: 'Entregables', weight: 40 });
+                } else if (task.type === 'Práctica de procesos') {
+                  taskCriteria.push({ name: 'Calidad', weight: 60 });
+                  taskCriteria.push({ name: 'Seguimiento de instrucciones', weight: 40 });
+                }
+                
+                return (
+                  <Card key={task.id} sx={{ 
+                    mb: 2, 
+                    borderRadius: 2,
+                    border: '1px solid',
+                    borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 8px rgba(0,0,0,0.05)'
+                    },
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '4px',
+                      height: '100%',
+                      backgroundColor: (theme) => {
+                        if (task.type === 'PRA') return theme.palette.primary.main;
+                        if (task.type === 'STD Times') return theme.palette.secondary.main;
+                        if (task.type === 'Entrenamientos (Recibe)') return theme.palette.info.main;
+                        if (task.type === 'Entrenamientos (Brinda)') return theme.palette.success.main;
+                        if (task.type === 'Refrescamientos (Brinda)') return theme.palette.warning.main;
+                        if (task.type === 'Práctica de procesos') return theme.palette.error.main;
+                        return theme.palette.grey[500];
+                      }
+                    }
+                  }}>
+                    <CardContent sx={{ p: 2 }}>
+                      <Grid container spacing={2}>
+                        {/* Encabezado de la tarea */}
+                        <Grid item xs={12}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <AssignmentIcon color="primary" sx={{ mr: 1, fontSize: '1.2rem' }} />
+                              <Typography variant="h6" sx={{ fontWeight: 500, fontSize: '1rem' }}>
+                                {task.title}
+                              </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <Chip 
+                                label={task.type}
+                                size="small"
+                                sx={{ 
+                                  height: '22px',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 500,
+                                  bgcolor: (theme) => {
+                                    if (task.type === 'PRA') return alpha(theme.palette.primary.main, 0.15);
+                                    if (task.type === 'STD Times') return alpha(theme.palette.secondary.main, 0.15);
+                                    if (task.type === 'Entrenamientos (Recibe)') return alpha(theme.palette.info.main, 0.15);
+                                    if (task.type === 'Entrenamientos (Brinda)') return alpha(theme.palette.success.main, 0.15);
+                                    if (task.type === 'Refrescamientos (Brinda)') return alpha(theme.palette.warning.main, 0.15);
+                                    if (task.type === 'Práctica de procesos') return alpha(theme.palette.error.main, 0.15);
+                                    return alpha(theme.palette.grey[500], 0.15);
+                                  },
+                                  color: (theme) => {
+                                    if (task.type === 'PRA') return theme.palette.primary.main;
+                                    if (task.type === 'STD Times') return theme.palette.secondary.main;
+                                    if (task.type === 'Entrenamientos (Recibe)') return theme.palette.info.main;
+                                    if (task.type === 'Entrenamientos (Brinda)') return theme.palette.success.main;
+                                    if (task.type === 'Refrescamientos (Brinda)') return theme.palette.warning.main;
+                                    if (task.type === 'Práctica de procesos') return theme.palette.error.main;
+                                    return theme.palette.grey[500];
+                                  },
+                                  '& .MuiChip-label': {
+                                    px: 1
+                                  },
+                                  mr: 1
+                                }}
+                              />
+                              <Typography 
+                                variant="body2" 
+                                sx={{ 
+                                  fontWeight: 600,
+                                  color: (theme) => {
+                                    if (task.totalScore >= 90) return theme.palette.success.main;
+                                    if (task.totalScore >= 70) return theme.palette.info.main;
+                                    if (task.totalScore >= 50) return theme.palette.warning.main;
+                                    return theme.palette.error.main;
+                                  }
+                                }}
+                              >
+                                {task.totalScore.toFixed(1)}%
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                            Fecha: {new Date(task.date + 'T00:00:00').toLocaleDateString()}
+                          </Typography>
+                        </Grid>
+                        
+                        {/* Criterios de evaluación (colapsables) */}
+                        <Grid item xs={12}>
+                          <Box sx={{ 
+                            display: 'flex', 
+                            justifyContent: 'space-between', 
+                            alignItems: 'center',
+                            mb: 1,
+                            cursor: 'pointer',
+                            '&:hover': { bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.01)' },
+                            borderRadius: 1,
+                            p: 0.5
+                          }}>
+                            <Box 
+                              onClick={() => {
+                                // Crear una copia del estado actual
+                                const newOpenCriteria = {...openCriteria};
+                                // Invertir el estado para esta tarea específica
+                                newOpenCriteria[task.id] = !newOpenCriteria[task.id];
+                                setOpenCriteria(newOpenCriteria);
+                              }}
+                              sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                            >
+                              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, display: 'flex', alignItems: 'center' }}>
+                                {openCriteria[task.id] ? <KeyboardArrowUpIcon fontSize="small" /> : <KeyboardArrowDownIcon fontSize="small" />}
+                                Criterios de evaluación ({Object.keys(task.evaluations || {}).length})
+                              </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <Typography 
+                                variant="body2" 
+                                sx={{ 
+                                  fontWeight: 600,
+                                  color: (theme) => {
+                                    if (task.totalScore >= 90) return theme.palette.success.main;
+                                    if (task.totalScore >= 70) return theme.palette.info.main;
+                                    if (task.totalScore >= 50) return theme.palette.warning.main;
+                                    return theme.palette.error.main;
+                                  }
+                                }}
+                              >
+                                Calificación final: {task.totalScore.toFixed(1)}%
+                              </Typography>
+                            </Box>
+                          </Box>
+                          
+                          <Collapse in={openCriteria[task.id] || false}>
+                            <Box sx={{ 
+                              display: 'flex', 
+                              flexDirection: 'column', 
+                              gap: 1,
+                              mt: 1,
+                              p: 1.5,
+                              borderRadius: 1,
+                              bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.01)',
+                              border: '1px solid',
+                              borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'
+                            }}>
+                              {Object.entries(task.evaluations || {}).map(([criterio, puntuacion]) => {
+                                // Encontrar el peso del criterio
+                                const criteriaItem = taskCriteria.find(c => c.name === criterio);
+                                const peso = criteriaItem ? criteriaItem.weight : 100 / Object.keys(task.evaluations || {}).length;
+                                
+                                // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
+                                let ponderado = 0;
+                                if ((task.type === 'PRA' || task.type === 'Validacion') && 
+                                    criterio === 'Calidad' && puntuacion < 70) {
+                                  ponderado = 0;
+                                } else {
+                                  ponderado = (puntuacion * peso / 100).toFixed(1);
+                                }
+                                
+                                return (
+                                  <Box key={criterio} sx={{ 
+                                    display: 'flex', 
+                                    justifyContent: 'space-between', 
+                                    alignItems: 'center',
+                                    p: 1,
+                                    borderRadius: 1,
+                                    bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'
+                                  }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                      <Typography variant="body2">{criterio}</Typography>
+                                      <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                                        (Peso: {peso}%)
+                                      </Typography>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                      <Chip 
+                                        size="small" 
+                                        label={`${puntuacion}%`}
+                                        sx={{ 
+                                          height: '20px',
+                                          fontSize: '0.7rem',
+                                          fontWeight: 500,
+                                          bgcolor: (theme) => {
+                                            if (puntuacion >= 90) return alpha(theme.palette.success.main, 0.2);
+                                            if (puntuacion >= 70) return alpha(theme.palette.info.main, 0.2);
+                                            if (puntuacion >= 50) return alpha(theme.palette.warning.main, 0.2);
+                                            return alpha(theme.palette.error.main, 0.2);
+                                          },
+                                          color: (theme) => {
+                                            if (puntuacion >= 90) return theme.palette.success.main;
+                                            if (puntuacion >= 70) return theme.palette.info.main;
+                                            if (puntuacion >= 50) return theme.palette.warning.main;
+                                            return theme.palette.error.main;
+                                          },
+                                          '& .MuiChip-label': { px: 0.8 },
+                                          mr: 1,
+                                          boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                                        }}
+                                      />
+                                      <Typography variant="caption" sx={{ 
+                                        fontWeight: 500,
+                                        color: 'text.secondary'
+                                      }}>
+                                        Ponderado: {ponderado}%
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                );
+                              })}
+                            </Box>
+                          </Collapse>
+                        </Grid>
+                        
+                        {/* Comentarios si existen */}
+                        {task.comments && (
+                          <Grid item xs={12}>
+                            <Box sx={{ 
+                              mt: 1, 
+                              p: 1.5, 
+                              borderRadius: 1, 
+                              bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.01)',
+                              border: '1px dashed',
+                              borderColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+                            }}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <CommentIcon sx={{ fontSize: '0.9rem', mr: 1, color: 'text.secondary' }} />
+                                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+                                  Comentarios:
+                                </Typography>
+                              </Box>
+                              <Typography variant="body2">{task.comments}</Typography>
+                            </Box>
+                          </Grid>
+                        )}
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </CardContent>
+          </Card>
         </Box>
       )}
 
