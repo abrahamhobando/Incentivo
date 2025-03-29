@@ -29,6 +29,46 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PersonIcon from '@mui/icons-material/Person';
 import { ColorModeContext } from '../main';
 
+// Variantes de animación para elementos del dashboard
+const headerVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { 
+      duration: 0.6, 
+      ease: [0.25, 0.1, 0.25, 1.0] 
+    }
+  }
+};
+
+const statCardVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: index => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      delay: 0.1 + (index * 0.1),
+      ease: [0.25, 0.1, 0.25, 1.0],
+    }
+  })
+};
+
+const listItemVariants = {
+  hidden: { opacity: 0, x: -10 },
+  visible: index => ({
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.3,
+      delay: 0.2 + (index * 0.05),
+      ease: [0.25, 0.1, 0.25, 1.0],
+    }
+  })
+};
+
 const DashboardTab = ({ employees, tasks, onTabChange }) => {
   // Definir los tipos de tareas y sus criterios para pasarlos a StatsSection
   const taskTypes = {
@@ -179,125 +219,361 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
 
   return (
     <Box>
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ 
-          display: 'flex', 
-          alignItems: 'center',
-          fontWeight: 500,
-          color: 'primary.main'
-        }}>
-          <DashboardIcon sx={{ mr: 1 }} /> Panel Principal
-        </Typography>
-        <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 3 }}>
-          Bienvenido al sistema de gestión de asignaciones. Aquí encontrarás un resumen de la información más relevante.
-        </Typography>
-      </Box>
+      <motion.div
+        variants={headerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ 
+            display: 'flex', 
+            alignItems: 'center',
+            fontWeight: 500,
+            color: 'primary.main'
+          }}>
+            <motion.div
+              initial={{ rotate: -5, scale: 0.9 }}
+              animate={{ rotate: 0, scale: 1 }}
+              transition={{ 
+                duration: 0.5, 
+                ease: [0.25, 0.1, 0.25, 1.0],
+                delay: 0.2
+              }}
+            >
+              <DashboardIcon sx={{ mr: 1 }} />
+            </motion.div>
+            Panel Principal
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 3 }}>
+            Bienvenido al sistema de gestión de asignaciones. Aquí encontrarás un resumen de la información más relevante.
+          </Typography>
+        </Box>
+      </motion.div>
 
       {/* Tarjetas de estadísticas */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ 
-            height: '100%',
-            backgroundColor: alpha(theme.palette.primary.main, 0.08),
-            transition: 'transform 0.2s',
-            '&:hover': { transform: 'translateY(-4px)' }
-          }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                  Total CADS
+          <motion.div 
+            custom={0}
+            variants={statCardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover={{ scale: 1.03 }}
+            transition={{ 
+              type: 'spring', 
+              stiffness: 300, 
+              damping: 20 
+            }}
+          >
+            <Card sx={{ 
+              height: '100%',
+              borderRadius: 2,
+              overflow: 'hidden',
+              boxShadow: theme => `0 4px 12px ${alpha(theme.palette.primary.main, 0.1)}`,
+              transition: 'all 0.3s ease',
+              border: `1px solid ${alpha(theme.palette.primary.main, 0.05)}`,
+              '&:hover': {
+                boxShadow: theme => `0 6px 16px ${alpha(theme.palette.primary.main, 0.15)}`,
+              }
+            }}>
+              <CardContent sx={{ py: 2, px: 3 }}>
+                <Box display="flex" alignItems="center" justifyContent="space-between">
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Colaboradores
+                  </Typography>
+                  <Avatar sx={{ 
+                    bgcolor: 'primary.main', 
+                    width: 32, 
+                    height: 32,
+                    boxShadow: theme => `0 2px 6px ${alpha(theme.palette.primary.main, 0.2)}`,
+                  }}>
+                    <motion.div
+                      animate={{ rotate: [0, 5, 0, -5, 0] }}
+                      transition={{ 
+                        duration: 0.6, 
+                        delay: 0.5,
+                        ease: "easeInOut" 
+                      }}
+                    >
+                      <PeopleIcon sx={{ fontSize: '1rem' }} />
+                    </motion.div>
+                  </Avatar>
+                </Box>
+                <Typography variant="h3" sx={{ 
+                  mt: 2, 
+                  mb: 1,
+                  fontWeight: 600,
+                  fontSize: '2rem',
+                  color: 'primary.main'
+                }}>
+                  <motion.span
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                  >
+                    {stats.totalEmployees}
+                  </motion.span>
                 </Typography>
-                <PeopleIcon color="primary" />
-              </Box>
-              <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>
-                {stats.totalEmployees}
-              </Typography>
-              <Button 
-                size="small" 
-                endIcon={<ArrowForwardIcon />} 
-                onClick={() => navigateToTab(1)}
-                sx={{ mt: 1 }}
-              >
-                Gestionar CADS
-              </Button>
-            </CardContent>
-          </Card>
+                <Button 
+                  startIcon={<AddIcon />} 
+                  size="small" 
+                  onClick={() => navigateToTab(1)}
+                  sx={{ 
+                    mt: 1, 
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    fontSize: '0.8rem'
+                  }}
+                >
+                  Agregar colaborador
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ 
-            height: '100%',
-            backgroundColor: alpha(theme.palette.secondary.main, 0.08),
-            transition: 'transform 0.2s',
-            '&:hover': { transform: 'translateY(-4px)' }
-          }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                  Total Tareas
+          <motion.div 
+            custom={1}
+            variants={statCardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover={{ scale: 1.03 }}
+            transition={{ 
+              type: 'spring', 
+              stiffness: 300, 
+              damping: 20 
+            }}
+          >
+            <Card sx={{ 
+              height: '100%',
+              borderRadius: 2,
+              overflow: 'hidden',
+              boxShadow: theme => `0 4px 12px ${alpha(theme.palette.info.main, 0.1)}`,
+              transition: 'all 0.3s ease',
+              border: `1px solid ${alpha(theme.palette.info.main, 0.05)}`,
+              '&:hover': {
+                boxShadow: theme => `0 6px 16px ${alpha(theme.palette.info.main, 0.15)}`,
+              }
+            }}>
+              <CardContent sx={{ py: 2, px: 3 }}>
+                <Box display="flex" alignItems="center" justifyContent="space-between">
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Asignaciones totales
+                  </Typography>
+                  <Avatar sx={{ 
+                    bgcolor: 'info.main', 
+                    width: 32, 
+                    height: 32,
+                    boxShadow: theme => `0 2px 6px ${alpha(theme.palette.info.main, 0.2)}`,
+                  }}>
+                    <motion.div
+                      animate={{ rotate: [0, 5, 0, -5, 0] }}
+                      transition={{ 
+                        duration: 0.6, 
+                        delay: 0.7,
+                        ease: "easeInOut" 
+                      }}
+                    >
+                      <AssignmentIcon sx={{ fontSize: '1rem' }} />
+                    </motion.div>
+                  </Avatar>
+                </Box>
+                <Typography variant="h3" sx={{ 
+                  mt: 2, 
+                  mb: 1,
+                  fontWeight: 600,
+                  fontSize: '2rem',
+                  color: 'info.main'
+                }}>
+                  <motion.span
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9, duration: 0.5 }}
+                  >
+                    {stats.totalTasks}
+                  </motion.span>
                 </Typography>
-                <AssignmentIcon color="secondary" />
-              </Box>
-              <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>
-                {stats.totalTasks}
-              </Typography>
-              <Button 
-                size="small" 
-                endIcon={<ArrowForwardIcon />} 
-                onClick={() => navigateToTab(2)}
-                sx={{ mt: 1 }}
-              >
-                Gestionar Tareas
-              </Button>
-            </CardContent>
-          </Card>
+                <Button 
+                  startIcon={<AddIcon />} 
+                  size="small" 
+                  color="info"
+                  onClick={() => navigateToTab(2)}
+                  sx={{ 
+                    mt: 1, 
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    fontSize: '0.8rem'
+                  }}
+                >
+                  Crear asignación
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
         </Grid>
-
+        
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ 
-            height: '100%',
-            backgroundColor: alpha(theme.palette.success.main, 0.08),
-            transition: 'transform 0.2s',
-            '&:hover': { transform: 'translateY(-4px)' }
-          }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                  Tareas Evaluadas
+          <motion.div 
+            custom={2}
+            variants={statCardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover={{ scale: 1.03 }}
+            transition={{ 
+              type: 'spring', 
+              stiffness: 300, 
+              damping: 20 
+            }}
+          >
+            <Card sx={{ 
+              height: '100%',
+              borderRadius: 2,
+              overflow: 'hidden',
+              boxShadow: theme => `0 4px 12px ${alpha(theme.palette.success.main, 0.1)}`,
+              transition: 'all 0.3s ease',
+              border: `1px solid ${alpha(theme.palette.success.main, 0.05)}`,
+              '&:hover': {
+                boxShadow: theme => `0 6px 16px ${alpha(theme.palette.success.main, 0.15)}`,
+              }
+            }}>
+              <CardContent sx={{ py: 2, px: 3 }}>
+                <Box display="flex" alignItems="center" justifyContent="space-between">
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Evaluadas
+                  </Typography>
+                  <Avatar sx={{ 
+                    bgcolor: 'success.main', 
+                    width: 32, 
+                    height: 32,
+                    boxShadow: theme => `0 2px 6px ${alpha(theme.palette.success.main, 0.2)}`,
+                  }}>
+                    <motion.div
+                      animate={{ scale: [1, 1.15, 1] }}
+                      transition={{ 
+                        duration: 0.6, 
+                        delay: 0.9,
+                        ease: "easeInOut" 
+                      }}
+                    >
+                      <AssessmentIcon sx={{ fontSize: '1rem' }} />
+                    </motion.div>
+                  </Avatar>
+                </Box>
+                <Typography variant="h3" sx={{ 
+                  mt: 2, 
+                  mb: 1,
+                  fontWeight: 600,
+                  fontSize: '2rem',
+                  color: 'success.main'
+                }}>
+                  <motion.span
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.0, duration: 0.5 }}
+                  >
+                    {stats.completedTasks}
+                  </motion.span>
                 </Typography>
-                <BarChartIcon color="success" />
-              </Box>
-              <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>
-                {stats.completedTasks}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {stats.totalTasks > 0 ? 
-                  `${Math.round((stats.completedTasks / stats.totalTasks) * 100)}% del total` : 
-                  '0% del total'}
-              </Typography>
-            </CardContent>
-          </Card>
+                <Button 
+                  endIcon={<ArrowForwardIcon />} 
+                  size="small" 
+                  color="success"
+                  onClick={() => navigateToTab(3)}
+                  sx={{ 
+                    mt: 1, 
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    fontSize: '0.8rem'
+                  }}
+                >
+                  Ver informes
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
         </Grid>
-
+        
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ 
-            height: '100%',
-            backgroundColor: alpha(theme.palette.warning.main, 0.08),
-            transition: 'transform 0.2s',
-            '&:hover': { transform: 'translateY(-4px)' }
-          }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                  Tareas Pendientes
+          <motion.div 
+            custom={3}
+            variants={statCardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover={{ scale: 1.03 }}
+            transition={{ 
+              type: 'spring', 
+              stiffness: 300, 
+              damping: 20 
+            }}
+          >
+            <Card sx={{ 
+              height: '100%',
+              borderRadius: 2,
+              overflow: 'hidden',
+              boxShadow: theme => `0 4px 12px ${alpha(theme.palette.warning.main, 0.1)}`,
+              transition: 'all 0.3s ease',
+              border: `1px solid ${alpha(theme.palette.warning.main, 0.05)}`,
+              '&:hover': {
+                boxShadow: theme => `0 6px 16px ${alpha(theme.palette.warning.main, 0.15)}`,
+              }
+            }}>
+              <CardContent sx={{ py: 2, px: 3 }}>
+                <Box display="flex" alignItems="center" justifyContent="space-between">
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Pendientes
+                  </Typography>
+                  <Avatar sx={{ 
+                    bgcolor: 'warning.main', 
+                    width: 32, 
+                    height: 32,
+                    boxShadow: theme => `0 2px 6px ${alpha(theme.palette.warning.main, 0.2)}`,
+                  }}>
+                    <motion.div
+                      animate={{ y: [0, 2, 0, -2, 0] }}
+                      transition={{ 
+                        duration: 1, 
+                        delay: 1.1,
+                        ease: "easeInOut", 
+                        repeat: 1
+                      }}
+                    >
+                      <AssignmentIcon sx={{ fontSize: '1rem' }} />
+                    </motion.div>
+                  </Avatar>
+                </Box>
+                <Typography variant="h3" sx={{ 
+                  mt: 2, 
+                  mb: 1,
+                  fontWeight: 600,
+                  fontSize: '2rem',
+                  color: 'warning.main'
+                }}>
+                  <motion.span
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.1, duration: 0.5 }}
+                  >
+                    {stats.pendingTasks}
+                  </motion.span>
                 </Typography>
-                <AssessmentIcon color="warning" />
-              </Box>
-              <Typography variant="h4" component="div" sx={{ fontWeight: 500, my: 1 }}>                {stats.pendingTasks}
-            </Typography>
-              {/* Se eliminó el botón "Ver Informes" */}
-            </CardContent>
-          </Card>
+                <Button 
+                  endIcon={<ArrowForwardIcon />} 
+                  size="small" 
+                  color="warning"
+                  onClick={() => navigateToTab(2)}
+                  sx={{ 
+                    mt: 1, 
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    fontSize: '0.8rem'
+                  }}
+                >
+                  Ver pendientes
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
         </Grid>
       </Grid>
 

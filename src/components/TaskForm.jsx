@@ -24,6 +24,8 @@ import {
   ListItemText,
   Collapse,
   Fade,
+  useMediaQuery,
+  alpha
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -34,12 +36,14 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import CommentIcon from '@mui/icons-material/Comment';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getEmployees, addTask } from '../utils/storage';
 import { ColorModeContext } from '../main';
 import { useTheme } from '@mui/material/styles';
 
 const TaskForm = ({ employees, onTaskAdded }) => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { mode } = useContext(ColorModeContext);
   const [formVisible, setFormVisible] = useState(false);
   const [multipleAssignment, setMultipleAssignment] = useState(false);
@@ -360,6 +364,7 @@ const TaskForm = ({ employees, onTaskAdded }) => {
       comments: '',
     });
     setSelectedEmployees([]);
+    setFormVisible(false);
     if (onTaskAdded) onTaskAdded();
   };
 
@@ -367,340 +372,364 @@ const TaskForm = ({ employees, onTaskAdded }) => {
     setFormVisible(prev => !prev);
   };
 
+  // Variantes de animación para el formulario expandible
+  const formVariants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: { 
+      opacity: 1, 
+      height: 'auto',
+      transition: { 
+        opacity: { duration: 0.3 },
+        height: { duration: 0.4 }
+      }
+    },
+    exit: { 
+      opacity: 0, 
+      height: 0,
+      transition: { 
+        opacity: { duration: 0.2 }, 
+        height: { duration: 0.3 }
+      }
+    }
+  };
+
   return (
-    <Card elevation={3} sx={{ borderRadius: '12px', overflow: 'visible' }}>
-      <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h5" component="h2" gutterBottom sx={{ display: 'flex', alignItems: 'center', mb: 0 }}>
-            <AddTaskIcon sx={{ mr: 1 }} /> Nueva Asignación
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setFormVisible(!formVisible)}
-            startIcon={formVisible ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            sx={{
-              mb: formVisible ? 2 : 0,
-              transition: 'margin-bottom 0.3s',
-              borderRadius: '8px',
-            }}
+    <Box 
+      sx={{ 
+        mb: 3,
+        borderRadius: formVisible ? '8px' : 0,
+        overflow: 'hidden',
+        transition: 'all 0.3s ease',
+        boxShadow: formVisible ? 
+          `0 4px 20px ${alpha(theme.palette.primary.main, 0.1)}` : 
+          'none',
+        bgcolor: formVisible ? alpha(theme.palette.background.paper, 0.8) : 'transparent'
+      }}
+    >
+      {/* Header minimalista */}
+      <Box 
+        onClick={toggleFormVisibility}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          px: 2,
+          py: 1.5,
+          cursor: 'pointer',
+          '&:hover': {
+            bgcolor: alpha(theme.palette.action.hover, 0.1)
+          },
+          borderBottom: formVisible ? `1px solid ${alpha(theme.palette.divider, 0.5)}` : 'none',
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <motion.div
+            animate={{ rotate: formVisible ? 0 : -90 }}
+            transition={{ duration: 0.3 }}
           >
-            Crear nueva asignación
-          </Button>
+            <AddTaskIcon color="primary" sx={{ mr: 1.5 }} />
+          </motion.div>
+          <Typography variant="subtitle1" fontWeight="500">
+            Nueva Asignación
+          </Typography>
         </Box>
-        <Divider sx={{ mb: 3 }} />
-        
-        <Collapse in={formVisible} timeout="auto">
-          <Fade in={formVisible} timeout={600}>
-            <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
-          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
-            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
-              Información Básica
-            </Typography>
-            
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Título de la asignación"
-                  name="title"
-                  value={taskData.title}
-                  onChange={handleChange}
-                  required
-                  size="small"
-                  InputProps={{
-                    startAdornment: <AssignmentIcon color="action" sx={{ mr: 1 }} />,
-                  }}
-                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                {!multipleAssignment ? (
-                  <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
-                    <InputLabel>Colaborador asignado</InputLabel>
-                    <Select
-                      name="employeeId"
-                      value={taskData.employeeId}
-                      onChange={handleChange}
-                      label="Asignado"
-                      required
-                      startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
-                    >
-                      {employees.map((employee) => (
-                        <MenuItem key={employee.id} value={employee.id}>
-                          {employee.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                ) : (
-                  <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
-                    <InputLabel>Asignada a</InputLabel>
-                    <Select
-                      multiple
-                      value={selectedEmployees}
-                      onChange={handleEmployeeSelectionChange}
-                      input={<OutlinedInput label="Seleccionar Asignados" />}
-                      renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                          {selected.map((value) => {
-                            const employee = employees.find(emp => emp.id === value);
-                            return (
-                              <Chip 
-                                key={value} 
-                                label={employee ? employee.name : value} 
-                                size="small" 
-                                sx={{ borderRadius: '4px' }}
-                              />
-                            );
-                          })}
-                        </Box>
-                      )}
-                      startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
-                    >
-                      {employees.map((employee) => (
-                        <MenuItem key={employee.id} value={employee.id}>
-                          <Checkbox checked={selectedEmployees.indexOf(employee.id) > -1} />
-                          <ListItemText primary={employee.name} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
-                  <InputLabel>Categoría</InputLabel>
-                  <Select
-                    name="type"
-                    value={taskData.type}
-                    onChange={handleChange}
-                    label="Tipo de Tarea"
-                    required
-                    startAdornment={<CategoryIcon color="action" sx={{ ml: 1, mr: 1 }} />}
-                  >
-                    {Object.keys(taskTypes).map((type) => (
-                      <MenuItem key={type} value={type}>
-                        <Chip 
-                          label={type} 
-                          size="small" 
-                          sx={{ 
-                            bgcolor: taskTypes[type].color,
-                            color: mode === 'dark' ? 'white' : 'rgba(0, 0, 0, 0.87)',
-                            fontWeight: 'medium',
-                            border: mode === 'dark' ? `1px solid ${theme.palette.divider}` : 'none',
-                            '& .MuiChip-label': { px: 1 },
-                            transition: 'all 0.2s ease-in-out',
-                            '&:hover': {
-                              opacity: 0.9,
-                              transform: 'translateY(-1px)'
-                            }
-                          }} 
-                        />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  type="date"
-                  label="Fecha de asignación"
-                  name="date"
-                  value={taskData.date}
-                  onChange={handleChange}
-                  InputLabelProps={{ shrink: true }}
-                  size="small"
-                  InputProps={{
-                    startAdornment: <DateRangeIcon color="action" sx={{ mr: 1 }} />,
-                  }}
-                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                />
-              </Grid>
-            </Grid>
-          </Paper>
-          
-          {taskData.type && (
-            <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2, display: 'flex', alignItems: 'center' }}>
-                Criterios de Evaluación
-                <Tooltip title="Los criterios varían según el tipo de tarea seleccionado">
-                  <IconButton size="small" sx={{ ml: 1 }}>
-                    <InfoOutlinedIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Typography>
-              
-              <Grid container spacing={3}>
-                {taskTypes[taskData.type].criteria.map((criterion) => (
-                  <Grid item xs={12} md={6} key={criterion.name}>
-                    <Stack spacing={1}>
-                      <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
-                        {criterion.name} <Chip label={`${criterion.weight}%`} size="small" color="primary" variant="outlined" sx={{ mx: 1 }} />
-                        {(taskData.type === 'PRA' || taskData.type === 'Validacion') && criterion.name === 'Calidad' && (
-                          <Tooltip title="Si la calificación es menor al 70%, se pierde todo el porcentaje de este rubro" arrow placement="top">
-                            <InfoOutlinedIcon fontSize="small" color="warning" />
-                          </Tooltip>
-                        )}
-                      </Typography>
+        <motion.div
+          animate={{ rotate: formVisible ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <KeyboardArrowDownIcon color="action" />
+        </motion.div>
+      </Box>
+
+      {/* Contenido del formulario con animación */}
+      <AnimatePresence>
+        {formVisible && (
+          <motion.div
+            variants={formVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <Box sx={{ p: 3 }}>
+              <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+                <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: alpha(theme.palette.background.paper, 0.5), borderRadius: '8px' }}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
+                    Información Básica
+                  </Typography>
+                  
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} md={6}>
                       <TextField
                         fullWidth
-                        type="number"
-                        placeholder="Ingrese calificación (0-100)"
-                        value={taskData.evaluations[criterion.name] || ''}
-                        onChange={(e) => handleEvaluationChange(criterion.name, e.target.value)}
-                        InputProps={{ 
-                          inputProps: { min: 0, max: 100 },
-                        }}
+                        label="Título de la asignación"
+                        name="title"
+                        value={taskData.title}
+                        onChange={handleChange}
+                        required
                         size="small"
+                        InputProps={{
+                          startAdornment: <AssignmentIcon color="action" sx={{ mr: 1 }} />,
+                        }}
                         sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
                       />
-                      <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
-                        {criterion.description}
-                      </Typography>
-                    </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      {!multipleAssignment ? (
+                        <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
+                          <InputLabel>Colaborador asignado</InputLabel>
+                          <Select
+                            name="employeeId"
+                            value={taskData.employeeId}
+                            onChange={handleChange}
+                            label="Asignado"
+                            required
+                            startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
+                          >
+                            {employees.map((employee) => (
+                              <MenuItem key={employee.id} value={employee.id}>
+                                {employee.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      ) : (
+                        <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
+                          <InputLabel>Asignada a</InputLabel>
+                          <Select
+                            multiple
+                            value={selectedEmployees}
+                            onChange={handleEmployeeSelectionChange}
+                            input={<OutlinedInput label="Seleccionar Asignados" />}
+                            renderValue={(selected) => (
+                              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                {selected.map((value) => {
+                                  const employee = employees.find(emp => emp.id === value);
+                                  return (
+                                    <Chip 
+                                      key={value} 
+                                      label={employee ? employee.name : value} 
+                                      size="small" 
+                                      sx={{ borderRadius: '4px' }}
+                                    />
+                                  );
+                                })}
+                              </Box>
+                            )}
+                            startAdornment={<PersonIcon color="action" sx={{ ml: 1, mr: 1 }} />}
+                          >
+                            {employees.map((employee) => (
+                              <MenuItem key={employee.id} value={employee.id}>
+                                <Checkbox checked={selectedEmployees.indexOf(employee.id) > -1} />
+                                <ListItemText primary={employee.name} />
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      )}
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
+                        <InputLabel>Categoría</InputLabel>
+                        <Select
+                          name="type"
+                          value={taskData.type}
+                          onChange={handleChange}
+                          label="Tipo de Tarea"
+                          required
+                          startAdornment={<CategoryIcon color="action" sx={{ ml: 1, mr: 1 }} />}
+                        >
+                          {Object.keys(taskTypes).map((type) => (
+                            <MenuItem key={type} value={type}>
+                              <Chip 
+                                label={type} 
+                                size="small" 
+                                sx={{ 
+                                  bgcolor: taskTypes[type].color,
+                                  color: mode === 'dark' ? 'white' : 'rgba(0, 0, 0, 0.87)',
+                                  fontWeight: 'medium',
+                                  border: mode === 'dark' ? `1px solid ${theme.palette.divider}` : 'none',
+                                  '& .MuiChip-label': { px: 1 }
+                                }} 
+                              />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        type="date"
+                        label="Fecha de asignación"
+                        name="date"
+                        value={taskData.date}
+                        onChange={handleChange}
+                        InputLabelProps={{ shrink: true }}
+                        size="small"
+                        InputProps={{
+                          startAdornment: <DateRangeIcon color="action" sx={{ mr: 1 }} />,
+                        }}
+                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                      />
+                    </Grid>
                   </Grid>
-                ))}
-              </Grid>
-              
-              {calculateTotalScore() !== null && (
-                <Box sx={{ 
-                  mt: 2, 
-                  p: 2, 
-                  borderRadius: '12px', 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  background: theme => {
-                    const score = calculateTotalScore();
-                    let color;
-                    if (score >= 90) color = theme.palette.success.main;
-                    else if (score >= 70) color = theme.palette.primary.main;
-                    else if (score >= 50) color = theme.palette.warning.main;
-                    else color = theme.palette.error.main;
-                    
-                    return `linear-gradient(135deg, ${color}22 0%, ${color}44 100%)`;
-                  },
-                  boxShadow: theme => {
-                    const score = calculateTotalScore();
-                    let color;
-                    if (score >= 90) color = theme.palette.success.main;
-                    else if (score >= 70) color = theme.palette.primary.main;
-                    else if (score >= 50) color = theme.palette.warning.main;
-                    else color = theme.palette.error.main;
-                    
-                    return `0 4px 12px ${color}33`;
-                  },
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: theme => {
-                      const score = calculateTotalScore();
-                      let color;
-                      if (score >= 90) color = theme.palette.success.main;
-                      else if (score >= 70) color = theme.palette.primary.main;
-                      else if (score >= 50) color = theme.palette.warning.main;
-                      else color = theme.palette.error.main;
-                      
-                      return `0 6px 16px ${color}55`;
-                    },
-                  }
-                }}>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5, opacity: 0.8 }}>
-                    Puntuación Total
-                  </Typography>
-                  <Box sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                  }}>
-                    <Typography 
-                      variant="h4" 
-                      sx={{ 
-                        fontWeight: 'bold',
-                        color: theme => {
-                          const score = calculateTotalScore();
-                          if (score >= 90) return theme.palette.success.main;
-                          if (score >= 70) return theme.palette.primary.main;
-                          if (score >= 50) return theme.palette.warning.main;
-                          return theme.palette.error.main;
-                        }
-                      }}
-                    >
-                      {calculateTotalScore().toFixed(2)}%
+                </Paper>
+                
+                {taskData.type && (
+                  <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: alpha(theme.palette.background.paper, 0.5), borderRadius: '8px' }}>
+                    <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2, display: 'flex', alignItems: 'center' }}>
+                      Criterios de Evaluación
+                      <Tooltip title="Los criterios varían según el tipo de tarea seleccionado">
+                        <IconButton size="small" sx={{ ml: 1 }}>
+                          <InfoOutlinedIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
                     </Typography>
-                  </Box>
+                    
+                    <Grid container spacing={3}>
+                      {taskTypes[taskData.type].criteria.map((criterion) => (
+                        <Grid item xs={12} md={6} key={criterion.name}>
+                          <Stack spacing={1}>
+                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                              {criterion.name} <Chip label={`${criterion.weight}%`} size="small" color="primary" variant="outlined" sx={{ mx: 1 }} />
+                              {(taskData.type === 'PRA' || taskData.type === 'Validacion') && criterion.name === 'Calidad' && (
+                                <Tooltip title="Si la calificación es menor al 70%, se pierde todo el porcentaje de este rubro" arrow placement="top">
+                                  <InfoOutlinedIcon fontSize="small" color="warning" />
+                                </Tooltip>
+                              )}
+                            </Typography>
+                            <TextField
+                              fullWidth
+                              type="number"
+                              placeholder="Ingrese calificación (0-100)"
+                              value={taskData.evaluations[criterion.name] || ''}
+                              onChange={(e) => handleEvaluationChange(criterion.name, e.target.value)}
+                              InputProps={{ 
+                                inputProps: { min: 0, max: 100 },
+                              }}
+                              size="small"
+                              sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                            />
+                            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
+                              {criterion.description}
+                            </Typography>
+                          </Stack>
+                        </Grid>
+                      ))}
+                    </Grid>
+                    
+                    {calculateTotalScore() !== null && (
+                      <Box sx={{ 
+                        mt: 2, 
+                        p: 2, 
+                        borderRadius: '12px', 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        background: theme => {
+                          const score = calculateTotalScore();
+                          let color;
+                          if (score >= 90) color = theme.palette.success.main;
+                          else if (score >= 70) color = theme.palette.primary.main;
+                          else if (score >= 50) color = theme.palette.warning.main;
+                          else color = theme.palette.error.main;
+                          
+                          return `linear-gradient(135deg, ${alpha(color, 0.1)} 0%, ${alpha(color, 0.2)} 100%)`;
+                        }
+                      }}>
+                        <Typography variant="subtitle2" sx={{ mb: 0.5, opacity: 0.8 }}>
+                          Puntuación Total
+                        </Typography>
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                        }}>
+                          <Typography 
+                            variant="h4" 
+                            sx={{ 
+                              fontWeight: 'bold',
+                              color: theme => {
+                                const score = calculateTotalScore();
+                                if (score >= 90) return theme.palette.success.main;
+                                if (score >= 70) return theme.palette.primary.main;
+                                if (score >= 50) return theme.palette.warning.main;
+                                return theme.palette.error.main;
+                              }
+                            }}
+                          >
+                            {calculateTotalScore().toFixed(2)}%
+                          </Typography>
+                        </Box>
+                      </Box>
+                    )}
+                  </Paper>
+                )}
+                
+                <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: alpha(theme.palette.background.paper, 0.5), borderRadius: '8px' }}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
+                    Observaciones
+                  </Typography>
+                  
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={3}
+                    name="comments"
+                    value={taskData.comments || ''}
+                    onChange={handleChange}
+                    placeholder="Ingrese comentarios adicionales sobre la tarea"
+                    InputProps={{
+                      startAdornment: <CommentIcon color="action" sx={{ mt: 1.5, mr: 1 }} />,
+                    }}
+                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                  />
+                </Paper>
+                
+                <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: alpha(theme.palette.background.paper, 0.5), borderRadius: '8px' }}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
+                    Opciones de Asignación
+                  </Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={multipleAssignment}
+                        onChange={handleMultipleAssignmentChange}
+                        color="primary"
+                      />
+                    }
+                    label="Asignación múltiple"
+                  />
+                  {multipleAssignment && (
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                      La tarea se creará para cada colaborador seleccionado con los mismos detalles y evaluaciones.
+                    </Typography>
+                  )}
+                </Paper>
+                
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button 
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddTaskIcon />}
+                    sx={{ 
+                      borderRadius: '8px', 
+                      px: 3,
+                      py: 1,
+                      fontWeight: 'medium'
+                    }}
+                    disabled={multipleAssignment && selectedEmployees.length === 0}
+                  >
+                    Crear asignación{multipleAssignment && selectedEmployees.length > 0 ? `s (${selectedEmployees.length})` : ''}
+                  </Button>
                 </Box>
-              )}
-            </Paper>
-          )}
-          
-          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
-            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
-              Observaciones
-            </Typography>
-            
-            <TextField
-              fullWidth
-              multiline
-              rows={3}
-              name="comments"
-              value={taskData.comments || ''}
-              onChange={handleChange}
-              placeholder="Ingrese comentarios adicionales sobre la tarea"
-              InputProps={{
-                startAdornment: <CommentIcon color="action" sx={{ mt: 1.5, mr: 1 }} />,
-              }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-            />
-          </Paper>
-          
-          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
-            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
-              Opciones de Asignación
-            </Typography>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={multipleAssignment}
-                  onChange={handleMultipleAssignmentChange}
-                  color="primary"
-                />
-              }
-              label="Asignación múltiple"
-            />
-            {multipleAssignment && (
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                La tarea se creará para cada CAD seleccionado con los mismos detalles y evaluaciones.
-              </Typography>
-            )}
-          </Paper>
-          
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              size="large"
-              startIcon={<AddTaskIcon />}
-              sx={{ 
-                borderRadius: '8px', 
-                px: 3,
-                py: 1,
-                fontWeight: 'bold',
-                boxShadow: 2
-              }}
-              disabled={multipleAssignment && selectedEmployees.length === 0}
-            >
-              Crear asignación{multipleAssignment && selectedEmployees.length > 0 ? `s (${selectedEmployees.length})` : ''}
-            </Button>
-          </Box>
-          </Box>
-          </Fade>
-        </Collapse>
-      </CardContent>
-    </Card>
+              </Box>
+            </Box>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Box>
   );
 };
 
