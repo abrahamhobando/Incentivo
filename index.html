@@ -2,8 +2,8 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistema de Gestión de CADS y Tareas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Sistema de Asignaciones</title>
     
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
@@ -16,13 +16,76 @@
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" id="favicon">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <meta name="theme-color" content="#3f51b5">
+    <meta name="theme-color" content="#0A84FF">
     
     <!-- Fuentes -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap"
+    <link 
+      rel="stylesheet" 
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
     />
+    
+    <!-- Estilos adicionales para el estilo Apple -->
+    <style>
+      * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+      }
+      
+      /* Para Safari, mejora los elementos translúcidos */
+      @supports (-webkit-backdrop-filter: none) {
+        .translucent-element {
+          -webkit-backdrop-filter: blur(15px);
+          backdrop-filter: blur(15px);
+        }
+      }
+      
+      /* Desactivar resaltado de toque en móviles */
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      /* Hacer que los scrollbars sean más elegantes - estilo iOS/macOS */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+      }
+      
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.3);
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        ::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+      }
+    </style>
     
     <!-- Script para manejar el favicon según el modo claro/oscuro -->
     <script>
@@ -48,7 +111,7 @@
         // Actualizar theme-color para navegadores móviles
         document.querySelector('meta[name="theme-color"]').setAttribute(
           'content', 
-          isDarkMode ? '#0f172a' : '#3f51b5'
+          isDarkMode ? '#000000' : '#0A84FF'
         );
       }
       

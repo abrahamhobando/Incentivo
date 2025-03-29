@@ -26,7 +26,7 @@ const ThemeApp = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1800);
+    }, 1600);
     return () => clearTimeout(timer);
   }, []);
 
@@ -75,7 +75,9 @@ const ThemeApp = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: theme.palette.background.default,
+                background: mode === 'light' 
+                  ? 'linear-gradient(145deg, rgba(241,245,249,1) 0%, rgba(214,229,250,0.8) 100%)' 
+                  : 'linear-gradient(145deg, #000000 0%, rgba(39,39,42,0.9) 100%)',
                 zIndex: 9999
               }}
             >
@@ -91,29 +93,58 @@ const ThemeApp = () => {
               >
                 <motion.div
                   style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 16,
-                    backgroundColor: theme.palette.primary.main,
+                    width: 120,
+                    height: 120,
+                    borderRadius: 30,
+                    background: mode === 'light' 
+                      ? 'linear-gradient(135deg, #0A84FF, #5AC8FA)' 
+                      : 'linear-gradient(135deg, #0A84FF, #4DA2FF)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: 24
+                    marginBottom: 32,
+                    boxShadow: '0 10px 30px rgba(10, 132, 255, 0.3)',
+                    position: 'relative',
+                    overflow: 'hidden'
                   }}
                   animate={{ 
-                    rotate: [0, 10, 0, -10, 0],
-                    scale: [1, 1.05, 1, 1.05, 1]
+                    rotate: [0, 0],
+                    scale: [1, 1.02, 1]
                   }}
                   transition={{ 
                     repeat: Infinity,
                     repeatType: "mirror",
-                    duration: 2,
+                    duration: 1.8,
                     ease: "easeInOut" 
                   }}
                 >
+                  {/* Efecto de brillo translúcido */}
+                  <motion.div
+                    style={{
+                      position: 'absolute',
+                      top: '-50%',
+                      left: '-50%',
+                      right: '-50%',
+                      bottom: '-50%',
+                      borderRadius: '50%',
+                      background: 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%)',
+                      opacity: 0.5
+                    }}
+                    animate={{
+                      x: ['-20%', '20%'],
+                      y: ['-20%', '20%']
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      repeatType: "mirror",
+                      duration: 3,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  
                   <motion.svg 
-                    width="40" 
-                    height="40" 
+                    width="56" 
+                    height="56" 
                     viewBox="0 0 24 24" 
                     fill="none"
                     animate={{ 
@@ -138,13 +169,16 @@ const ThemeApp = () => {
                   </motion.svg>
                 </motion.div>
               </motion.div>
-              <motion.h1
+              <motion.div
                 style={{
-                  fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
-                  fontSize: '1.5rem',
-                  fontWeight: 500,
-                  color: theme.palette.text.primary,
-                  margin: 0
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif',
+                  fontSize: '1.8rem',
+                  fontWeight: 600,
+                  color: mode === 'light' ? '#000000' : '#FFFFFF',
+                  margin: 0,
+                  textAlign: 'center',
+                  letterSpacing: '-0.02em',
+                  marginBottom: 16
                 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -155,7 +189,27 @@ const ThemeApp = () => {
                 }}
               >
                 Sistema de Asignaciones
-              </motion.h1>
+              </motion.div>
+              <motion.div
+                style={{
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif',
+                  fontSize: '1rem',
+                  fontWeight: 400,
+                  color: mode === 'light' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+                  textAlign: 'center',
+                  maxWidth: 260,
+                  letterSpacing: '-0.01em',
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ 
+                  delay: 0.6,
+                  duration: 0.6,
+                  ease: "easeOut" 
+                }}
+              >
+                Gestión eficiente de tareas y colaboradores
+              </motion.div>
             </motion.div>
           ) : (
             <motion.div
