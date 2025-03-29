@@ -330,15 +330,17 @@ const TaskForm = ({ employees, onTaskAdded }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!taskData.title || !taskData.employeeId || !taskData.type || !taskData.date) {
+      alert('Por favor, complete todos los campos requeridos.');
+      return;
+    }
     const totalScore = calculateTotalScore();
     const baseTask = {
       ...taskData,
       totalScore,
       date: taskData.date,
     };
-    
     if (multipleAssignment && selectedEmployees.length > 0) {
-      // Crear una tarea para cada empleado seleccionado
       selectedEmployees.forEach(employeeId => {
         const employeeTask = {
           ...baseTask,
@@ -347,11 +349,8 @@ const TaskForm = ({ employees, onTaskAdded }) => {
         addTask(employeeTask);
       });
     } else {
-      // Modo normal: crear una sola tarea
       addTask(baseTask);
     }
-    
-    // Resetear el formulario
     setTaskData({
       title: '',
       employeeId: '',
