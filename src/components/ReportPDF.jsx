@@ -279,6 +279,8 @@ const ReportPDF = ({ employeeName, dateRange, statistics, tasks }) => {
                     peso = criterio === 'Seguimiento de instrucciones' ? 60 : criterio === 'Cumplimiento de tiempo' ? 40 : 0;
                   } else if (task.type === 'Entrenamientos (Recibe)') {
                     peso = criterio === 'Pruebas teóricas' ? 40 : criterio === 'Pruebas prácticas' ? 60 : 0;
+                  } else if (task.type === 'Refrescamientos (Brinda)') {
+                    peso = criterio === 'Contenido adecuado' ? 20 : criterio === 'Materiales didácticos' ? 20 : criterio === 'Explicación clara' ? 20 : criterio === 'Entregables' ? 40 : 0;
                   }
 
                   let ponderado = 0;

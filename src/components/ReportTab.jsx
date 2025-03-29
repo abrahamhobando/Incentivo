@@ -374,9 +374,14 @@ const ReportTab = ({ employees, tasks }) => {
                 border: '1px solid', 
                 borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                 borderRadius: 2,
-                height: '100%'
+                height: '100%',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+                }
               }}>
-                <CardContent sx={{ p: 2 }}>
+                <CardContent sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Total de asignaciones
                   </Typography>
@@ -391,9 +396,14 @@ const ReportTab = ({ employees, tasks }) => {
                 border: '1px solid', 
                 borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                 borderRadius: 2,
-                height: '100%'
+                height: '100%',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+                }
               }}>
-                <CardContent sx={{ p: 2 }}>
+                <CardContent sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Promedio de desempeño
                   </Typography>
@@ -408,9 +418,14 @@ const ReportTab = ({ employees, tasks }) => {
                 border: '1px solid', 
                 borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                 borderRadius: 2,
-                height: '100%'
+                height: '100%',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+                }
               }}>
-                <CardContent sx={{ p: 2 }}>
+                <CardContent sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Incentivo calculado
                   </Typography>
@@ -424,336 +439,281 @@ const ReportTab = ({ employees, tasks }) => {
           </Grid>
 
           {/* Nuevo componente de asignaciones individuales */}
-          <Card sx={{ mb: 3 }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 500, mb: 2 }}>
-                Asignaciones evaluadas
-              </Typography>
-              
-              {/* Tarjetas de estadísticas por tipo de tarea */}
-              <Grid container spacing={2} sx={{ mb: 3 }}>
-                {Object.entries(statistics.tasksByType).map(([type, count]) => (
-                  <Grid item xs={6} sm={4} md={3} key={type}>
-                    <Card elevation={0} sx={{ 
-                      border: '1px solid', 
-                      borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-                      borderRadius: 2,
-                      height: '100%',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '4px',
-                        height: '100%',
-                        backgroundColor: (theme) => {
-                          if (type === 'PRA') return theme.palette.primary.main;
-                          if (type === 'STD Times') return theme.palette.secondary.main;
-                          if (type === 'Entrenamientos (Recibe)') return theme.palette.info.main;
-                          if (type === 'Entrenamientos (Brinda)') return theme.palette.success.main;
-                          if (type === 'Refrescamientos (Brinda)') return theme.palette.warning.main;
-                          if (type === 'Práctica de procesos') return theme.palette.error.main;
-                          return theme.palette.grey[500];
-                        }
-                      }
-                    }}>
-                      <CardContent sx={{ p: 2 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                          {type}
-                        </Typography>
-                        <Typography variant="h5" color="primary" sx={{ fontWeight: 500 }}>
-                          {count}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-              
-              {/* Lista de asignaciones */}
-              {filteredTasks.map((task) => {
-                // Calcular los criterios y sus pesos según el tipo de tarea
-                const taskCriteria = [];
-                
-                if (task.type === 'PRA') {
-                  taskCriteria.push({ name: 'Calidad', weight: 60 });
-                  taskCriteria.push({ name: 'Seguimiento de instrucciones', weight: 40 });
-                } else if (task.type === 'STD Times') {
-                  taskCriteria.push({ name: 'Seguimiento de instrucciones', weight: 60 });
-                  taskCriteria.push({ name: 'Calidad del servicio', weight: 40 });
-                } else if (task.type === 'Validacion') {
-                  taskCriteria.push({ name: 'Calidad', weight: 60 });
-                  taskCriteria.push({ name: 'Cumplimiento de tiempo', weight: 20 });
-                  taskCriteria.push({ name: '0 errores encontrados en GA', weight: 20 });
-                } else if (task.type === 'Entrenamientos (Recibe)') {
-                  taskCriteria.push({ name: 'Pruebas teóricas', weight: 40 });
-                  taskCriteria.push({ name: 'Pruebas prácticas', weight: 60 });
-                } else if (task.type === 'Entrenamientos (Brinda)') {
-                  taskCriteria.push({ name: 'Manejo del grupo', weight: 20 });
-                  taskCriteria.push({ name: 'Transmisión de conocimientos', weight: 20 });
-                  taskCriteria.push({ name: 'Entregables', weight: 20 });
-                  taskCriteria.push({ name: 'Resultados obtenidos', weight: 20 });
-                  taskCriteria.push({ name: 'Calidad del servicio', weight: 20 });
-                } else if (task.type === 'Refrescamientos (Brinda)') {
-                  taskCriteria.push({ name: 'Contenido adecuado', weight: 20 });
-                  taskCriteria.push({ name: 'Materiales didácticos', weight: 20 });
-                  taskCriteria.push({ name: 'Explicación clara', weight: 20 });
-                  taskCriteria.push({ name: 'Entregables', weight: 40 });
-                } else if (task.type === 'Práctica de procesos') {
-                  taskCriteria.push({ name: 'Calidad', weight: 60 });
-                  taskCriteria.push({ name: 'Seguimiento de instrucciones', weight: 40 });
-                }
-                
-                return (
-                  <Card key={task.id} sx={{ 
-                    mb: 2, 
-                    borderRadius: 2,
-                    border: '1px solid',
-                    borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 500, mb: 2 }}>
+              Asignaciones evaluadas
+            </Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mb: 2 }}>
+              {Object.entries(statistics.tasksByType).map(([type, count]) => (
+                <Chip
+                  key={type}
+                  label={`${type}: ${count}`}
+                  sx={{
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    bgcolor: (theme) => {
+                      if (type === 'PRA') return theme.palette.primary.light;
+                      if (type === 'STD Times') return theme.palette.secondary.light;
+                      if (type === 'Entrenamientos (Recibe)') return theme.palette.info.light;
+                      if (type === 'Entrenamientos (Brinda)') return theme.palette.success.light;
+                      if (type === 'Refrescamientos (Brinda)') return theme.palette.warning.light;
+                      if (type === 'Práctica de procesos') return theme.palette.error.light;
+                      return theme.palette.grey[300];
+                    },
+                    color: (theme) => {
+                      if (type === 'PRA') return theme.palette.primary.dark;
+                      if (type === 'STD Times') return theme.palette.secondary.dark;
+                      if (type === 'Entrenamientos (Recibe)') return theme.palette.info.dark;
+                      if (type === 'Entrenamientos (Brinda)') return theme.palette.success.dark;
+                      if (type === 'Refrescamientos (Brinda)') return theme.palette.warning.dark;
+                      if (type === 'Práctica de procesos') return theme.palette.error.dark;
+                      return theme.palette.grey[700];
+                    },
+                    '& .MuiChip-label': { px: 1.5 },
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    transition: 'all 0.3s ease-in-out',
                     '&:hover': {
                       transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.05)'
-                    },
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '4px',
-                      height: '100%',
-                      backgroundColor: (theme) => {
-                        if (task.type === 'PRA') return theme.palette.primary.main;
-                        if (task.type === 'STD Times') return theme.palette.secondary.main;
-                        if (task.type === 'Entrenamientos (Recibe)') return theme.palette.info.main;
-                        if (task.type === 'Entrenamientos (Brinda)') return theme.palette.success.main;
-                        if (task.type === 'Refrescamientos (Brinda)') return theme.palette.warning.main;
-                        if (task.type === 'Práctica de procesos') return theme.palette.error.main;
-                        return theme.palette.grey[500];
-                      }
+                      boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
                     }
-                  }}>
-                    <CardContent sx={{ p: 2 }}>
-                      <Grid container spacing={2}>
-                        {/* Encabezado de la tarea */}
-                        <Grid item xs={12}>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <AssignmentIcon color="primary" sx={{ mr: 1, fontSize: '1.2rem' }} />
-                              <Typography variant="h6" sx={{ fontWeight: 500, fontSize: '1rem' }}>
-                                {task.title}
-                              </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <Chip 
-                                label={task.type}
-                                size="small"
-                                sx={{ 
-                                  height: '22px',
-                                  fontSize: '0.75rem',
-                                  fontWeight: 500,
-                                  bgcolor: (theme) => {
-                                    if (task.type === 'PRA') return alpha(theme.palette.primary.main, 0.15);
-                                    if (task.type === 'STD Times') return alpha(theme.palette.secondary.main, 0.15);
-                                    if (task.type === 'Entrenamientos (Recibe)') return alpha(theme.palette.info.main, 0.15);
-                                    if (task.type === 'Entrenamientos (Brinda)') return alpha(theme.palette.success.main, 0.15);
-                                    if (task.type === 'Refrescamientos (Brinda)') return alpha(theme.palette.warning.main, 0.15);
-                                    if (task.type === 'Práctica de procesos') return alpha(theme.palette.error.main, 0.15);
-                                    return alpha(theme.palette.grey[500], 0.15);
-                                  },
-                                  color: (theme) => {
-                                    if (task.type === 'PRA') return theme.palette.primary.main;
-                                    if (task.type === 'STD Times') return theme.palette.secondary.main;
-                                    if (task.type === 'Entrenamientos (Recibe)') return theme.palette.info.main;
-                                    if (task.type === 'Entrenamientos (Brinda)') return theme.palette.success.main;
-                                    if (task.type === 'Refrescamientos (Brinda)') return theme.palette.warning.main;
-                                    if (task.type === 'Práctica de procesos') return theme.palette.error.main;
-                                    return theme.palette.grey[500];
-                                  },
-                                  '& .MuiChip-label': {
-                                    px: 1
-                                  },
-                                  mr: 1
-                                }}
-                              />
-                              <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                  fontWeight: 600,
-                                  color: (theme) => {
-                                    if (task.totalScore >= 90) return theme.palette.success.main;
-                                    if (task.totalScore >= 70) return theme.palette.info.main;
-                                    if (task.totalScore >= 50) return theme.palette.warning.main;
-                                    return theme.palette.error.main;
-                                  }
-                                }}
-                              >
-                                {task.totalScore.toFixed(1)}%
-                              </Typography>
-                            </Box>
+                  }}
+                />
+              ))}
+            </Box>
+            {filteredTasks.map((task) => {
+              const taskCriteria = [];
+              if (task.type === 'PRA') {
+                taskCriteria.push({ name: 'Calidad', weight: 60 });
+                taskCriteria.push({ name: 'Seguimiento de instrucciones', weight: 40 });
+              } else if (task.type === 'STD Times') {
+                taskCriteria.push({ name: 'Seguimiento de instrucciones', weight: 60 });
+                taskCriteria.push({ name: 'Calidad del servicio', weight: 40 });
+              } else if (task.type === 'Validacion') {
+                taskCriteria.push({ name: 'Calidad', weight: 60 });
+                taskCriteria.push({ name: 'Cumplimiento de tiempo', weight: 20 });
+                taskCriteria.push({ name: '0 errores encontrados en GA', weight: 20 });
+              } else if (task.type === 'Entrenamientos (Recibe)') {
+                taskCriteria.push({ name: 'Pruebas teóricas', weight: 40 });
+                taskCriteria.push({ name: 'Pruebas prácticas', weight: 60 });
+              } else if (task.type === 'Entrenamientos (Brinda)') {
+                taskCriteria.push({ name: 'Manejo del grupo', weight: 20 });
+                taskCriteria.push({ name: 'Transmisión de conocimientos', weight: 20 });
+                taskCriteria.push({ name: 'Entregables', weight: 20 });
+                taskCriteria.push({ name: 'Resultados obtenidos', weight: 20 });
+                taskCriteria.push({ name: 'Calidad del servicio', weight: 20 });
+              } else if (task.type === 'Refrescamientos (Brinda)') {
+                taskCriteria.push({ name: 'Contenido adecuado', weight: 20 });
+                taskCriteria.push({ name: 'Materiales didácticos', weight: 20 });
+                taskCriteria.push({ name: 'Explicación clara', weight: 20 });
+                taskCriteria.push({ name: 'Entregables', weight: 40 });
+              } else if (task.type === 'Práctica de procesos') {
+                taskCriteria.push({ name: 'Calidad', weight: 60 });
+                taskCriteria.push({ name: 'Seguimiento de instrucciones', weight: 40 });
+              }
+              return (
+                <Card key={task.id} sx={{ mb: 2, borderRadius: 3, border: '1px solid', borderColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden', transition: 'transform 0.3s, box-shadow 0.3s', '&:hover': { transform: 'translateY(-6px)', boxShadow: '0 12px 24px rgba(0,0,0,0.15)' } }}>
+                  <CardContent sx={{ p: 3 }}>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <AssignmentIcon color="primary" sx={{ mr: 1.5, fontSize: '1.5rem' }} />
+                            <Typography variant="h5" sx={{ fontWeight: 600, fontSize: '1.2rem' }}>
+                              {task.title}
+                            </Typography>
                           </Box>
-                          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                            Fecha: {new Date(task.date + 'T00:00:00').toLocaleDateString()}
-                          </Typography>
-                        </Grid>
-                        
-                        {/* Criterios de evaluación (colapsables) */}
-                        <Grid item xs={12}>
-                          <Box sx={{ 
-                            display: 'flex', 
-                            justifyContent: 'space-between', 
-                            alignItems: 'center',
-                            mb: 1,
-                            cursor: 'pointer',
-                            '&:hover': { bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.01)' },
-                            borderRadius: 1,
-                            p: 0.5
-                          }}>
-                            <Box 
-                              onClick={() => {
-                                // Crear una copia del estado actual
-                                const newOpenCriteria = {...openCriteria};
-                                // Invertir el estado para esta tarea específica
-                                newOpenCriteria[task.id] = !newOpenCriteria[task.id];
-                                setOpenCriteria(newOpenCriteria);
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Chip
+                              label={task.type}
+                              size="medium"
+                              sx={{
+                                height: '32px',
+                                fontSize: '0.9rem',
+                                fontWeight: 700,
+                                bgcolor: (theme) => {
+                                  if (task.type === 'PRA') return theme.palette.primary.light;
+                                  if (task.type === 'STD Times') return theme.palette.secondary.light;
+                                  if (task.type === 'Entrenamientos (Recibe)') return theme.palette.info.light;
+                                  if (task.type === 'Entrenamientos (Brinda)') return theme.palette.success.light;
+                                  if (task.type === 'Refrescamientos (Brinda)') return theme.palette.warning.light;
+                                  if (task.type === 'Práctica de procesos') return theme.palette.error.light;
+                                  return theme.palette.grey[300];
+                                },
+                                color: (theme) => {
+                                  if (task.type === 'PRA') return theme.palette.primary.dark;
+                                  if (task.type === 'STD Times') return theme.palette.secondary.dark;
+                                  if (task.type === 'Entrenamientos (Recibe)') return theme.palette.info.dark;
+                                  if (task.type === 'Entrenamientos (Brinda)') return theme.palette.success.dark;
+                                  if (task.type === 'Refrescamientos (Brinda)') return theme.palette.warning.dark;
+                                  if (task.type === 'Práctica de procesos') return theme.palette.error.dark;
+                                  return theme.palette.grey[700];
+                                },
+                                '& .MuiChip-label': { px: 2 },
+                                mr: 1.5,
+                                boxShadow: '0 3px 6px rgba(0,0,0,0.15)',
+                                transition: 'all 0.3s ease-in-out',
+                                '&:hover': {
+                                  transform: 'translateY(-3px)',
+                                  boxShadow: '0 6px 12px rgba(0,0,0,0.3)'
+                                }
                               }}
-                              sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                            />
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                fontWeight: 700,
+                                color: (theme) => {
+                                  if (task.totalScore >= 90) return theme.palette.success.main;
+                                  if (task.totalScore >= 70) return theme.palette.info.main;
+                                  if (task.totalScore >= 50) return theme.palette.warning.main;
+                                  return theme.palette.error.main;
+                                },
+                                bgcolor: (theme) => {
+                                  if (task.totalScore >= 90) return alpha(theme.palette.success.main, 0.1);
+                                  if (task.totalScore >= 70) return alpha(theme.palette.info.main, 0.1);
+                                  if (task.totalScore >= 50) return alpha(theme.palette.warning.main, 0.1);
+                                  return alpha(theme.palette.error.main, 0.1);
+                                },
+                                px: 1.5,
+                                py: 0.5,
+                                borderRadius: 1
+                              }}
                             >
-                              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, display: 'flex', alignItems: 'center' }}>
-                                {openCriteria[task.id] ? <KeyboardArrowUpIcon fontSize="small" /> : <KeyboardArrowDownIcon fontSize="small" />}
-                                Criterios de evaluación ({Object.keys(task.evaluations || {}).length})
-                              </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                  fontWeight: 600,
-                                  color: (theme) => {
-                                    if (task.totalScore >= 90) return theme.palette.success.main;
-                                    if (task.totalScore >= 70) return theme.palette.info.main;
-                                    if (task.totalScore >= 50) return theme.palette.warning.main;
-                                    return theme.palette.error.main;
-                                  }
-                                }}
-                              >
-                                Calificación final: {task.totalScore.toFixed(1)}%
-                              </Typography>
-                            </Box>
+                              {task.totalScore.toFixed(1)}%
+                            </Typography>
                           </Box>
-                          
-                          <Collapse in={openCriteria[task.id] || false}>
-                            <Box sx={{ 
-                              display: 'flex', 
-                              flexDirection: 'column', 
-                              gap: 1,
-                              mt: 1,
+                        </Box>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                          Fecha: {new Date(task.date + 'T00:00:00').toLocaleDateString()}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            mb: 2,
+                            cursor: 'pointer',
+                            '&:hover': { bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)' },
+                            borderRadius: 1,
+                            p: 1
+                          }}
+                          onClick={() => {
+                            const newOpenCriteria = { ...openCriteria };
+                            newOpenCriteria[task.id] = !newOpenCriteria[task.id];
+                            setOpenCriteria(newOpenCriteria);
+                          }}
+                        >
+                          <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 600, display: 'flex', alignItems: 'center' }}>
+                            {openCriteria[task.id] ? <KeyboardArrowUpIcon fontSize="medium" /> : <KeyboardArrowDownIcon fontSize="medium" />}
+                            Criterios de evaluación ({Object.keys(task.evaluations || {}).length})
+                          </Typography>
+                        </Box>
+                        <Collapse in={openCriteria[task.id] || false}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: 1.5,
+                              mt: 1.5,
                               p: 1.5,
                               borderRadius: 1,
-                              bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.01)',
+                              bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
                               border: '1px solid',
-                              borderColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'
-                            }}>
-                              {Object.entries(task.evaluations || {}).map(([criterio, puntuacion]) => {
-                                // Encontrar el peso del criterio
-                                const criteriaItem = taskCriteria.find(c => c.name === criterio);
-                                const peso = criteriaItem ? criteriaItem.weight : 100 / Object.keys(task.evaluations || {}).length;
-                                
-                                // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
-                                let ponderado = 0;
-                                if ((task.type === 'PRA' || task.type === 'Validacion') && 
-                                    criterio === 'Calidad' && puntuacion < 70) {
-                                  ponderado = 0;
-                                } else {
-                                  ponderado = (puntuacion * peso / 100).toFixed(1);
-                                }
-                                
-                                return (
-                                  <Box key={criterio} sx={{ 
-                                    display: 'flex', 
-                                    justifyContent: 'space-between', 
+                              borderColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+                            }}
+                          >
+                            {Object.entries(task.evaluations || {}).map(([criterio, puntuacion]) => {
+                              const criteriaItem = taskCriteria.find(c => c.name === criterio);
+                              const peso = criteriaItem ? criteriaItem.weight : 100 / Object.keys(task.evaluations || {}).length;
+                              let ponderado = 0;
+                              if ((task.type === 'PRA' || task.type === 'Validacion') && criterio === 'Calidad' && puntuacion < 70) {
+                                ponderado = 0;
+                              } else {
+                                ponderado = (puntuacion * peso / 100).toFixed(1);
+                              }
+                              return (
+                                <Box
+                                  key={criterio}
+                                  sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
                                     alignItems: 'center',
                                     p: 1,
                                     borderRadius: 1,
-                                    bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'
-                                  }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                      <Typography variant="body2">{criterio}</Typography>
-                                      <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
-                                        (Peso: {peso}%)
-                                      </Typography>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                      <Chip 
-                                        size="small" 
-                                        label={`${puntuacion}%`}
-                                        sx={{ 
-                                          height: '20px',
-                                          fontSize: '0.7rem',
-                                          fontWeight: 500,
-                                          bgcolor: (theme) => {
-                                            if (puntuacion >= 90) return alpha(theme.palette.success.main, 0.2);
-                                            if (puntuacion >= 70) return alpha(theme.palette.info.main, 0.2);
-                                            if (puntuacion >= 50) return alpha(theme.palette.warning.main, 0.2);
-                                            return alpha(theme.palette.error.main, 0.2);
-                                          },
-                                          color: (theme) => {
-                                            if (puntuacion >= 90) return theme.palette.success.main;
-                                            if (puntuacion >= 70) return theme.palette.info.main;
-                                            if (puntuacion >= 50) return theme.palette.warning.main;
-                                            return theme.palette.error.main;
-                                          },
-                                          '& .MuiChip-label': { px: 0.8 },
-                                          mr: 1,
-                                          boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                                        }}
-                                      />
-                                      <Typography variant="caption" sx={{ 
-                                        fontWeight: 500,
-                                        color: 'text.secondary'
-                                      }}>
-                                        Ponderado: {ponderado}%
-                                      </Typography>
-                                    </Box>
+                                    bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)'
+                                  }}
+                                >
+                                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <Typography variant="body1">{criterio}</Typography>
+                                    <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                                      (Peso: {peso}%)
+                                    </Typography>
                                   </Box>
-                                );
-                              })}
-                            </Box>
-                          </Collapse>
-                        </Grid>
-                        
-                        {/* Comentarios si existen */}
-                        {task.comments && (
-                          <Grid item xs={12}>
-                            <Box sx={{ 
-                              mt: 1, 
-                              p: 1.5, 
-                              borderRadius: 1, 
-                              bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.01)',
-                              border: '1px dashed',
-                              borderColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
-                            }}>
-                              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                <CommentIcon sx={{ fontSize: '0.9rem', mr: 1, color: 'text.secondary' }} />
-                                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                                  Comentarios:
-                                </Typography>
-                              </Box>
-                              <Typography variant="body2">{task.comments}</Typography>
-                            </Box>
-                          </Grid>
-                        )}
+                                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <Chip
+                                      size="small"
+                                      label={`${puntuacion}%`}
+                                      sx={{
+                                        height: '24px',
+                                        fontSize: '0.8rem',
+                                        fontWeight: 600,
+                                        bgcolor: (theme) => {
+                                          if (puntuacion >= 90) return theme.palette.success.light;
+                                          if (puntuacion >= 70) return theme.palette.info.light;
+                                          if (puntuacion >= 50) return theme.palette.warning.light;
+                                          return theme.palette.error.light;
+                                        },
+                                        color: (theme) => {
+                                          if (puntuacion >= 90) return theme.palette.success.dark;
+                                          if (puntuacion >= 70) return theme.palette.info.dark;
+                                          if (puntuacion >= 50) return theme.palette.warning.dark;
+                                          return theme.palette.error.dark;
+                                        },
+                                        '& .MuiChip-label': { px: 1 },
+                                        mr: 1.5,
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                      }}
+                                    />
+                                    <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary' }}>
+                                      Ponderado: {ponderado}%
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              );
+                            })}
+                          </Box>
+                        </Collapse>
                       </Grid>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </CardContent>
-          </Card>
+                      {task.comments && (
+                        <Grid item xs={12}>
+                          <Box
+                            sx={{
+                              mt: 1.5,
+                              p: 1.5,
+                              borderRadius: 1,
+                              bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.02)',
+                              border: '1px dashed',
+                              borderColor: mode === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)'
+                            }}
+                          >
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+                              <CommentIcon sx={{ fontSize: '1rem', mr: 1.5, color: 'text.secondary' }} />
+                              <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                Comentarios:
+                              </Typography>
+                            </Box>
+                            <Typography variant="body2">{task.comments}</Typography>
+                          </Box>
+                        </Grid>
+                      )}
+                    </Grid>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </Box>
         </Box>
       )}
 
