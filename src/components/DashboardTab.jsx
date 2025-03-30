@@ -28,6 +28,9 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PersonIcon from '@mui/icons-material/Person';
 import { ColorModeContext } from '../main';
+import TaskPreviewModal from './TaskPreviewModal';
+import { deleteTask } from '../utils/storage';
+import EmployeeInfoModal from './EmployeeInfoModal';
 
 // Variantes de animación para elementos del dashboard
 const headerVariants = {
@@ -137,6 +140,13 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
     pendingTasks: 0,
   });
 
+  // Agregar estados para la previsualización
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
+  const [hoveredTaskId, setHoveredTaskId] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
+
   useEffect(() => {
     // Calcular estadísticas
     const completedTasks = tasks.filter(task => task.totalScore !== undefined && task.totalScore !== null).length;
@@ -217,6 +227,35 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
     return employee ? employee.name : 'Desconocido';
   };
 
+  // Función para manejar la previsualización de una tarea
+  const handlePreviewTask = (task) => {
+    setSelectedTask(task);
+    setPreviewModalOpen(true);
+  };
+  
+  // Función para editar una tarea (redirige a la pestaña de tareas)
+  const handleEditTask = (task) => {
+    // Cerrar el modal
+    setPreviewModalOpen(false);
+    
+    // Navegar a la pestaña de tareas (índice 2)
+    if (onTabChange) {
+      onTabChange(null, 2);
+    }
+  };
+  
+  // Función para eliminar una tarea
+  const handleDeleteTask = (taskId) => {
+    // Cerrar el modal
+    setPreviewModalOpen(false);
+    
+    // Eliminar la tarea (esta acción debería desencadenar una actualización del estado global)
+    deleteTask(taskId);
+    
+    // Recargar la página o actualizar los datos
+    window.location.reload();
+  };
+
   return (
     <Box>
       <motion.div
@@ -229,7 +268,7 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
             display: 'flex', 
             alignItems: 'center',
             fontWeight: 500,
-            color: 'primary.main'
+            color: theme.palette.mode === 'dark' ? 'primary.light' : 'primary.main'
           }}>
             <motion.div
               initial={{ rotate: -5, scale: 0.9 }}
@@ -258,7 +297,7 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
             variants={statCardVariants}
             initial="hidden"
             animate="visible"
-            whileHover={{ scale: 1.03 }}
+            whileHover={{ scale: 1.02 }}
             transition={{ 
               type: 'spring', 
               stiffness: 300, 
@@ -267,13 +306,15 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
           >
             <Card sx={{ 
               height: '100%',
-              borderRadius: 2,
+              borderRadius: 1,
               overflow: 'hidden',
-              boxShadow: theme => `0 4px 12px ${alpha(theme.palette.primary.main, 0.1)}`,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
               transition: 'all 0.3s ease',
-              border: `1px solid ${alpha(theme.palette.primary.main, 0.05)}`,
+              bgcolor: 'background.paper',
+              border: '1px solid',
+              borderColor: alpha(theme.palette.divider, 0.08),
               '&:hover': {
-                boxShadow: theme => `0 6px 16px ${alpha(theme.palette.primary.main, 0.15)}`,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
               }
             }}>
               <CardContent sx={{ py: 2, px: 3 }}>
@@ -282,10 +323,9 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                     Colaboradores
                   </Typography>
                   <Avatar sx={{ 
-                    bgcolor: 'primary.main', 
+                    bgcolor: alpha(theme.palette.primary.main, 0.9), 
                     width: 32, 
                     height: 32,
-                    boxShadow: theme => `0 2px 6px ${alpha(theme.palette.primary.main, 0.2)}`,
                   }}>
                     <motion.div
                       animate={{ rotate: [0, 5, 0, -5, 0] }}
@@ -317,12 +357,14 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                 <Button 
                   startIcon={<AddIcon />} 
                   size="small" 
+                  variant="text"
                   onClick={() => navigateToTab(1)}
                   sx={{ 
                     mt: 1, 
                     textTransform: 'none',
                     fontWeight: 500,
-                    fontSize: '0.8rem'
+                    fontSize: '0.8rem',
+                    px: 0
                   }}
                 >
                   Agregar colaborador
@@ -338,7 +380,7 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
             variants={statCardVariants}
             initial="hidden"
             animate="visible"
-            whileHover={{ scale: 1.03 }}
+            whileHover={{ scale: 1.02 }}
             transition={{ 
               type: 'spring', 
               stiffness: 300, 
@@ -347,13 +389,15 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
           >
             <Card sx={{ 
               height: '100%',
-              borderRadius: 2,
+              borderRadius: 1,
               overflow: 'hidden',
-              boxShadow: theme => `0 4px 12px ${alpha(theme.palette.info.main, 0.1)}`,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
               transition: 'all 0.3s ease',
-              border: `1px solid ${alpha(theme.palette.info.main, 0.05)}`,
+              bgcolor: 'background.paper',
+              border: '1px solid',
+              borderColor: alpha(theme.palette.divider, 0.08),
               '&:hover': {
-                boxShadow: theme => `0 6px 16px ${alpha(theme.palette.info.main, 0.15)}`,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
               }
             }}>
               <CardContent sx={{ py: 2, px: 3 }}>
@@ -362,10 +406,9 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                     Asignaciones totales
                   </Typography>
                   <Avatar sx={{ 
-                    bgcolor: 'info.main', 
+                    bgcolor: alpha(theme.palette.info.main, 0.9), 
                     width: 32, 
                     height: 32,
-                    boxShadow: theme => `0 2px 6px ${alpha(theme.palette.info.main, 0.2)}`,
                   }}>
                     <motion.div
                       animate={{ rotate: [0, 5, 0, -5, 0] }}
@@ -398,12 +441,14 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                   startIcon={<AddIcon />} 
                   size="small" 
                   color="info"
+                  variant="text"
                   onClick={() => navigateToTab(2)}
                   sx={{ 
                     mt: 1, 
                     textTransform: 'none',
                     fontWeight: 500,
-                    fontSize: '0.8rem'
+                    fontSize: '0.8rem',
+                    px: 0
                   }}
                 >
                   Crear asignación
@@ -419,7 +464,7 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
             variants={statCardVariants}
             initial="hidden"
             animate="visible"
-            whileHover={{ scale: 1.03 }}
+            whileHover={{ scale: 1.02 }}
             transition={{ 
               type: 'spring', 
               stiffness: 300, 
@@ -428,13 +473,15 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
           >
             <Card sx={{ 
               height: '100%',
-              borderRadius: 2,
+              borderRadius: 1,
               overflow: 'hidden',
-              boxShadow: theme => `0 4px 12px ${alpha(theme.palette.success.main, 0.1)}`,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
               transition: 'all 0.3s ease',
-              border: `1px solid ${alpha(theme.palette.success.main, 0.05)}`,
+              bgcolor: 'background.paper',
+              border: '1px solid',
+              borderColor: alpha(theme.palette.divider, 0.08),
               '&:hover': {
-                boxShadow: theme => `0 6px 16px ${alpha(theme.palette.success.main, 0.15)}`,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
               }
             }}>
               <CardContent sx={{ py: 2, px: 3 }}>
@@ -443,10 +490,9 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                     Evaluadas
                   </Typography>
                   <Avatar sx={{ 
-                    bgcolor: 'success.main', 
+                    bgcolor: alpha(theme.palette.success.main, 0.9), 
                     width: 32, 
                     height: 32,
-                    boxShadow: theme => `0 2px 6px ${alpha(theme.palette.success.main, 0.2)}`,
                   }}>
                     <motion.div
                       animate={{ scale: [1, 1.15, 1] }}
@@ -479,12 +525,14 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                   endIcon={<ArrowForwardIcon />} 
                   size="small" 
                   color="success"
+                  variant="text"
                   onClick={() => navigateToTab(3)}
                   sx={{ 
                     mt: 1, 
                     textTransform: 'none',
                     fontWeight: 500,
-                    fontSize: '0.8rem'
+                    fontSize: '0.8rem',
+                    px: 0
                   }}
                 >
                   Ver informes
@@ -500,7 +548,7 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
             variants={statCardVariants}
             initial="hidden"
             animate="visible"
-            whileHover={{ scale: 1.03 }}
+            whileHover={{ scale: 1.02 }}
             transition={{ 
               type: 'spring', 
               stiffness: 300, 
@@ -509,13 +557,15 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
           >
             <Card sx={{ 
               height: '100%',
-              borderRadius: 2,
+              borderRadius: 1,
               overflow: 'hidden',
-              boxShadow: theme => `0 4px 12px ${alpha(theme.palette.warning.main, 0.1)}`,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
               transition: 'all 0.3s ease',
-              border: `1px solid ${alpha(theme.palette.warning.main, 0.05)}`,
+              bgcolor: 'background.paper',
+              border: '1px solid',
+              borderColor: alpha(theme.palette.divider, 0.08),
               '&:hover': {
-                boxShadow: theme => `0 6px 16px ${alpha(theme.palette.warning.main, 0.15)}`,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
               }
             }}>
               <CardContent sx={{ py: 2, px: 3 }}>
@@ -524,10 +574,9 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                     Pendientes
                   </Typography>
                   <Avatar sx={{ 
-                    bgcolor: 'warning.main', 
+                    bgcolor: alpha(theme.palette.warning.main, 0.9), 
                     width: 32, 
                     height: 32,
-                    boxShadow: theme => `0 2px 6px ${alpha(theme.palette.warning.main, 0.2)}`,
                   }}>
                     <motion.div
                       animate={{ y: [0, 2, 0, -2, 0] }}
@@ -561,12 +610,14 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                   endIcon={<ArrowForwardIcon />} 
                   size="small" 
                   color="warning"
+                  variant="text"
                   onClick={() => navigateToTab(2)}
                   sx={{ 
                     mt: 1, 
                     textTransform: 'none',
                     fontWeight: 500,
-                    fontSize: '0.8rem'
+                    fontSize: '0.8rem',
+                    px: 0
                   }}
                 >
                   Ver pendientes
@@ -586,19 +637,25 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
             sx={{ 
               p: 2, 
               height: '100%',
-              borderRadius: 2,
-              boxShadow: theme => `0 2px 10px ${alpha(theme.palette.primary.main, 0.1)}`,
+              borderRadius: 1,
+              boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
+              border: '1px solid',
+              borderColor: alpha(theme.palette.divider, 0.08),
             }}
           >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" component="h2" sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="subtitle1" component="h2" sx={{ display: 'flex', alignItems: 'center', fontWeight: 500 }}>
                 <PeopleIcon sx={{ mr: 1 }} fontSize="small" /> CADS Recientes
               </Typography>
               <Button 
                 size="small" 
                 startIcon={<AddIcon />}
-                variant="outlined"
+                variant="text"
                 onClick={() => navigateToTab(1)}
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 500,
+                }}
               >
                 Agregar
               </Button>
@@ -607,7 +664,25 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
             <List sx={{ width: '100%' }}>
               {recentEmployees.length > 0 ? (
                 recentEmployees.map((employee) => (
-                  <ListItem key={employee.id} sx={{ px: 1, py: 0.5 }}>
+                  <ListItem 
+                    key={employee.id} 
+                    sx={{ 
+                      px: 1, 
+                      py: 0.5,
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer',
+                      '&:hover': {
+                        bgcolor: alpha(theme.palette.primary.main, 0.04),
+                        transform: 'translateY(-1px)'
+                      },
+                    }}
+                    onClick={() => {
+                      // Set the selected employee and open modal
+                      setSelectedEmployee(employee);
+                      setSelectedTask(null); // Reset selected task
+                      setInfoModalOpen(true);
+                    }}
+                  >
                     <ListItemIcon sx={{ minWidth: 36 }}>
                       <Avatar 
                         sx={{ 
@@ -635,7 +710,12 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                 <Button 
                   size="small" 
                   endIcon={<ArrowForwardIcon />}
+                  variant="text"
                   onClick={() => navigateToTab(1)}
+                  sx={{
+                    textTransform: 'none',
+                    fontWeight: 500,
+                  }}
                 >
                   Ver todos ({employees.length})
                 </Button>
@@ -651,19 +731,25 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
             sx={{ 
               p: 2, 
               height: '100%',
-              borderRadius: 2,
-              boxShadow: theme => `0 2px 10px ${alpha(theme.palette.primary.main, 0.1)}`,
+              borderRadius: 1,
+              boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
+              border: '1px solid',
+              borderColor: alpha(theme.palette.divider, 0.08),
             }}
           >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" component="h2" sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="subtitle1" component="h2" sx={{ display: 'flex', alignItems: 'center', fontWeight: 500 }}>
                 <AssignmentIcon sx={{ mr: 1 }} fontSize="small" /> Tareas Recientes
               </Typography>
               <Button 
                 size="small" 
                 startIcon={<AddIcon />}
-                variant="outlined"
+                variant="text"
                 onClick={() => navigateToTab(2)}
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 500,
+                }}
               >
                 Agregar
               </Button>
@@ -672,12 +758,48 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
             <List sx={{ width: '100%' }}>
               {recentTasks.length > 0 ? (
                 recentTasks.map((task) => (
-                  <ListItem key={task.id} sx={{ px: 1, py: 0.75 }}>
+                  <ListItem 
+                    key={task.id} 
+                    sx={{ 
+                      px: 1.5, 
+                      py: 1,
+                      mb: 0.5,
+                      borderRadius: 1,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      border: '1px solid transparent',
+                      '&:hover': { 
+                        bgcolor: alpha(theme.palette.primary.main, 0.04),
+                        transform: 'translateY(-1px)',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                        borderColor: alpha(theme.palette.primary.main, 0.08)
+                      },
+                      ...(hoveredTaskId === task.id && {
+                        bgcolor: alpha(theme.palette.primary.main, 0.06),
+                        transform: 'translateY(-1px)',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                      })
+                    }}
+                    onClick={() => handlePreviewTask(task)}
+                    onMouseEnter={() => setHoveredTaskId(task.id)}
+                    onMouseLeave={() => setHoveredTaskId(null)}
+                  >
                     <ListItemText 
                       primary={task.title}
                       secondary={getEmployeeName(task.employeeId)}
-                      primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
-                      secondaryTypographyProps={{ variant: 'caption' }}
+                      primaryTypographyProps={{ 
+                        variant: 'body2',
+                        fontWeight: 500,
+                        color: hoveredTaskId === task.id ? 'primary.main' : 'text.primary',
+                        sx: { transition: 'color 0.2s ease' }
+                      }}
+                      secondaryTypographyProps={{ 
+                        variant: 'caption',
+                        sx: { 
+                          display: 'flex',
+                          alignItems: 'center'
+                        }
+                      }}
                     />
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                       <Chip 
@@ -687,19 +809,24 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                           bgcolor: getTaskTypeColor(task.type),
                           fontSize: '0.7rem',
                           height: 20,
+                          transition: 'all 0.2s ease',
+                          ...(hoveredTaskId === task.id && {
+                            boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
+                          }),
                         }} 
                       />
                       <Chip 
                         label={task.totalScore !== undefined && task.totalScore !== null ? 
-                          `${task.totalScore.toFixed(2)}%` : 'Pendiente'} 
+                          `${task.totalScore.toFixed(0)}%` : 'Pendiente'} 
                         size="small" 
                         color={getTaskStatusColor(task)}
-                        variant="filled"
+                        variant={hoveredTaskId === task.id ? "filled" : "outlined"}
                         sx={{ 
                           fontSize: '0.75rem',
                           height: 22,
                           fontWeight: 'bold',
-                          boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                          boxShadow: hoveredTaskId === task.id ? '0 1px 2px rgba(0,0,0,0.1)' : 'none',
+                          transition: 'all 0.2s ease'
                         }} 
                       />
                     </Box>
@@ -716,7 +843,12 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                 <Button 
                   size="small" 
                   endIcon={<ArrowForwardIcon />}
+                  variant="text"
                   onClick={() => navigateToTab(2)}
+                  sx={{
+                    textTransform: 'none',
+                    fontWeight: 500,
+                  }}
                 >
                   Ver todos ({tasks.length})
                 </Button>
@@ -732,9 +864,11 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
             sx={{ 
               p: 3, 
               mt: 2,
-              borderRadius: 2,
-              boxShadow: theme => `0 2px 10px ${alpha(theme.palette.primary.main, 0.1)}`,
-              background: `linear-gradient(45deg, ${alpha(theme.palette.primary.main, 0.05)} 0%, ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
+              borderRadius: 1,
+              boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
+              bgcolor: mode === 'dark' ? 'rgba(20,20,25,0.4)' : 'rgba(252,252,255,0.6)',
+              border: '1px solid',
+              borderColor: alpha(theme.palette.divider, 0.08),
             }}
           >
             <Grid container spacing={2} alignItems="center">
@@ -745,22 +879,43 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                 <Typography variant="body2" color="text.secondary" paragraph>
                   Accede a informes detallados sobre el rendimiento de los CADS, estadísticas de tareas completadas y evaluaciones realizadas.
                 </Typography>
-                <Button 
-                  variant="contained" 
-                  color="primary"
-                  endIcon={<AssessmentIcon />}
-                  onClick={() => navigateToTab(3)}
-                  sx={{ mt: 1 }}
-                >
-                  Ver Informes
-                </Button>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Button 
+                    variant="outlined" 
+                    color="primary"
+                    endIcon={<AssessmentIcon />}
+                    onClick={() => navigateToTab(3)}
+                    sx={{ 
+                      mt: 1,
+                      borderRadius: 1,
+                      textTransform: 'none',
+                      fontWeight: 500
+                    }}
+                  >
+                    Ver Informes
+                  </Button>
+                  <Button 
+                    variant="outlined" 
+                    color="warning"
+                    endIcon={<BarChartIcon />}
+                    onClick={() => navigateToTab(3)}
+                    sx={{ 
+                      mt: 1,
+                      borderRadius: 1,
+                      textTransform: 'none',
+                      fontWeight: 500
+                    }}
+                  >
+                    Tareas con Bajo Rendimiento
+                  </Button>
+                </Box>
               </Grid>
               <Grid item xs={12} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
                 <motion.div
-                  initial={{ scale: 0.9, opacity: 0.5 }}
+                  initial={{ scale: 0.95, opacity: 0.8 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ 
-                    duration: 2,
+                    duration: 3,
                     repeat: Infinity,
                     repeatType: "reverse"
                   }}
@@ -768,7 +923,7 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
                   <AssessmentIcon 
                     sx={{ 
                       fontSize: { xs: 80, md: 120 },
-                      color: alpha(theme.palette.primary.main, 0.2),
+                      color: alpha(theme.palette.primary.main, 0.15),
                     }} 
                   />
                 </motion.div>
@@ -780,6 +935,27 @@ const DashboardTab = ({ employees, tasks, onTabChange }) => {
       
       {/* Sección de estadísticas */}
       <StatsSection tasks={tasks} taskTypes={taskTypes} />
+
+      {/* Modal de previsualización de tareas */}
+      <TaskPreviewModal
+        open={previewModalOpen}
+        onClose={() => setPreviewModalOpen(false)}
+        task={selectedTask}
+        taskTypes={taskTypes}
+        employees={employees}
+        onEdit={handleEditTask}
+        onDelete={handleDeleteTask}
+      />
+      
+      {/* Modal de información del empleado */}
+      {selectedEmployee && (
+        <EmployeeInfoModal
+          open={infoModalOpen}
+          onClose={() => setInfoModalOpen(false)}
+          employee={selectedEmployee}
+          tasks={tasks}
+        />
+      )}
     </Box>
   );
 };

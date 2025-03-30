@@ -702,5 +702,4 @@ const themes = {
   dark: darkTheme
 };
 
-export { themes };
-export default lightTheme;
+export { themes };export default lightTheme;

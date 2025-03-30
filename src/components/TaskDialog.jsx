@@ -20,6 +20,7 @@ import {
   Tooltip,
   IconButton,
   Avatar,
+  alpha,
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -27,6 +28,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import CategoryIcon from '@mui/icons-material/Category';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import CommentIcon from '@mui/icons-material/Comment';
+import CloseIcon from '@mui/icons-material/Close';
 import { ColorModeContext } from '../main';
 import { useTheme } from '@mui/material/styles';
 
@@ -172,258 +174,262 @@ const TaskDialog = ({ open, onClose, task, taskTypes, onSave, employees }) => {
   if (!task || !editedTask) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ pb: 1 }}>
-        <Typography variant="h5" component="h2" sx={{ display: 'flex', alignItems: 'center' }}>
-          <AssignmentIcon sx={{ mr: 1 }} /> Detalles de la Asignación: {task.title}
+    <Dialog 
+      open={open} 
+      onClose={onClose} 
+      maxWidth="md" 
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 1,
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+          overflow: 'hidden',
+          background: mode === 'dark' 
+            ? 'linear-gradient(to bottom, rgba(35,35,40,0.9), rgba(25,25,30,0.95))' 
+            : 'linear-gradient(to bottom, rgba(250,250,252,0.97), rgba(255,255,255,0.99))',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid',
+          borderColor: alpha(theme.palette.divider, 0.1),
+        }
+      }}
+    >
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        p: 2,
+        pb: 1,
+        borderBottom: `1px solid ${alpha(theme.palette.divider, 0.08)}`
+      }}>
+        <Typography variant="h6" sx={{ fontWeight: 500 }}>
+          {task.id ? 'Editar Tarea' : 'Nueva Tarea'}
         </Typography>
-      </DialogTitle>
-      <Divider />
-      <DialogContent sx={{ p: 3 }}>
+        <IconButton 
+          size="small" 
+          onClick={onClose}
+          sx={{
+            color: 'text.secondary',
+            '&:hover': { 
+              backgroundColor: alpha(theme.palette.primary.main, 0.08),
+              color: 'text.primary'
+            }
+          }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </Box>
+      
+      <DialogContent sx={{ p: 2 }}>
         <Box sx={{ width: '100%' }}>
-          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
-            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
-              Información Básica
-            </Typography>
-            
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Título de la Tarea"
-                  value={editedTask.title || ''}
-                  onChange={(e) => setEditedTask(prev => ({ ...prev, title: e.target.value }))}
-                  size="small"
-                  required
-                  InputProps={{
-                    startAdornment: <AssignmentIcon color="action" sx={{ mr: 1 }} />,
-                  }}
-                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
-                  <InputLabel>Asignada a</InputLabel>
-                  <Select
-                    value={editedTask.employeeId || ''}
-                    onChange={(e) => setEditedTask(prev => ({ ...prev, employeeId: e.target.value }))}
-                    label="Asignada a"
-                    required
-                    startAdornment={
-                    <Box sx={{ display: 'flex', alignItems: 'center', ml: 1, mr: 1 }}>
-                      <Avatar 
-                        sx={{ 
-                          bgcolor: getAvatarColor(editedTask.employeeId ? getEmployeeName(editedTask.employeeId) : 'Usuario'),
-                          width: 24,
-                          height: 24,
-                          fontSize: '0.75rem',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        {editedTask.employeeId ? getEmployeeName(editedTask.employeeId).charAt(0).toUpperCase() : 'U'}
-                      </Avatar>
-                    </Box>
-                  }
-                  >
-                    {employees?.map((employee) => (
-                      <MenuItem key={employee.id} value={employee.id}>
-                        {employee.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  type="date"
-                  label="Fecha"
-                  value={editedTask.date || ''}
-                  onChange={(e) => setEditedTask(prev => ({ ...prev, date: e.target.value }))}
-                  InputLabelProps={{ shrink: true }}
-                  size="small"
-                  InputProps={{
-                    startAdornment: <DateRangeIcon color="action" sx={{ mr: 1 }} />,
-                  }}
-                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CategoryIcon color="action" />
-                  <Typography variant="subtitle1">
-                    Categoría: <Chip 
-                      label={task.type} 
-                      size="small" 
-                      sx={{ 
-                        bgcolor: mode === 'dark' ? theme.palette.taskTypes[task.type === 'PRA' ? 'PRA' : 'Validation'] || 'grey.800' : taskTypes[task.type]?.color || 'grey.200',
-                        color: mode === 'dark' ? 'white' : 'rgba(0, 0, 0, 0.87)',
-                        fontWeight: 'medium',
-                        border: mode === 'dark' ? `1px solid ${theme.palette.divider}` : 'none',
-                        '& .MuiChip-label': { px: 1 },
-                        transition: 'all 0.2s ease-in-out'
-                      }} 
-                    />
-                  </Typography>
-                </Box>
-              </Grid>
+          <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Título de la Tarea"
+                value={editedTask.title || ''}
+                onChange={(e) => setEditedTask(prev => ({ ...prev, title: e.target.value }))}
+                size="small"
+                required
+                sx={{ 
+                  '& .MuiOutlinedInput-root': { 
+                    borderRadius: 1,
+                    backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                  } 
+                }}
+              />
             </Grid>
-          </Paper>
-          
-          {taskTypes[task.type] && (
-            <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2, display: 'flex', alignItems: 'center' }}>
-                Criterios de Evaluación
-                <Tooltip title="Los criterios varían según la categoría seleccionada">
-                  <IconButton size="small" sx={{ ml: 1 }}>
-                    <InfoOutlinedIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth size="small" sx={{ 
+                '& .MuiOutlinedInput-root': { 
+                  borderRadius: 1,
+                  backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                } 
+              }}>
+                <InputLabel>Asignada a</InputLabel>
+                <Select
+                  value={editedTask.employeeId || ''}
+                  onChange={(e) => setEditedTask(prev => ({ ...prev, employeeId: e.target.value }))}
+                  label="Asignada a"
+                  required
+                >
+                  {employees?.map((employee) => (
+                    <MenuItem key={employee.id} value={employee.id}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Avatar 
+                          sx={{ 
+                            bgcolor: getAvatarColor(employee.name),
+                            width: 24,
+                            height: 24,
+                            fontSize: '0.75rem',
+                            mr: 1
+                          }}
+                        >
+                          {employee.name.charAt(0).toUpperCase()}
+                        </Avatar>
+                        {employee.name}
+                      </Box>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                type="date"
+                label="Fecha"
+                value={editedTask.date || ''}
+                onChange={(e) => setEditedTask(prev => ({ ...prev, date: e.target.value }))}
+                InputLabelProps={{ shrink: true }}
+                size="small"
+                sx={{ 
+                  '& .MuiOutlinedInput-root': { 
+                    borderRadius: 1,
+                    backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                  } 
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth size="small" sx={{ 
+                '& .MuiOutlinedInput-root': { 
+                  borderRadius: 1,
+                  backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                } 
+              }}>
+                <InputLabel>Tipo de Tarea</InputLabel>
+                <Select
+                  value={editedTask.type || ''}
+                  onChange={(e) => {
+                    const newType = e.target.value;
+                    setEditedTask(prev => ({
+                      ...prev,
+                      type: newType,
+                      evaluations: taskTypes[newType]?.criteria.reduce((acc, criterion) => {
+                        acc[criterion.name] = '';
+                        return acc;
+                      }, {}) || {},
+                    }));
+                  }}
+                  label="Tipo de Tarea"
+                  required
+                >
+                  {Object.keys(taskTypes).map((type) => (
+                    <MenuItem key={type} value={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+
+          {editedTask.type && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ ml: 0.5 }}>
+                Evaluación
               </Typography>
-              
-              <Grid container spacing={3}>
-                {taskTypes[task.type].criteria.map((criterion) => (
-                  <Grid item xs={12} md={6} key={criterion.name}>
-                    <Stack spacing={1}>
-                      <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
-                        {criterion.name} <Chip label={`${criterion.weight}%`} size="small" color="primary" variant="outlined" sx={{ mx: 1 }} />
-                        {(task.type === 'PRA' || task.type === 'Validacion') && criterion.name === 'Calidad' && (
-                          <Tooltip title="Si la calificación es menor al 70%, se pierde todo el porcentaje de este rubro" arrow placement="top">
-                            <InfoOutlinedIcon fontSize="small" color="warning" />
-                          </Tooltip>
-                        )}
-                      </Typography>
+              <Paper 
+                elevation={0} 
+                sx={{ 
+                  p: 2, 
+                  borderRadius: 1,
+                  border: `1px solid ${alpha(theme.palette.divider, 0.12)}`,
+                  bgcolor: alpha(theme.palette.background.default, 0.7),
+                  backdropFilter: 'blur(4px)',
+                }}
+              >
+                <Grid container spacing={2}>
+                  {taskTypes[editedTask.type]?.criteria.map((criterion) => (
+                    <Grid item xs={12} sm={6} key={criterion.name}>
                       <TextField
                         fullWidth
+                        label={criterion.name}
                         type="number"
-                        placeholder="Ingrese calificación (0-100)"
+                        inputProps={{ min: 0, max: 100, step: 1 }}
                         value={editedTask.evaluations[criterion.name] || ''}
                         onChange={(e) => handleEvaluationChange(criterion.name, e.target.value)}
-                        InputProps={{ 
-                          inputProps: { min: 0, max: 100 },
-                        }}
                         size="small"
-                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1 } }}
+                        helperText={`Peso: ${criterion.weight}%`}
                       />
-                      {criterion.description && (
-                        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
-                          {criterion.description}
-                        </Typography>
-                      )}
-                    </Stack>
-                  </Grid>
-                ))}
-              </Grid>
-              
-              {calculateTotalScore() !== null && (
-                <Box sx={{ 
-                  mt: 2, 
-                  p: 2, 
-                  borderRadius: '12px', 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  background: theme => {
-                    const score = calculateTotalScore();
-                    let color;
-                    if (score >= 90) color = theme.palette.success.main;
-                    else if (score >= 70) color = theme.palette.primary.main;
-                    else if (score >= 50) color = theme.palette.warning.main;
-                    else color = theme.palette.error.main;
-                    
-                    return `linear-gradient(135deg, ${color}22 0%, ${color}44 100%)`;
-                  },
-                  boxShadow: theme => {
-                    const score = calculateTotalScore();
-                    let color;
-                    if (score >= 90) color = theme.palette.success.main;
-                    else if (score >= 70) color = theme.palette.primary.main;
-                    else if (score >= 50) color = theme.palette.warning.main;
-                    else color = theme.palette.error.main;
-                    
-                    return `0 4px 12px ${color}33`;
-                  },
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: theme => {
-                      const score = calculateTotalScore();
-                      let color;
-                      if (score >= 90) color = theme.palette.success.main;
-                      else if (score >= 70) color = theme.palette.primary.main;
-                      else if (score >= 50) color = theme.palette.warning.main;
-                      else color = theme.palette.error.main;
-                      
-                      return `0 6px 16px ${color}55`;
-                    },
-                  }
-                }}>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5, opacity: 0.8 }}>
-                    Calificación Final
-                  </Typography>
+                    </Grid>
+                  ))}
+                </Grid>
+
+                {calculateTotalScore() !== null && (
                   <Box sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
+                    mt: 2, 
+                    p: 1.5, 
+                    borderRadius: 1,
+                    bgcolor: alpha(theme.palette.primary.main, 0.08),
+                    backdropFilter: 'blur(4px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
                   }}>
-                    <Typography 
-                      variant="h4" 
-                      sx={{ 
-                        fontWeight: 'bold',
-                        color: theme => {
-                          const score = calculateTotalScore();
-                          if (score >= 90) return theme.palette.success.main;
-                          if (score >= 70) return theme.palette.primary.main;
-                          if (score >= 50) return theme.palette.warning.main;
-                          return theme.palette.error.main;
-                        }
-                      }}
-                    >
+                    <Typography variant="subtitle2">
+                      Puntuación Total:
+                    </Typography>
+                    <Typography variant="body1" fontWeight="medium">
                       {calculateTotalScore().toFixed(2)}%
                     </Typography>
                   </Box>
-                </Box>
-              )}
-            </Paper>
+                )}
+              </Paper>
+            </Box>
           )}
           
-          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: 'background.paper', borderRadius: '8px' }}>
-            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'medium', mb: 2 }}>
-              Comentarios Adicionales
+          <Box>
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ ml: 0.5 }}>
+              Comentarios
             </Typography>
-            
             <TextField
               fullWidth
               multiline
               rows={3}
-              name="comments"
+              placeholder="Agregar comentarios sobre la tarea..."
               value={editedTask.comments || ''}
               onChange={(e) => setEditedTask(prev => ({ ...prev, comments: e.target.value }))}
-              placeholder="Ingrese comentarios adicionales sobre la tarea"
-              InputProps={{
-                startAdornment: <CommentIcon color="action" sx={{ mt: 1.5, mr: 1 }} />,
+              size="small"
+              sx={{ 
+                '& .MuiOutlinedInput-root': { 
+                  borderRadius: 1,
+                  backgroundColor: alpha(theme.palette.background.paper, 0.5),
+                } 
               }}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
             />
-          </Paper>
+          </Box>
         </Box>
       </DialogContent>
-      <DialogActions sx={{ px: 3, pb: 3 }}>
-        <Button onClick={onClose} variant="outlined" sx={{ borderRadius: '8px', px: 3 }}>
+      
+      <DialogActions sx={{ 
+        p: 2, 
+        pt: 1,
+        borderTop: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
+        justifyContent: 'flex-end'
+      }}>
+        <Button 
+          onClick={onClose} 
+          color="inherit"
+          variant="text"
+          sx={{ 
+            textTransform: 'none',
+            fontWeight: 500,
+          }}
+        >
           Cancelar
         </Button>
         <Button 
           onClick={handleSave} 
-          variant="contained" 
           color="primary"
+          variant="text"
           sx={{ 
-            borderRadius: '8px', 
-            px: 3,
-            fontWeight: 'bold',
-            boxShadow: 2
+            textTransform: 'none',
+            fontWeight: 500,
           }}
         >
-          Guardar Cambios
+          Guardar
         </Button>
       </DialogActions>
     </Dialog>

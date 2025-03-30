@@ -11,6 +11,7 @@ import DashboardTab from './components/DashboardTab';
 import ThemeToggle from './components/ThemeToggle';
 import DataTransfer from './components/DataTransfer';
 import DeleteDataDialog from './components/DeleteDataDialog';
+import NotesButton from './components/Notes/NotesButton';
 import { ColorModeContext } from './main';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -414,6 +415,9 @@ function App() {
           </AnimatePresence>
         </Container>
       </Box>
+      
+      {/* Floating notes button */}
+      <NotesButton />
     </LayoutGroup>
   );
 }

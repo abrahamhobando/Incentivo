@@ -23,6 +23,8 @@ import {
   useTheme,
   alpha,
   Avatar,
+  Tooltip,
+  Fade,
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -33,12 +35,14 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import CategoryIcon from '@mui/icons-material/Category';
 import { deleteTask, getTasks, saveTasks, getSortPreferences, saveSortPreferences } from '../utils/storage';
 import TaskDialog from './TaskDialog';
+import TaskPreviewModal from './TaskPreviewModal';
 import ConfirmDialog from './ConfirmDialog';
 import { ColorModeContext } from '../main';
 
 const TaskList = ({ tasks, employees, onTaskDeleted }) => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [hoveredTaskId, setHoveredTaskId] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState({
@@ -117,6 +121,11 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
   const handleEdit = (task) => {
     setSelectedTask(task);
     setDialogOpen(true);
+  };
+
+  const handlePreview = (task) => {
+    setSelectedTask(task);
+    setPreviewModalOpen(true);
   };
 
   const handleSaveTask = (editedTask) => {
@@ -301,9 +310,12 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ 
             height: '100%',
-            backgroundColor: alpha(theme.palette.primary.main, 0.08),
+            backgroundColor: alpha(theme.palette.primary.main, 0.04),
+            borderRadius: 1,
+            border: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
+            boxShadow: 'none',
             transition: 'transform 0.2s',
-            '&:hover': { transform: 'translateY(-4px)' }
+            '&:hover': { transform: 'translateY(-2px)' }
           }}>
             <CardContent>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -401,9 +413,9 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
         </Grid>
       </Grid>
       
-      <Card sx={{ mb: 2 }}>
+      <Card sx={{ mb: 2, borderRadius: 1, border: `1px solid ${alpha(theme.palette.divider, 0.08)}`, boxShadow: 'none' }}>
         <CardContent>
-          <Typography variant="h6" gutterBottom>Filtros</Typography>
+          <Typography variant="subtitle1" fontWeight="medium" gutterBottom>Filtros</Typography>
           <Grid container spacing={2} sx={{ mb: 2 }}>
             <Grid item xs={12} md={3}>
               <FormControl fullWidth size="small">
@@ -489,7 +501,9 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
                     textTransform: 'none',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    borderRadius: 1,
+                    boxShadow: 'none'
                   }}
                 >
                   {filters.onlyUnevaluated ? "Sin evaluar" : "Todas las tareas"}
@@ -527,7 +541,7 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
               <Button
                 onClick={clearFilters}
                 color="primary"
-                variant="outlined"
+                variant="text"
                 size="small"
                 fullWidth
                 sx={{ 
@@ -542,121 +556,211 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
         </CardContent>
       </Card>
       
-      <Card>
+      <Card sx={{ mb: 3, borderRadius: 1, border: `1px solid ${alpha(theme.palette.divider, 0.08)}`, boxShadow: 'none' }}>
         <CardContent>
-          <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
+          <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell><Typography variant="subtitle1" fontWeight="bold">Tarea</Typography></TableCell>
-                  <TableCell><Typography variant="subtitle1" fontWeight="bold">Asignado</Typography></TableCell>
-                  <TableCell><Typography variant="subtitle1" fontWeight="bold">Tipo</Typography></TableCell>
-                  <TableCell><Typography variant="subtitle1" fontWeight="bold">Fecha</Typography></TableCell>
-                  <TableCell align="center"><Typography variant="subtitle1" fontWeight="bold">Puntuación</Typography></TableCell>
+                  <TableCell 
+                    onClick={() => handleSortChange('title', sortConfig.direction === 'asc' ? 'desc' : 'asc')} 
+                    sx={{ 
+                      cursor: 'pointer',
+                      '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      Título
+                      {sortConfig.field === 'title' && (
+                        <Box component="span" sx={{ ml: 0.5, color: 'primary.main' }}>
+                          {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                        </Box>
+                      )}
+                    </Box>
+                  </TableCell>
+                  <TableCell 
+                    onClick={() => handleSortChange('employeeId', sortConfig.direction === 'asc' ? 'desc' : 'asc')} 
+                    sx={{ 
+                      cursor: 'pointer',
+                      '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      Asignada a
+                      {sortConfig.field === 'employeeId' && (
+                        <Box component="span" sx={{ ml: 0.5, color: 'primary.main' }}>
+                          {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                        </Box>
+                      )}
+                    </Box>
+                  </TableCell>
+                  <TableCell 
+                    onClick={() => handleSortChange('date', sortConfig.direction === 'asc' ? 'desc' : 'asc')} 
+                    sx={{ 
+                      cursor: 'pointer',
+                      '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      Fecha
+                      {sortConfig.field === 'date' && (
+                        <Box component="span" sx={{ ml: 0.5, color: 'primary.main' }}>
+                          {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                        </Box>
+                      )}
+                    </Box>
+                  </TableCell>
+                  <TableCell>Tipo</TableCell>
+                  <TableCell 
+                    onClick={() => handleSortChange('totalScore', sortConfig.direction === 'asc' ? 'desc' : 'asc')} 
+                    sx={{ 
+                      cursor: 'pointer',
+                      '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      Evaluación
+                      {sortConfig.field === 'totalScore' && (
+                        <Box component="span" sx={{ ml: 0.5, color: 'primary.main' }}>
+                          {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                        </Box>
+                      )}
+                    </Box>
+                  </TableCell>
+                  <TableCell align="right">Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {filteredTasks.map((task) => (
-                  <TableRow
+                  <TableRow 
                     key={task.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    onMouseEnter={() => setHoveredTaskId(task.id)}
+                    onMouseEnter={() => setHoveredTaskId(task.id)} 
                     onMouseLeave={() => setHoveredTaskId(null)}
+                    onClick={() => handlePreview(task)}
+                    sx={{ 
+                      '&:hover': { 
+                        bgcolor: alpha(theme.palette.primary.main, 0.04),
+                        transform: 'translateY(-1px)',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+                      },
+                      bgcolor: mode === 'dark' && task.id === hoveredTaskId ? alpha(theme.palette.primary.main, 0.06) : 'transparent',
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer'
+                    }}
                   >
                     <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <AssignmentIcon color="primary" />
-                        <Typography variant="body1">{task.title}</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <AssignmentIcon fontSize="small" sx={{ mr: 1, color: 'action.active', opacity: 0.7 }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontWeight: 500,
+                            color: task.id === hoveredTaskId ? 'primary.main' : 'text.primary',
+                            transition: 'color 0.2s ease'
+                          }}
+                        >
+                          {task.title}
+                        </Typography>
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar 
                           sx={{ 
                             bgcolor: getAvatarColor(getEmployeeName(task.employeeId)),
-                            width: 28,
-                            height: 28,
-                            fontSize: '0.875rem',
+                            width: 24,
+                            height: 24,
+                            fontSize: '0.75rem',
                             fontWeight: 'bold',
+                            mr: 1,
+                            transition: 'transform 0.2s ease',
+                            ...(task.id === hoveredTaskId && {
+                              transform: 'scale(1.05)',
+                            }),
                           }}
                         >
                           {getEmployeeName(task.employeeId).charAt(0).toUpperCase()}
                         </Avatar>
-                        <Typography variant="body1">{getEmployeeName(task.employeeId)}</Typography>
+                        <Typography variant="body2">
+                          {getEmployeeName(task.employeeId)}
+                        </Typography>
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <Chip
-                        label={task.type}
-                        sx={{
+                      {new Date(task.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      <Chip 
+                        label={task.type} 
+                        size="small" 
+                        sx={{ 
                           bgcolor: getTaskTypeColor(task.type),
+                          fontSize: '0.75rem',
                           fontWeight: 500,
-                          border: 'none',
-                          boxShadow: 'none',
-                          borderRadius: '16px',
-                          transition: 'all 0.2s ease-in-out',
-                          '&:hover': {
-                            transform: 'translateY(-1px)',
-                            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.08)'
-                          }
-                        }}
-                        size="small"
+                          height: 22,
+                          transition: 'all 0.2s ease',
+                          ...(task.id === hoveredTaskId && {
+                            boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                          }),
+                        }} 
                       />
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body1">
-                        {new Date(task.date + 'T00:00:00').toLocaleDateString()}
-                      </Typography>
+                      <Chip 
+                        label={task.totalScore !== undefined && task.totalScore !== null ? 
+                          `${task.totalScore.toFixed(0)}%` : 'Pendiente'} 
+                        size="small" 
+                        color={getScoreColor(task.totalScore)}
+                        variant={task.id === hoveredTaskId ? "filled" : "outlined"}
+                        sx={{ 
+                          fontWeight: 'medium',
+                          minWidth: 70,
+                          textAlign: 'center',
+                          transition: 'all 0.2s ease',
+                        }}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
-                        <Chip
-                          label={task.totalScore !== undefined && task.totalScore !== null ? `${task.totalScore.toFixed(2)}%` : 'Sin evaluar'}
-                          color={task.totalScore !== undefined && task.totalScore !== null ? getScoreColor(task.totalScore) : 'default'}
-                          size="small"
-                          sx={{
-                            minWidth: '85px',
-                            ...(task.totalScore === undefined || task.totalScore === null ? {
-                              bgcolor: mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-                              color: mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-                              fontStyle: 'italic',
-                              '&:hover': {
-                                bgcolor: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'
-                              }
-                            } : {
-                              fontWeight: 700,
-                              fontSize: '0.85rem',
-                              height: '28px',
-                              '& .MuiChip-label': { px: 1.8 }
-                            }),
-                            border: 'none',
-                            boxShadow: 'none',
-                            borderRadius: '14px',
-                            transition: 'all 0.2s ease-in-out',
-                            '&:hover': {
-                              transform: 'translateY(-1px)',
-                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                            }
-                          }}
-                        />
-                        <Box sx={{ visibility: hoveredTaskId === task.id ? 'visible' : 'hidden' }}>
+                      <Fade in={task.id === hoveredTaskId}>
+                        <Box sx={{ 
+                          display: 'flex',
+                          justifyContent: 'flex-end'
+                        }}>
                           <IconButton
                             size="small"
-                            onClick={() => handleEdit(task)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEdit(task);
+                            }}
                             color="primary"
-                            sx={{ mr: 1 }}
+                            sx={{ 
+                              mr: 1,
+                              bgcolor: alpha(theme.palette.primary.main, 0.04),
+                              '&:hover': {
+                                bgcolor: alpha(theme.palette.primary.main, 0.08),
+                              }
+                            }}
                           >
                             <EditIcon fontSize="small" />
                           </IconButton>
                           <IconButton
                             size="small"
-                            onClick={() => handleDeleteClick(task.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteClick(task.id);
+                            }}
                             color="error"
+                            sx={{ 
+                              bgcolor: alpha(theme.palette.error.main, 0.04),
+                              '&:hover': {
+                                bgcolor: alpha(theme.palette.error.main, 0.08),
+                              }
+                            }}
                           >
                             <DeleteIcon fontSize="small" />
                           </IconButton>
                         </Box>
-                      </Box>
+                      </Fade>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -672,6 +776,15 @@ const TaskList = ({ tasks, employees, onTaskDeleted }) => {
         taskTypes={taskTypes}
         onSave={handleSaveTask}
         employees={employees}
+      />
+      <TaskPreviewModal
+        open={previewModalOpen}
+        onClose={() => setPreviewModalOpen(false)}
+        task={selectedTask}
+        taskTypes={taskTypes}
+        employees={employees}
+        onEdit={handleEdit}
+        onDelete={handleDeleteClick}
       />
       <ConfirmDialog
         open={confirmDialog.open}

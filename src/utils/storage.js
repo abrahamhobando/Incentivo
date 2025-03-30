@@ -5,6 +5,7 @@ const STORAGE_KEYS = {
   EMPLOYEES: 'incentivo_employees',
   TASKS: 'incentivo_tasks',
   SORT_PREFERENCES: 'incentivo_sort_preferences',
+  NOTES: 'incentivo_notes',
 };
 
 // Funciones para empleados
@@ -89,4 +90,74 @@ export const getSortPreferences = () => {
 
 export const saveSortPreferences = (preferences) => {
   localStorage.setItem(STORAGE_KEYS.SORT_PREFERENCES, JSON.stringify(preferences));
+};
+
+// Funciones para notas
+export const getNotes = () => {
+  const notes = localStorage.getItem(STORAGE_KEYS.NOTES);
+  return notes ? JSON.parse(notes) : [];
+};
+
+export const saveNotes = (notes) => {
+  localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(notes));
+};
+
+export const addNote = (content) => {
+  const notes = getNotes();
+  
+  // Array de colores para asignar a las notas
+  const colors = [
+    '#ffcdd2', // Rojo claro
+    '#f8bbd0', // Rosa claro
+    '#e1bee7', // Púrpura claro
+    '#d1c4e9', // Púrpura profundo claro
+    '#c5cae9', // Índigo claro
+    '#bbdefb', // Azul claro
+    '#b3e5fc', // Azul claro acento
+    '#b2ebf2', // Cian claro
+    '#b2dfdb', // Verde azulado claro
+    '#c8e6c9', // Verde claro
+    '#dcedc8', // Lima claro
+    '#f0f4c3', // Amarillo claro
+    '#fff9c4', // Ámbar claro
+    '#ffecb3', // Naranja claro
+    '#ffe0b2', // Naranja profundo claro
+  ];
+  
+  // Seleccionar un color aleatorio
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  
+  const newNote = {
+    id: Date.now(),
+    content: content,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    color: randomColor,
+  };
+  
+  notes.push(newNote);
+  saveNotes(notes);
+  return newNote;
+};
+
+export const updateNote = (noteId, updatedContent) => {
+  const notes = getNotes();
+  const index = notes.findIndex(note => note.id === noteId);
+  
+  if (index !== -1) {
+    notes[index] = { 
+      ...notes[index], 
+      content: updatedContent,
+      updatedAt: new Date().toISOString()
+    };
+    saveNotes(notes);
+    return notes[index];
+  }
+  return null;
+};
+
+export const deleteNote = (noteId) => {
+  const notes = getNotes();
+  const filteredNotes = notes.filter(note => note.id !== noteId);
+  saveNotes(filteredNotes);
 };
