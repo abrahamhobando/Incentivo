@@ -1,88 +1,211 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
-// Estilos para el PDF
+// Estilos para el PDF, basados en ReportPDF
 const styles = StyleSheet.create({
   page: {
     padding: 30,
     backgroundColor: '#ffffff',
+    fontFamily: 'Helvetica',
   },
   header: {
-    marginBottom: 20,
+    marginBottom: 30,
+    borderBottom: 2,
+    borderBottomColor: '#1976d2',
+    paddingBottom: 10,
     textAlign: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 10,
     color: '#1976d2',
+    marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
-    marginBottom: 15,
-    color: '#1976d2',
-  },
-  section: {
-    marginBottom: 15,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    color: '#333',
     marginBottom: 5,
-    color: '#1976d2',
   },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    flexWrap: 'wrap',
+  dateRange: {
+    fontSize: 12,
+    color: '#666',
   },
-  statBox: {
-    width: '30%',
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: '#f5f5f5',
+  executiveSummary: {
+    backgroundColor: '#f8f9fa',
+    padding: 15,
     borderRadius: 5,
+    marginBottom: 20,
+  },
+  summaryTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1976d2',
+    marginBottom: 15,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 15,
+  },
+  statCard: {
+    width: '30%',
+    backgroundColor: '#ffffff',
+    padding: 12,
+    borderRadius: 4,
+    borderLeftWidth: 4,
+    borderLeftColor: '#1976d2',
+    borderLeftStyle: 'solid',
   },
   statLabel: {
     fontSize: 10,
-    color: '#666666',
+    color: '#666',
     marginBottom: 5,
   },
   statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1976d2',
+  },
+  section: {
+    marginBottom: 25,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1976d2',
+    marginBottom: 15,
+    borderBottom: 1,
+    borderBottomColor: '#e0e0e0',
+    paddingBottom: 5,
+  },
+  taskTypeContainer: {
+    backgroundColor: '#ffffff',
+    padding: 10,
+    borderRadius: 4,
+    marginBottom: 20,
+  },
+  taskTypeRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+    alignItems: 'center',
+  },
+  taskTypeLabel: {
+    fontSize: 11,
+    width: '60%',
+    color: '#333',
+  },
+  taskTypeValue: {
+    fontSize: 11,
+    width: '40%',
+    fontWeight: 'bold',
+    color: '#1976d2',
+  },
+  employeeSection: {
+    backgroundColor: '#ffffff',
+    padding: 15,
+    borderRadius: 4,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  employeeHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    paddingBottom: 8,
+  },
+  employeeName: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1976d2',
   },
-  table: {
-    display: 'table',
-    width: 'auto',
-    borderStyle: 'solid',
+  employeeStats: {
+    fontSize: 12,
+    color: '#666',
+  },
+  evaluationCard: {
+    backgroundColor: '#f8f9fa',
+    padding: 12,
+    borderRadius: 4,
+    marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#bdbdbd',
-    marginBottom: 10,
+    borderColor: '#e0e0e0',
+  },
+  evaluationHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    paddingBottom: 5,
+  },
+  evaluationTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  evaluationScore: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#1976d2',
+  },
+  evaluationInfo: {
+    fontSize: 10,
+    color: '#666',
+    marginBottom: 8,
+  },
+  criteriaTable: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 4,
+    marginTop: 8,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#f8f9fa',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
   },
   tableRow: {
     flexDirection: 'row',
-  },
-  tableRowHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#f5f5f5',
-  },
-  tableCol: {
-    width: '25%',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#bdbdbd',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
   },
   tableCell: {
-    margin: 5,
-    fontSize: 10,
+    padding: 6,
+    fontSize: 9,
+    width: '25%',
+    textAlign: 'left',
   },
-  tableCellHeader: {
-    margin: 5,
+  headerCell: {
+    padding: 6,
+    fontSize: 9,
+    fontWeight: 'bold',
+    width: '25%',
+    color: '#1976d2',
+  },
+  comments: {
+    marginTop: 8,
+    padding: 6,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 4,
+    borderLeftWidth: 3,
+    borderLeftColor: '#1976d2',
+    borderLeftStyle: 'solid',
+  },
+  commentTitle: {
     fontSize: 10,
     fontWeight: 'bold',
+    color: '#1976d2',
+    marginBottom: 4,
+  },
+  commentText: {
+    fontSize: 9,
+    color: '#666',
   },
   footer: {
     position: 'absolute',
@@ -91,147 +214,18 @@ const styles = StyleSheet.create({
     right: 30,
     textAlign: 'center',
     fontSize: 10,
-    color: '#666666',
+    color: '#666',
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    paddingTop: 10,
   },
-  employeeSection: {
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 5,
-  },
-  employeeHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-    borderBottomStyle: 'solid',
-    paddingBottom: 5,
-  },
-  employeeName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#1976d2',
-  },
-  employeeStats: {
-    fontSize: 12,
-    color: '#333333',
-  },
-  taskTypeRow: {
-    flexDirection: 'row',
-    marginBottom: 5,
-  },
-  taskTypeLabel: {
-    fontSize: 10,
-    width: '30%',
-  },
-  taskTypeValue: {
-    fontSize: 10,
-    width: '70%',
-    fontWeight: 'bold',
-  },
-  // Estilos para la tabla de tareas detalladas
-  taskTable: {
-    display: 'table',
+  employeeTaskTable: {
     width: '100%',
-    borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#e0e0e0',
-    marginTop: 8,
-    marginBottom: 10,
+    borderRadius: 4,
+    marginBottom: 15,
   },
-  taskTableRow: {
-    flexDirection: 'row',
-  },
-  taskTableHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#f0f0f0',
-  },
-  taskTableCol: {
-    width: '25%',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  taskTableCell: {
-    margin: 3,
-    fontSize: 8,
-  },
-  taskTableHeaderCell: {
-    margin: 3,
-    fontSize: 8,
-    fontWeight: 'bold',
-  },
-  // Estilos para la tabla de evaluaciones detalladas
-  evaluationTable: {
-    display: 'table',
-    width: '100%',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  evaluationRow: {
-    flexDirection: 'row',
-  },
-  evaluationCol: {
-    width: '25%',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
-  evaluationCell: {
-    margin: 3,
-    fontSize: 8,
-  },
-  evaluationHeader: {
-    margin: 3,
-    fontSize: 8,
-    fontWeight: 'bold',
-  },
-  taskDetail: {
-    marginBottom: 10,
-    padding: 8,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 3,
-  },
-  taskDetailHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 3,
-  },
-  taskDetailTitle: {
-    fontSize: 9,
-    fontWeight: 'bold',
-  },
-  taskDetailScore: {
-    fontSize: 9,
-    fontWeight: 'bold',
-    color: '#1976d2',
-  },
-  taskDetailInfo: {
-    fontSize: 8,
-    marginBottom: 3,
-  },
-  commentBox: {
-    marginTop: 5, 
-    padding: 4, 
-    backgroundColor: '#f0f0f0', 
-    borderRadius: 2, 
-    borderLeftWidth: 2, 
-    borderLeftColor: '#1976d2', 
-    borderLeftStyle: 'solid'
-  },
-  commentTitle: {
-    fontSize: 7, 
-    fontWeight: 'bold', 
-    marginBottom: 2, 
-    color: '#1976d2'
-  },
-  commentText: {
-    fontSize: 7
-  }
 });
 
 const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
@@ -245,7 +239,7 @@ const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
   const averageScore = totalTasks > 0 
     ? (evaluatedTasks.reduce((sum, task) => sum + task.totalScore, 0) / totalTasks).toFixed(2)
     : 0;
-  const bonusPercentage = ((averageScore / 100) * 30).toFixed(2);
+  const bonusPercentage = ((parseFloat(averageScore) / 100) * 30).toFixed(2);
 
   // Calcular estadísticas por tipo de tarea
   const tasksByType = evaluatedTasks.reduce((acc, task) => {
@@ -285,48 +279,56 @@ const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
       averageScore,
       bonusPercentage,
       tasksByType,
-      tasks: employeeTasks // Incluir las tareas del empleado para mostrar detalles
+      tasks: employeeTasks.sort((a, b) => new Date(b.date) - new Date(a.date)) // Ordenar por fecha descendente
     };
   }).filter(stat => stat.totalTasks > 0); // Filtrar solo empleados con tareas evaluadas
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Encabezado */}
         <View style={styles.header}>
           <Text style={styles.title}>Informe General de Desempeño</Text>
           {dateRange.startDate && dateRange.endDate && (
-            <Text>
+            <Text style={styles.dateRange}>
               Periodo: {dateRange.startDate} - {dateRange.endDate}
             </Text>
           )}
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Resumen General</Text>
-          <View style={styles.statsContainer}>
-            <View style={styles.statBox}>
+        {/* Resumen Ejecutivo */}
+        <View style={styles.executiveSummary}>
+          <Text style={styles.summaryTitle}>Resumen General</Text>
+          <View style={styles.statsGrid}>
+            <View style={styles.statCard}>
               <Text style={styles.statLabel}>Total Empleados</Text>
               <Text style={styles.statValue}>{employeesWithStats.length}</Text>
             </View>
-            <View style={styles.statBox}>
+            <View style={styles.statCard}>
               <Text style={styles.statLabel}>Total Tareas</Text>
               <Text style={styles.statValue}>{totalTasks}</Text>
             </View>
-            <View style={styles.statBox}>
+            <View style={styles.statCard}>
               <Text style={styles.statLabel}>Promedio General</Text>
               <Text style={styles.statValue}>{averageScore}%</Text>
             </View>
           </View>
 
-          <Text style={styles.sectionTitle}>Asignaciones por Categoría</Text>
-          {Object.entries(tasksByType).map(([type, count]) => (
-            <View style={styles.taskTypeRow} key={type}>
-              <Text style={styles.taskTypeLabel}>{type}:</Text>
-              <Text style={styles.taskTypeValue}>{count}</Text>
+          {/* Distribución por Tipo de Tarea */}
+          <View style={[styles.section, { marginTop: 15, marginBottom: 0 }]}>
+            <Text style={[styles.sectionTitle, { fontSize: 14 }]}>Distribución por Tipo</Text>
+            <View style={styles.taskTypeContainer}>
+              {Object.entries(tasksByType).map(([type, count]) => (
+                <View style={styles.taskTypeRow} key={type}>
+                  <Text style={styles.taskTypeLabel}>{type}:</Text>
+                  <Text style={styles.taskTypeValue}>{count}</Text>
+                </View>
+              ))}
             </View>
-          ))}
+          </View>
         </View>
 
+        {/* Resumen por Colaborador */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Resumen por Colaborador</Text>
           
@@ -339,114 +341,98 @@ const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
                 </Text>
               </View>
               
-              <Text style={[styles.sectionTitle, { fontSize: 12 }]}>Tareas por Tipo</Text>
-              {Object.entries(stat.tasksByType).map(([type, count]) => (
-                <View style={styles.taskTypeRow} key={`${stat.employee.id}-${type}`}>
-                  <Text style={styles.taskTypeLabel}>{type}:</Text>
-                  <Text style={styles.taskTypeValue}>{count}</Text>
-                </View>
-              ))}
-              
-              {/* Sección de detalle de tareas por empleado */}
-              <Text style={[styles.sectionTitle, { fontSize: 12, marginTop: 10 }]}>Detalle de Tareas</Text>
-              
-              {/* Tabla de tareas */}
-              <View style={styles.taskTable}>
-                <View style={styles.taskTableHeader}>
-                  <View style={styles.taskTableCol}>
-                    <Text style={styles.taskTableHeaderCell}>Fecha</Text>
-                  </View>
-                  <View style={styles.taskTableCol}>
-                    <Text style={styles.taskTableHeaderCell}>Título</Text>
-                  </View>
-                  <View style={styles.taskTableCol}>
-                    <Text style={styles.taskTableHeaderCell}>Tipo</Text>
-                  </View>
-                  <View style={styles.taskTableCol}>
-                    <Text style={styles.taskTableHeaderCell}>Calificación</Text>
-                  </View>
-                </View>
-                
-                {stat.tasks.map((task) => (
-                  <View style={styles.taskTableRow} key={task.id}>
-                    <View style={styles.taskTableCol}>
-                      <Text style={styles.taskTableCell}>{task.date}</Text>
-                    </View>
-                    <View style={styles.taskTableCol}>
-                      <Text style={styles.taskTableCell}>{task.title}</Text>
-                    </View>
-                    <View style={styles.taskTableCol}>
-                      <Text style={styles.taskTableCell}>{task.type}</Text>
-                    </View>
-                    <View style={styles.taskTableCol}>
-                      <Text style={styles.taskTableCell}>{task.totalScore.toFixed(2)}%</Text>
-                    </View>
+              {/* Distribución por Tipo de Tarea */}
+              <Text style={[styles.sectionTitle, { fontSize: 13, marginBottom: 10 }]}>Tareas por Tipo</Text>
+              <View style={styles.taskTypeContainer}>
+                {Object.entries(stat.tasksByType).map(([type, count]) => (
+                  <View style={styles.taskTypeRow} key={`${stat.employee.id}-${type}`}>
+                    <Text style={styles.taskTypeLabel}>{type}:</Text>
+                    <Text style={styles.taskTypeValue}>{count}</Text>
                   </View>
                 ))}
               </View>
               
-              {/* Evaluaciones detalladas de cada tarea */}
-              <Text style={[styles.sectionTitle, { fontSize: 12, marginTop: 10 }]}>Evaluaciones Detalladas</Text>
+              {/* Tabla de resumen de tareas */}
+              <Text style={[styles.sectionTitle, { fontSize: 13, marginBottom: 10 }]}>Resumen de Tareas</Text>
+              <View style={styles.employeeTaskTable}>
+                <View style={styles.tableHeader}>
+                  <Text style={styles.headerCell}>Fecha</Text>
+                  <Text style={styles.headerCell}>Título</Text>
+                  <Text style={styles.headerCell}>Tipo</Text>
+                  <Text style={styles.headerCell}>Calificación</Text>
+                </View>
+                
+                {stat.tasks.map((task) => (
+                  <View style={styles.tableRow} key={task.id}>
+                    <Text style={styles.tableCell}>{task.date}</Text>
+                    <Text style={styles.tableCell}>{task.title}</Text>
+                    <Text style={styles.tableCell}>{task.type}</Text>
+                    <Text style={styles.tableCell}>{task.totalScore.toFixed(2)}%</Text>
+                  </View>
+                ))}
+              </View>
+              
+              {/* Evaluaciones Detalladas */}
+              <Text style={[styles.sectionTitle, { fontSize: 13, marginBottom: 10 }]}>Evaluaciones Detalladas</Text>
               
               {stat.tasks.map((task) => (
-                <View style={styles.taskDetail} key={task.id}>
-                  <View style={styles.taskDetailHeader}>
-                    <Text style={styles.taskDetailTitle}>{task.title}</Text>
-                    <Text style={styles.taskDetailScore}>{task.totalScore.toFixed(2)}%</Text>
+                <View style={styles.evaluationCard} key={task.id}>
+                  <View style={styles.evaluationHeader}>
+                    <Text style={styles.evaluationTitle}>{task.title}</Text>
+                    <Text style={styles.evaluationScore}>{task.totalScore.toFixed(2)}%</Text>
                   </View>
-                  <Text style={styles.taskDetailInfo}>Fecha: {task.date} | Tipo: {task.type}</Text>
-                  
-                  <View style={styles.evaluationTable}>
-                    <View style={styles.evaluationRow}>
-                      <View style={styles.evaluationCol}>
-                        <Text style={styles.evaluationHeader}>Criterio</Text>
-                      </View>
-                      <View style={styles.evaluationCol}>
-                        <Text style={styles.evaluationHeader}>Peso</Text>
-                      </View>
-                      <View style={styles.evaluationCol}>
-                        <Text style={styles.evaluationHeader}>Puntuación</Text>
-                      </View>
-                      <View style={styles.evaluationCol}>
-                        <Text style={styles.evaluationHeader}>Ponderado</Text>
-                      </View>
+                  <Text style={styles.evaluationInfo}>
+                    Fecha: {task.date} | Tipo: {task.type}
+                  </Text>
+
+                  {/* Tabla de Criterios */}
+                  <View style={styles.criteriaTable}>
+                    <View style={styles.tableHeader}>
+                      <Text style={styles.headerCell}>Criterio</Text>
+                      <Text style={styles.headerCell}>Peso</Text>
+                      <Text style={styles.headerCell}>Puntuación</Text>
+                      <Text style={styles.headerCell}>Ponderado</Text>
                     </View>
-                    
+
                     {Object.entries(task.evaluations || {}).map(([criterio, puntuacion]) => {
-                      const peso = task.type === 'PRA' ?
-                        (criterio === 'Calidad' ? 60 : 40) :
-                        (criterio === 'Calidad' ? 60 : 20);
-                      // Aplicar regla especial para criterio de Calidad en tareas PRA y Validacion
+                      let peso = 0;
+                      if (task.type === 'PRA' || task.type === 'Práctica de procesos') {
+                        peso = criterio === 'Calidad' ? 60 : criterio === 'Seguimiento de instrucciones' ? 40 : 0;
+                      } else if (task.type === 'Validacion') {
+                        peso = criterio === 'Calidad' ? 60 : criterio === 'Cumplimiento de tiempo' ? 20 : criterio === '0 errores encontrados en GA' ? 20 : 0;
+                      } else if (task.type === 'STD Times') {
+                        peso = criterio === 'Seguimiento de instrucciones' ? 60 : criterio === 'Calidad del servicio' ? 40 : 0;
+                      } else if (task.type === 'Entrenamientos (Recibe)') {
+                        peso = criterio === 'Pruebas teóricas' ? 40 : criterio === 'Pruebas prácticas' ? 60 : 0;
+                      } else if (task.type === 'Entrenamientos (Brinda)') {
+                        peso = 20;
+                      } else if (task.type === 'Refrescamientos (Brinda)') {
+                        peso = criterio === 'Contenido adecuado' ? 20 : criterio === 'Materiales didácticos' ? 20 : criterio === 'Explicación clara' ? 20 : criterio === 'Entregables' ? 40 : 0;
+                      }
+
                       let ponderado = 0;
-                      if ((task.type === 'PRA' || task.type === 'Validacion') && 
+                      if ((task.type === 'PRA' || task.type === 'Validacion' || task.type === 'Práctica de procesos') && 
                           criterio === 'Calidad' && puntuacion < 70) {
-                        // Si calidad es menor a 70%, se pierde todo el porcentaje
                         ponderado = 0;
                       } else {
                         ponderado = (puntuacion * peso / 100).toFixed(2);
                       }
-                      
+
                       return (
-                        <View style={styles.evaluationRow} key={criterio}>
-                          <View style={styles.evaluationCol}>
-                            <Text style={styles.evaluationCell}>{criterio}</Text>
-                          </View>
-                          <View style={styles.evaluationCol}>
-                            <Text style={styles.evaluationCell}>{peso}%</Text>
-                          </View>
-                          <View style={styles.evaluationCol}>
-                            <Text style={styles.evaluationCell}>{puntuacion}%</Text>
-                          </View>
-                          <View style={styles.evaluationCol}>
-                            <Text style={styles.evaluationCell}>{ponderado}%</Text>
-                          </View>
+                        <View style={styles.tableRow} key={criterio}>
+                          <Text style={styles.tableCell}>{criterio}</Text>
+                          <Text style={styles.tableCell}>{peso}%</Text>
+                          <Text style={styles.tableCell}>{puntuacion}%</Text>
+                          <Text style={styles.tableCell}>{ponderado}%</Text>
                         </View>
                       );
                     })}
                   </View>
+
+                  {/* Comentarios */}
                   {task.comments && (
-                    <View style={styles.commentBox}>
-                      <Text style={styles.commentTitle}>Comentarios de la tarea:</Text>
+                    <View style={styles.comments}>
+                      <Text style={styles.commentTitle}>Comentarios:</Text>
                       <Text style={styles.commentText}>{task.comments}</Text>
                     </View>
                   )}
@@ -456,6 +442,7 @@ const GeneralReportPDF = ({ employees, tasks, dateRange }) => {
           ))}
         </View>
 
+        {/* Pie de página */}
         <View style={styles.footer}>
           <Text>Informe generado el {new Date().toLocaleDateString()}</Text>
         </View>
