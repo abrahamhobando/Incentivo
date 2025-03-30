@@ -64,7 +64,7 @@ const ThemeApp = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.4 }}
               style={{
                 position: 'fixed',
                 top: 0,
@@ -76,136 +76,63 @@ const ThemeApp = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 background: mode === 'light' 
-                  ? 'linear-gradient(135deg, #F5F5F7 0%, rgba(214,229,250,0.5) 100%)' 
-                  : 'linear-gradient(135deg, #000000 0%, rgba(39,39,42,0.7) 100%)',
+                  ? '#FFFFFF' 
+                  : '#000000',
                 zIndex: 9999
               }}
             >
               <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ 
-                  type: "spring", 
-                  stiffness: 240, 
-                  damping: 20,
-                  delay: 0.15
-                }}
-              >
-                <motion.div
-                  style={{
-                    width: 100,
-                    height: 100,
-                    borderRadius: 20,
-                    background: 'linear-gradient(135deg, #0A84FF, #5AC8FA)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: 28,
-                    boxShadow: '0 8px 24px rgba(10, 132, 255, 0.25)',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}
-                  animate={{ 
-                    scale: [1, 1.015, 1]
-                  }}
-                  transition={{ 
-                    repeat: Infinity,
-                    repeatType: "mirror",
-                    duration: 1.5,
-                    ease: "easeInOut" 
-                  }}
-                >
-                  {/* Efecto de brillo translúcido */}
-                  <motion.div
-                    style={{
-                      position: 'absolute',
-                      top: '-50%',
-                      left: '-50%',
-                      right: '-50%',
-                      bottom: '-50%',
-                      borderRadius: '50%',
-                      background: 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%)',
-                      opacity: 0.5
-                    }}
-                    animate={{
-                      x: ['-15%', '15%'],
-                      y: ['-15%', '15%']
-                    }}
-                    transition={{
-                      repeat: Infinity,
-                      repeatType: "mirror",
-                      duration: 2.5,
-                      ease: "easeInOut"
-                    }}
-                  />
-                  
-                  <motion.svg 
-                    width="48" 
-                    height="48" 
-                    viewBox="0 0 24 24" 
-                    fill="none"
-                    animate={{ 
-                      rotate: 360,
-                      scale: [1, 1.05, 1]
-                    }}
-                    transition={{ 
-                      rotate: {
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "linear"
-                      },
-                      scale: {
-                        duration: 1.2,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                        ease: "easeInOut"
-                      }
-                    }}
-                  >
-                    <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM9 17H7V10H9V17ZM13 17H11V7H13V17ZM17 17H15V13H17V17Z" fill="white"/>
-                  </motion.svg>
-                </motion.div>
-              </motion.div>
-              <motion.div
                 style={{
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif',
-                  fontSize: '1.6rem',
-                  fontWeight: 600,
-                  color: mode === 'light' ? '#1D1D1F' : '#F5F5F7',
-                  margin: 0,
-                  textAlign: 'center',
-                  letterSpacing: '-0.022em',
-                  marginBottom: 12
-                }}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ 
-                  delay: 0.3,
-                  duration: 0.5,
-                  ease: "easeOut" 
-                }}
-              >
-                Sistema de Asignaciones
-              </motion.div>
-              <motion.div
-                style={{
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif',
-                  fontSize: '0.95rem',
-                  fontWeight: 400,
-                  color: mode === 'light' ? 'rgba(0, 0, 0, 0.65)' : 'rgba(255, 255, 255, 0.65)',
-                  textAlign: 'center',
-                  maxWidth: 240,
-                  letterSpacing: '-0.01em',
+                  position: 'relative',
+                  width: 36,
+                  height: 36,
+                  marginBottom: 24
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ 
-                  delay: 0.5,
-                  duration: 0.5,
-                  ease: "easeOut" 
+                  duration: 0.5, 
+                  ease: 'easeOut'
                 }}
               >
-                Gestión eficiente de tareas y colaboradores
+                {/* Spinner ultra minimalista */}
+                <motion.div
+                  style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '50%',
+                    border: `1.5px solid ${mode === 'light' ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.03)'}`,
+                    borderTopColor: mode === 'light' ? '#0A84FF' : '#0A84FF',
+                    boxSizing: 'border-box'
+                  }}
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 1,
+                    ease: "linear",
+                    repeat: Infinity
+                  }}
+                />
+              </motion.div>
+              
+              <motion.div
+                style={{
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif',
+                  fontSize: '1rem',
+                  fontWeight: 500,
+                  color: mode === 'light' ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
+                  textAlign: 'center',
+                  letterSpacing: '-0.015em'
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ 
+                  delay: 0.2,
+                  duration: 0.5,
+                  ease: "easeOut"
+                }}
+              >
+                Sistema de Asignaciones
               </motion.div>
             </motion.div>
           ) : (

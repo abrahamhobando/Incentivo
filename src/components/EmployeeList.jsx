@@ -199,9 +199,22 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
           {sortedEmployees.map((employee, index) => (
             <motion.div 
               key={employee.id}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
+              transition={{ 
+                duration: 0.25, 
+                delay: index * 0.03, 
+                ease: [0.25, 0.1, 0.25, 1.0] 
+              }}
+              whileHover={{ 
+                y: -4, 
+                scale: 1.01,
+                backgroundColor: alpha(theme.palette.primary.main, 0.04),
+                transition: { 
+                  duration: 0.15, 
+                  ease: [0.25, 0.1, 0.25, 1.0]
+                }
+              }}
             >
               {index > 0 && <Divider variant="fullWidth" sx={{ opacity: 0.6 }} />}
               <ListItem 
@@ -226,21 +239,32 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
                 onMouseLeave={handleMouseLeave}
               >
                 <ListItemIcon>
-                  <Avatar 
-                    sx={{ 
-                      bgcolor: getAvatarColor(employee.name),
-                      width: 40,
-                      height: 40,
-                      fontWeight: 'bold',
-                      fontSize: '1.1rem',
-                      transition: 'all 0.2s ease',
-                      ...(hoveredEmployeeId === employee.id && {
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                      }),
+                  <motion.div
+                    whileHover={{ 
+                      rotate: [0, -4, 4, -2, 0], 
+                      scale: 1.1,
+                      transition: { 
+                        duration: 0.3,
+                        ease: "easeInOut"
+                      }
                     }}
                   >
-                    {getInitial(employee.name)}
-                  </Avatar>
+                    <Avatar 
+                      sx={{ 
+                        bgcolor: getAvatarColor(employee.name),
+                        width: 40,
+                        height: 40,
+                        fontWeight: 'bold',
+                        fontSize: '1.1rem',
+                        transition: 'all 0.2s ease',
+                        ...(hoveredEmployeeId === employee.id && {
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        }),
+                      }}
+                    >
+                      {getInitial(employee.name)}
+                    </Avatar>
+                  </motion.div>
                 </ListItemIcon>
                 <ListItemText
                   primary={
@@ -254,12 +278,19 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
                           fullWidth
                           sx={{
                             '& .MuiOutlinedInput-root': {
-                              borderRadius: '16px',
+                              borderRadius: 1,
+                              height: '32px',
                               backgroundColor: theme.palette.mode === 'dark' 
                                 ? alpha(theme.palette.background.paper, 0.15) 
                                 : alpha(theme.palette.background.paper, 0.8),
                               backdropFilter: 'blur(8px)',
-                              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
+                              '& fieldset': {
+                                borderColor: alpha(theme.palette.divider, 0.3),
+                              }
+                            },
+                            '& .MuiInputBase-input': {
+                              fontSize: '0.875rem',
+                              padding: '6px 12px',
                             }
                           }}
                         />
@@ -269,14 +300,17 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
                           onClick={handleSave}
                           disabled={!editingName.trim()}
                           sx={{
-                            borderRadius: '28px',
+                            borderRadius: 1,
                             boxShadow: 'none',
-                            px: 2.5,
-                            fontWeight: 600,
+                            px: 1.5,
+                            py: 0.5,
+                            fontSize: '0.875rem',
+                            fontWeight: 500,
                             textTransform: 'none',
+                            minWidth: 'auto',
                             backgroundColor: theme.palette.primary.main,
                             '&:hover': {
-                              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                              boxShadow: 'none',
                               backgroundColor: theme.palette.primary.dark,
                             }
                           }}
@@ -284,19 +318,20 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
                           Guardar
                         </Button>
                         <Button
-                          variant="outlined"
+                          variant="text"
                           size="small"
                           onClick={handleCancel}
                           sx={{
-                            borderRadius: '28px',
-                            px: 2,
+                            borderRadius: 1,
+                            px: 1.5,
+                            py: 0.5,
+                            fontSize: '0.875rem',
                             fontWeight: 500,
                             textTransform: 'none',
-                            borderColor: theme.palette.primary.main,
-                            color: theme.palette.primary.main,
+                            minWidth: 'auto',
+                            color: theme.palette.text.secondary,
                             '&:hover': {
-                              backgroundColor: alpha(theme.palette.primary.main, 0.05),
-                              borderColor: theme.palette.primary.dark,
+                              backgroundColor: alpha(theme.palette.divider, 0.1)
                             }
                           }}
                         >
@@ -319,22 +354,6 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
                         >
                           {employee.name}
                         </Typography>
-                        {hoveredEmployeeId === employee.id && (
-                          <Typography 
-                            variant="caption" 
-                            sx={{ 
-                              ml: 1.5,
-                              color: theme.palette.primary.main,
-                              display: 'flex',
-                              alignItems: 'center',
-                              opacity: 0.8,
-                              transition: 'opacity 0.2s ease',
-                            }}
-                          >
-                            <VisibilityIcon fontSize="inherit" sx={{ mr: 0.5, fontSize: '1rem' }} />
-                            Ver detalles
-                          </Typography>
-                        )}
                       </Box>
                     )
                   }
@@ -343,8 +362,10 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
                   {editingId !== employee.id && (
                     <Box sx={{ 
                       display: 'flex',
-                      opacity: hoveredEmployeeId === employee.id ? 1 : 0,
-                      transition: 'opacity 0.2s ease-in-out',
+                      opacity: 0.15,
+                      transition: 'opacity 0.25s ease-in-out',
+                      zIndex: 2,
+                      position: 'relative',
                       '.MuiListItem-root:hover &': {
                         opacity: 1
                       }
@@ -360,9 +381,12 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
                           size="small"
                           sx={{ 
                             mr: 1,
-                            color: theme.palette.text.secondary,
+                            color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
+                            backgroundColor: theme.palette.mode === 'dark' 
+                              ? alpha(theme.palette.primary.main, 0.1)
+                              : alpha(theme.palette.primary.main, 0.05),
                             '&:hover': {
-                              backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                              backgroundColor: alpha(theme.palette.primary.main, 0.15),
                               color: theme.palette.primary.main,
                             },
                           }}
@@ -380,9 +404,12 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
                           }}
                           size="small"
                           sx={{ 
-                            color: theme.palette.text.secondary,
+                            color: theme.palette.mode === 'dark' ? theme.palette.error.light : theme.palette.error.main,
+                            backgroundColor: theme.palette.mode === 'dark'
+                              ? alpha(theme.palette.error.main, 0.1)
+                              : alpha(theme.palette.error.main, 0.05),
                             '&:hover': {
-                              backgroundColor: alpha(theme.palette.error.main, 0.08),
+                              backgroundColor: alpha(theme.palette.error.main, 0.15),
                               color: theme.palette.error.main,
                             },
                           }}
@@ -395,15 +422,24 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
                   {editingId === employee.id && (
                     <Box sx={{ display: 'flex' }}>
                       <Button
-                        variant="text"
+                        variant="contained"
                         color="primary"
                         size="small"
                         onClick={handleSave}
                         sx={{ 
                           mr: 1,
-                          textTransform: 'none',
+                          minWidth: 'auto',
+                          py: 0.5,
+                          px: 1.5,
+                          fontSize: '0.875rem',
                           fontWeight: 500,
-                          borderRadius: 1
+                          textTransform: 'none',
+                          boxShadow: 'none',
+                          borderRadius: 1,
+                          '&:hover': {
+                            boxShadow: 'none',
+                            backgroundColor: theme.palette.primary.dark,
+                          }
                         }}
                       >
                         Guardar
@@ -414,9 +450,17 @@ const EmployeeList = ({ employees, onEmployeeDeleted }) => {
                         size="small"
                         onClick={handleCancel}
                         sx={{ 
-                          textTransform: 'none',
+                          minWidth: 'auto',
+                          py: 0.5,
+                          px: 1.5,
+                          fontSize: '0.875rem',
                           fontWeight: 500,
-                          borderRadius: 1
+                          textTransform: 'none',
+                          borderRadius: 1,
+                          color: theme.palette.text.secondary,
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.divider, 0.1)
+                          }
                         }}
                       >
                         Cancelar

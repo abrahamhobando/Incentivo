@@ -143,47 +143,23 @@ function App() {
                   }
                 }}
               >
-                <motion.div
-                  initial={{ rotate: -5, scale: 0.95, opacity: 0 }}
-                  animate={{ rotate: 0, scale: 1, opacity: 1 }}
-                  transition={{ 
-                    duration: 0.4, 
-                    ease: [0.25, 0.1, 0.25, 1.0],
-                    delay: 0.3
-                  }}
-                  whileHover={{ 
-                    rotate: [0, -3, 3, 0],
-                    scale: 1.03,
-                    transition: { duration: 0.4 }
+                <Box 
+                  component="span" 
+                  sx={{ 
+                    fontSize: '1.1rem', 
+                    fontWeight: 500, 
+                    letterSpacing: '0.05em',
+                    color: mode === 'light' ? 'rgba(0,0,0,0.75)' : 'rgba(255,255,255,0.85)',
+                    background: mode === 'light' 
+                      ? 'linear-gradient(90deg, #333 30%, #666 100%)' 
+                      : 'linear-gradient(90deg, #eee 30%, #aaa 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: mode === 'light' ? 'transparent' : 'transparent',
+                    px: 1
                   }}
                 >
-                  <Box
-                    sx={{
-                      width: 32,
-                      height: 32,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: '8px',
-                      background: 'linear-gradient(135deg, #0A84FF, #5AC8FA)',
-                      boxShadow: '0 2px 8px rgba(10, 132, 255, 0.2)'
-                    }}
-                  >
-                    <AssignmentIcon sx={{ color: '#fff', fontSize: 18 }} />
-                  </Box>
-                </motion.div>
-                <motion.span
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ 
-                    duration: 0.3, 
-                    ease: [0.25, 0.1, 0.25, 1.0],
-                    delay: 0.4
-                  }}
-                  style={{ marginLeft: '16px' }}
-                >
-                  Sistema de Asignaciones
-                </motion.span>
+                  VALITRACK
+                </Box>
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <motion.div
